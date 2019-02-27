@@ -1,0 +1,23 @@
+derived/edge_bbpars.csv
+    Responsible: TW
+    Generated from Bbarolo ringlog2.txt files using bbout.py
+
+derived/edge_rfpars.csv
+    Responsible: RL
+    Generated from EDGE_COparameters.csv using becca2ecsv.py
+
+external/edge_califa.csv
++external/edge_leda.csv
++external/edge_nsa.csv
++external/edge_wise.csv
++external/edge_rdist.csv
+    Responsible: AB
+    Generated from DETableFinal.csv using mktables.py
+
+obs/edge_coflux.csv
+    Responsible: TW
+    Generated from data using cofluxtab.py
+
+obs/edge_coobs.csv
+    Responsible: TW
+    Generated from de20_obs.csv using coobstab.py

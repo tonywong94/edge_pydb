@@ -1,0 +1,164 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: Name, datatype: string}
+# - {name: rdScaleMol, unit: kpc, datatype: float64, description: Exponential scale
+#     length for CO disk derived by filling in undetected values in annulii with 1-sigma}
+# - {name: rdeScaleMol, unit: kpc, datatype: float64, description: Statistical error
+#     from fit to exponential scale length}
+# - {name: rdScaleMolHi, unit: kpc, datatype: float64, description: Upper limit to exponential
+#     scale length by filling in annuli with 2-sigma values}
+# - {name: rdScaleMolLo, unit: kpc, datatype: float64, description: Lower limit to exponential
+#     scale length by filling in annulii with zeros}
+# - {name: rdNormMol, unit: solMass / pc2, datatype: float64, description: 'Normalization
+#     of CO exponential disk profile, i.e. density at R=0'}
+# - {name: rdeNormMol, unit: solMass / pc2, datatype: float64, description: Error in
+#     normalization of CO exponential disk profile}
+# - {name: rdScaleSt, unit: kpc, datatype: float64, description: Exponential scale length
+#     for the mass of the stellar disk}
+# - {name: rdeScaleSt, unit: kpc, datatype: float64, description: Formal error in stellar
+#     scale length fit}
+# - {name: rdNormSt, unit: solMass / pc2, datatype: float64, description: 'Normalization
+#     of stellar exponential disk profile, i.e. density at R=0'}
+# - {name: rdeNormSt, unit: solMass / pc2, datatype: float64, description: Formal error
+#     in stellar disk normalization}
+# - {name: rdR50Mol, unit: kpc, datatype: float64, description: Radius enclosing 50%
+#     of the molecular mass}
+# - {name: rdeR50Mol, unit: kpc, datatype: float64, description: 'Error in radius enclosing
+#     50% of the molecular mass, including beam size'}
+# - {name: rdR50St, unit: kpc, datatype: float64, description: Radius enclosing 50%
+#     of the stellar mass}
+# - {name: rdeR50St, unit: kpc, datatype: float64, description: 'Error in radius enclosing
+#     50% of the stellar mass, including beam size'}
+# - {name: rdScaleSFR, unit: kpc, datatype: float64, description: Exponential scale
+#     length for SFR from extinction corrected Ha}
+# - {name: rdeScaleSFR, unit: kpc, datatype: float64, description: Error in exponential
+#     scale length for SFR from extinction corrected Ha}
+# delimiter: ','
+Name,rdScaleMol,rdeScaleMol,rdScaleMolHi,rdScaleMolLo,rdNormMol,rdeNormMol,rdScaleSt,rdeScaleSt,rdNormSt,rdeNormSt,rdR50Mol,rdeR50Mol,rdR50St,rdeR50St,rdScaleSFR,rdeScaleSFR
+ARP220,1.59,0.69,1.81,1.25,991.09,3.48,2.55,0.2,2314.26,1.27,1.34,0.23,3.23,0.07,1.24,0.79
+IC0480,2.23,0.19,2.62,1.77,132.35,1.19,3.08,0.32,285.9,1.22,3.3,0.09,4.6,0.07,2.58,0.41
+IC0540,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+IC0944,5.16,0.19,6.01,4.2,65.87,1.08,5.06,0.15,1087.18,1.07,6.92,0.04,6.85,0.04,8.7,0.79
+IC1151,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,2.35,0.13,nan,nan
+IC1199,4.21,0.65,6.06,2.55,31.59,1.19,2.58,0.23,1225.34,1.26,4.23,0.09,4.36,0.07,2.55,0.62
+IC1683,1.65,0.36,2.07,1.22,264.32,1.68,2.38,0.09,1196.75,1.11,1.99,0.12,3.31,0.07,1.33,0.21
+IC2247,2.91,0.17,3.69,2.11,66.84,1.13,2.62,0.13,746.43,1.12,4.42,0.07,4.04,0.07,2.79,0.46
+IC2487,3.82,0.26,4.81,2.74,30.46,1.12,3.83,0.09,360.23,1.06,4.92,0.07,5.96,0.05,5.36,0.54
+IC4566,5.75,4212.51,11.04,5.61,34.38,inf,3.22,0.07,1207.18,1.06,6.27,0.08,4.8,0.05,-5.77,1.3534e+13
+IC5376,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.72,0.06,nan,nan
+NGC0444,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,5.69,0.05,nan,nan
+NGC0447,nan,nan,nan,nan,nan,nan,3.46,5.44,1938.79,3.94,nan,nan,1.97,0.13,nan,nan
+NGC0477,13.12,8.77,19.37,8.38,12.97,1.5,5.28,0.4,322.03,1.15,9.07,0.08,6.39,0.04,7.95,35.13
+NGC0496,3.31,0.65,4.42,2.33,55.17,1.35,4.3,0.11,479.79,1.05,3.74,0.07,6.16,0.05,2.32,0.23
+NGC0523,13.46,12.49,18.24,9.63,18.47,1.55,3.9,0.13,572.18,1.12,6.99,0.06,6.84,0.04,-8.87,1.54
+NGC0528,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.29,0.07,nan,nan
+NGC0551,10.22,67.78,20.92,4.63,13.17,38.64,3.75,0.07,711.31,1.04,6.74,0.07,5.23,0.05,-4.64,75.05
+NGC1167,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.93,0.06,nan,nan
+NGC2253,2.83,0.3,3.84,2.13,107.54,1.26,2.48,0.18,1282.9,1.18,3.64,0.09,3.53,0.07,1.82,0.52
+NGC2347,2.45,0.36,3.15,1.78,117.33,1.37,2.16,0.06,2986.48,1.09,3.23,0.09,3.17,0.08,1.37,0.35
+NGC2410,4.09,0.42,5.37,2.79,49.24,1.16,3.22,0.13,1641.15,1.11,5.27,0.06,4.53,0.05,3.43,0.19
+NGC2480,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+NGC2486,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.33,0.07,nan,nan
+NGC2487,nan,nan,nan,nan,nan,nan,3.91,0.42,981.47,1.19,nan,nan,4.45,0.05,-2.37,0.95
+NGC2623,nan,nan,nan,nan,nan,nan,1.75,0.22,1602.36,1.47,nan,nan,2.22,0.13,1.41,0.11
+NGC2639,1.96,1.22,2.75,1.31,161.85,2.51,1.71,0.07,5648.81,1.12,3.05,0.16,2.71,0.09,1.62,9.97
+NGC2730,nan,nan,nan,nan,nan,nan,3.38,5.04,166.34,3.04,nan,nan,3.09,0.11,11.61,4.11
+NGC2880,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,1.34,0.19,nan,nan
+NGC2906,nan,nan,nan,nan,nan,nan,1.75,1.48,1485.08,5.7,nan,nan,2.09,0.13,0.87,0.34
+NGC2916,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,5.11,0.1,nan,nan
+NGC2918,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,4.15,0.04,nan,nan
+NGC3303,2.46,0.68,3.25,1.72,85.59,1.7,3.13,0.14,1649.68,1.15,2.89,0.09,4.17,0.05,nan,nan
+NGC3381,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+NGC3687,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,2.13,0.14,nan,nan
+NGC3811,14.79,546.35,6.8,-0.99,13.66,8168.88,2.1,0.13,955.02,1.15,3.1,0.04,2.49,0.08,2.96,1.8
+NGC3815,1.68,6.98,2.47,1.14,131.01,5382.37,1.36,0.05,2197.35,1.13,2.61,0.17,2.33,0.13,1.39,0.14
+NGC3994,1.31,1.03,1.8,0.89,207.14,8.64,1.31,0.08,2138.93,1.22,1.8,0.16,1.7,0.12,0.73,1.6
+NGC4047,1.57,2.42,1.77,1.39,403.78,31.5,2.11,0.04,1994.66,1.06,2.27,0.16,3.1,0.08,1.05,0.13
+NGC4149,nan,nan,nan,nan,nan,nan,1.55,1.01,1430.3,4.37,nan,nan,2.1,0.12,1.05,0.27
+NGC4185,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,4.76,0.06,nan,nan
+NGC4210,nan,nan,nan,nan,nan,nan,2.5,0.11,554.38,1.08,nan,nan,3.18,0.1,11.13,84.25
+NGC4211NED02,nan,nan,nan,nan,nan,nan,1.1,1.07,2172.73,22.88,nan,nan,1.67,0.15,nan,nan
+NGC4470,nan,nan,nan,nan,nan,nan,1.62,0.4,661.07,2.0,nan,nan,2.23,0.15,0.58,0.54
+NGC4644,7.18,2.3,11.25,4.52,12.75,1.24,2.64,0.18,848.3,1.18,5.69,0.07,4.28,0.07,5.26,0.8
+NGC4676A,0.85,0.65,1.04,0.64,2702.8,17.45,2.04,0.09,2756.58,1.11,1.76,0.18,3.49,0.08,1.19,1.84
+NGC4711,5.59,5.41,9.86,2.96,20.44,2.1,3.01,0.11,521.39,1.07,4.11,0.12,3.75,0.08,3.13,0.68
+NGC4961,nan,nan,nan,nan,nan,nan,0.99,13.92,904.69,2.55213e+15,nan,nan,1.58,0.17,1.83,0.98
+NGC5000,nan,nan,nan,nan,nan,nan,2.95,0.1,1178.0,1.09,nan,nan,4.47,0.06,6.0,55.08
+NGC5016,nan,nan,nan,nan,nan,nan,1.6,7.19,1240.0,307694.0,nan,nan,2.19,0.12,1.76,0.82
+NGC5056,4.37,0.38,6.06,2.86,32.24,1.16,2.96,0.08,740.99,1.07,4.78,0.05,4.21,0.06,4.68,0.59
+NGC5205,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+NGC5218,3.84,8.18,4.66,3.34,71.91,4.13,1.37,5.85,3425.47,1264720.0,1.2,0.16,2.13,0.13,2.77,1.04
+NGC5394,1.6,0.18,1.9,1.37,281.12,1.34,1.95,0.17,731.41,1.26,2.08,0.11,2.47,0.09,1.63,0.13
+NGC5406,11.99,32.94,-32.04,7.29,20.58,7.12,4.31,0.33,1108.39,1.18,9.11,0.07,5.56,0.04,-2.33,0.82
+NGC5480,nan,nan,nan,nan,nan,nan,3.88,243.65,217.77,4.11102e+17,nan,nan,2.03,0.15,1.58,1.03
+NGC5485,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,1.93,0.13,nan,nan
+NGC5520,nan,nan,nan,nan,nan,nan,1.2,1.78,680.77,61.42,nan,nan,1.35,0.18,2.04,19.88
+NGC5614,1.04,0.5,1.17,0.96,1776.3,5.78,2.31,0.21,3379.35,1.23,2.26,0.16,2.8,0.08,3.04,1.04
+NGC5633,nan,nan,nan,nan,nan,nan,1.09,7.71,3099.2,6173170000.0,nan,nan,1.86,0.17,nan,nan
+NGC5657,nan,nan,nan,nan,nan,nan,2.17,0.14,737.86,1.21,nan,nan,2.95,0.08,2.31,0.19
+NGC5682,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,2.08,0.18,nan,nan
+NGC5732,nan,nan,nan,nan,nan,nan,2.09,0.17,371.85,1.16,nan,nan,2.8,0.09,1.69,11.12
+NGC5784,1.97,12.87,2.53,1.47,123.36,101622.0,2.96,0.21,2455.3,1.22,2.54,0.15,3.71,0.05,1.11,0.28
+NGC5876,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.2,0.06,nan,nan
+NGC5908,3.25,0.28,3.7,2.74,197.27,1.21,3.21,0.07,2001.17,1.04,4.96,0.07,3.83,0.08,2.32,0.24
+NGC5930,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+NGC5934,1.5,0.25,1.75,1.25,572.25,1.47,1.78,0.35,4480.5,1.75,2.36,0.14,3.24,0.1,1.63,0.26
+NGC5947,6.64,4.1,8.57,2.74,17.28,1.48,2.79,0.16,822.45,1.18,3.48,0.12,2.83,0.08,7.5,0.8
+NGC5953,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+NGC5980,2.6,0.16,3.17,1.96,137.77,1.14,2.37,0.05,2103.56,1.05,3.87,0.08,3.68,0.07,1.87,0.3
+NGC6004,-5.23,13.89,9.87,-3.01,8.77,8.48,4.22,0.28,560.72,1.09,3.01,0.14,4.37,0.07,4.01,15.28
+NGC6021,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,1.95,0.11,nan,nan
+NGC6027,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,2.71,0.05,nan,nan
+NGC6060,6.09,1.58,7.8,4.25,35.02,1.39,3.9,0.21,1080.46,1.11,6.75,0.05,5.24,0.05,5.31,1.07
+NGC6063,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.26,0.1,nan,nan
+NGC6081,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.6,0.07,nan,nan
+NGC6125,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,3.52,0.06,nan,nan
+NGC6146,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,5.27,0.04,nan,nan
+NGC6155,nan,nan,nan,nan,nan,nan,1.9,0.14,689.87,1.18,nan,nan,2.46,0.11,0.53,0.21
+NGC6168,6.43,12.61,14.29,3.59,9.36,3.93,2.42,0.4,206.71,1.28,2.94,0.16,2.84,0.11,1.68,0.53
+NGC6186,2.25,0.43,2.59,1.68,104.32,1.5,2.43,0.11,871.39,1.09,2.43,0.09,2.96,0.09,1.66,0.4
+NGC6301,14.95,2.8,24.0,8.04,18.84,1.15,7.17,0.37,526.9,1.07,9.77,0.05,7.61,0.05,-11.39,2.45
+NGC6310,nan,nan,nan,nan,nan,nan,3.6,0.37,546.5,1.14,nan,nan,4.1,0.08,-5.5,145.74
+NGC6314,2.25,0.8,2.68,1.55,131.87,2.14,3.77,0.21,1283.61,1.17,2.47,0.11,4.97,0.04,0.97,0.18
+NGC6361,2.95,0.18,3.3,2.56,272.12,1.14,3.28,0.29,1261.18,1.16,4.79,0.06,4.64,0.07,3.39,0.69
+NGC6394,6.37,0.9,8.25,4.6,43.75,1.17,3.51,0.15,1440.69,1.11,6.73,0.06,5.83,0.05,10.29,10.73
+NGC6478,6.6,0.37,7.71,5.44,61.6,1.11,6.23,0.27,885.9,1.09,8.76,0.05,8.82,0.03,15.99,4.0
+NGC7738,1.68,0.54,1.92,1.4,547.64,2.48,2.3,0.24,5095.75,1.32,2.18,0.15,4.15,0.04,1.14,0.2
+NGC7819,nan,nan,nan,nan,nan,nan,3.75,0.32,261.69,1.18,nan,nan,4.7,0.05,4.21,1.07
+UGC00809,6.14,2.52,10.28,3.97,7.15,1.3,3.84,0.16,78.89,1.07,3.56,0.13,4.55,0.04,2.99,0.36
+UGC03253,5.14,1.14,6.16,3.01,15.69,1.2,2.42,0.09,2504.88,1.09,3.84,0.09,3.87,0.07,3.16,1.03
+UGC03539,1.58,1.03,1.97,1.14,128.59,2.96,1.46,0.02,694.99,1.05,2.41,0.14,2.26,0.13,1.62,0.15
+UGC03969,4.86,0.27,5.84,3.93,63.82,1.07,2.78,0.24,1020.66,1.2,6.05,0.05,4.49,0.07,4.68,0.26
+UGC03973,4.5,0.96,5.7,2.99,44.1,1.33,3.86,0.34,644.96,1.26,4.47,0.06,4.53,0.03,5.13,9.52
+UGC04029,4.03,0.35,5.11,3.17,29.44,1.16,3.38,0.16,434.16,1.1,4.65,0.06,4.58,0.07,4.33,0.34
+UGC04132,3.13,0.13,3.68,2.44,183.88,1.09,3.63,0.16,1491.57,1.08,4.86,0.06,5.48,0.05,4.42,0.49
+UGC04280,nan,nan,nan,nan,nan,nan,1.63,0.04,1108.47,1.07,nan,nan,2.7,0.1,1.95,0.19
+UGC04461,3.28,0.61,4.43,2.31,35.2,1.31,3.14,0.07,283.27,1.04,3.31,0.08,4.4,0.06,3.65,0.38
+UGC05108,2.75,0.35,3.48,1.88,95.05,1.24,3.79,0.1,1043.8,1.08,3.41,0.09,5.62,0.04,2.72,0.28
+UGC05111,4.19,0.39,4.91,3.36,98.35,1.2,3.41,0.17,1399.03,1.13,6.43,0.06,5.82,0.05,5.36,0.39
+UGC05244,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,2.82,0.12,nan,nan
+UGC05359,9.21,1.14,12.12,6.56,11.41,1.16,4.24,0.06,453.84,1.05,8.47,0.05,6.64,0.04,8.08,3.49
+UGC05498NED01,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+UGC05598,2.68,0.06,3.46,2.03,31.44,1.03,3.09,0.21,352.7,1.17,2.99,0.11,5.12,0.06,4.59,0.51
+UGC06312,nan,nan,nan,nan,nan,nan,3.31,0.04,1231.11,1.04,nan,nan,5.09,0.05,5.16,0.5
+UGC07012,nan,nan,nan,nan,nan,nan,-0.89,0.67,3.36,11.74,nan,nan,1.88,0.17,2.41,0.81
+UGC08107,3.61,0.12,4.07,3.05,142.27,1.09,6.23,0.23,736.05,1.09,5.22,0.05,8.78,0.03,7.77,0.46
+UGC08250,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,4.15,0.08,nan,nan
+UGC08267,3.02,0.29,3.31,2.81,123.38,1.22,3.09,0.21,1169.58,1.22,4.27,0.08,5.78,0.06,3.29,0.41
+UGC09067,3.15,0.4,4.02,2.22,126.34,1.31,2.97,0.05,1435.88,1.06,4.66,0.08,4.77,0.06,3.99,0.74
+UGC09476,6.68,58.31,11.77,27.43,17.25,356.54,2.93,0.2,341.38,1.12,3.6,0.1,3.75,0.08,6.63,1.9
+UGC09537,8.28,1.04,11.75,5.6,20.28,1.13,4.66,0.18,1049.74,1.14,7.6,0.05,7.95,0.01,6.38,13.38
+UGC09542,5.44,0.49,7.74,3.27,19.52,1.09,3.45,0.1,402.54,1.07,4.91,0.07,5.21,0.05,5.96,1.05
+UGC09665,2.38,0.18,3.27,1.62,40.82,1.14,2.19,11.05,339.29,322.5,3.12,0.11,2.81,0.12,2.5,0.36
+UGC09759,nan,nan,nan,nan,nan,nan,1.66,0.21,809.86,1.43,nan,nan,2.92,0.11,2.68,1.46
+UGC09873,2.86,0.37,3.82,1.94,22.73,1.23,3.69,0.14,157.3,1.06,2.88,0.1,5.03,0.06,2.97,0.27
+UGC09892,5.72,1.87,8.04,3.94,13.76,1.34,2.9,0.12,417.67,1.09,5.06,0.07,4.65,0.06,4.78,0.61
+UGC09919,nan,nan,nan,nan,nan,nan,2.41,0.24,141.54,1.2,nan,nan,2.54,0.14,2.04,0.32
+UGC10043,nan,nan,nan,nan,nan,nan,-3.03,12.51,41.04,133.48,nan,nan,1.9,0.18,2.22,6.55
+UGC10123,2.23,0.18,2.77,1.58,134.55,1.24,1.62,0.11,1980.26,1.27,3.24,0.1,2.82,0.09,2.19,0.2
+UGC10205,2.94,0.53,3.89,2.21,82.6,1.38,3.12,0.09,1966.28,1.09,3.57,0.08,4.68,0.05,2.01,0.06
+UGC10331,nan,nan,nan,nan,nan,nan,3.53,0.21,119.71,1.11,nan,nan,4.76,0.07,3.76,0.18
+UGC10380,3.33,0.42,3.87,2.72,44.23,1.28,4.33,0.11,723.63,1.08,4.32,0.07,7.24,0.05,6.63,1.39
+UGC10384,1.77,0.11,2.06,1.49,232.47,1.19,1.53,0.1,1682.89,1.2,2.93,0.12,2.7,0.1,1.84,0.16
+UGC10710,4.39,0.16,5.33,3.42,67.24,1.06,5.15,0.42,389.63,1.19,5.38,0.06,6.75,0.03,4.62,0.55
