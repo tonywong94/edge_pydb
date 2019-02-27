@@ -1,0 +1,70 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: radius, unit: arcsec, datatype: float64, description: Adopting RA=211.79699999999997
+#     deg DEC=55.0016 deg PA=74.5 INC=47.2}
+# - {name: r_kpc, unit: kpc, datatype: float64, format: 10.3f, description: Adopting
+#     distance of 26.8605 Mpc}
+# - {name: r_r25, unit: '', datatype: float64, format: 10.3f, description: Adopting
+#     R25=75.3567 arcsec}
+# - {name: npix, datatype: int64}
+# - {name: ngood, datatype: int64, description: Requiring fill fraction of 0.2 npix}
+# - {name: wtmean, unit: K km / s, datatype: float64, format: 10.3f, description: Replaced
+#     blanks with 0 times ../NGC5485.co.de20_smo.emom0max.fits}
+# - {name: rms, unit: K km / s, datatype: float32}
+# - {name: annsum, unit: K km pix / s, datatype: float32, format: 10.3f}
+# - {name: cumsum, unit: K km pix / s, datatype: float32}
+# - {name: detlim, unit: K km / s, datatype: float64, format: 10.3f}
+# - {name: cumlum, unit: K km pc2 / s, datatype: float32}
+# - {name: sigmol, unit: solMass / pc2, datatype: float64, format: 10.3f}
+# - {name: cummass, unit: solMass, datatype: float32}
+# delimiter: ','
+# schema: astropy-2.0
+radius,r_kpc,r_r25,npix,ngood,wtmean,rms,annsum,cumsum,detlim,cumlum,sigmol,cummass
+1.0,0.130,0.013,9,0,nan,nan,0.000,0.0,14.866,0.0,nan,0.0
+3.0,0.391,0.040,24,0,nan,nan,0.000,0.0,9.118,0.0,nan,0.0
+5.0,0.651,0.066,46,0,nan,nan,0.000,0.0,6.609,0.0,nan,0.0
+7.0,0.912,0.093,57,0,nan,nan,0.000,0.0,5.970,0.0,nan,0.0
+9.0,1.172,0.119,75,0,nan,nan,0.000,0.0,5.239,0.0,nan,0.0
+11.0,1.432,0.146,97,0,nan,nan,0.000,0.0,4.647,0.0,nan,0.0
+13.0,1.693,0.173,110,0,nan,nan,0.000,0.0,4.411,0.0,nan,0.0
+15.0,1.953,0.199,130,0,nan,nan,0.000,0.0,4.106,0.0,nan,0.0
+17.0,2.214,0.226,144,0,nan,nan,0.000,0.0,3.961,0.0,nan,0.0
+19.0,2.474,0.252,160,0,nan,nan,0.000,0.0,3.815,0.0,nan,0.0
+21.0,2.735,0.279,180,0,nan,nan,0.000,0.0,3.661,0.0,nan,0.0
+23.0,2.995,0.305,198,0,nan,nan,0.000,0.0,3.559,0.0,nan,0.0
+25.0,3.256,0.332,219,0,nan,nan,0.000,0.0,3.456,0.0,nan,0.0
+27.0,3.516,0.358,227,0,nan,nan,0.000,0.0,3.486,0.0,nan,0.0
+29.0,3.776,0.385,248,0,nan,nan,0.000,0.0,3.407,0.0,nan,0.0
+31.0,4.037,0.411,262,0,nan,nan,0.000,0.0,3.416,0.0,nan,0.0
+33.0,4.297,0.438,278,0,nan,nan,0.000,0.0,3.413,0.0,nan,0.0
+35.0,4.558,0.464,307,0,nan,nan,0.000,0.0,3.347,0.0,nan,0.0
+37.0,4.818,0.491,311,0,nan,nan,0.000,0.0,3.442,0.0,nan,0.0
+39.0,5.079,0.518,337,0,nan,nan,0.000,0.0,3.419,0.0,nan,0.0
+41.0,5.339,0.544,345,0,nan,nan,0.000,0.0,3.516,0.0,nan,0.0
+43.0,5.600,0.571,362,0,nan,nan,0.000,0.0,3.572,0.0,nan,0.0
+45.0,5.860,0.597,390,0,nan,nan,0.000,0.0,3.580,0.0,nan,0.0
+47.0,6.120,0.624,398,0,nan,nan,0.000,0.0,3.724,0.0,nan,0.0
+49.0,6.381,0.650,396,0,nan,nan,0.000,0.0,3.964,0.0,nan,0.0
+51.0,6.641,0.677,338,0,nan,nan,0.000,0.0,4.360,0.0,nan,0.0
+53.0,6.902,0.703,330,0,nan,nan,0.000,0.0,4.544,0.0,nan,0.0
+55.0,7.162,0.730,321,0,nan,nan,0.000,0.0,4.841,0.0,nan,0.0
+57.0,7.423,0.756,318,0,nan,nan,0.000,0.0,5.112,0.0,nan,0.0
+59.0,7.683,0.783,315,0,nan,nan,0.000,0.0,5.402,0.0,nan,0.0
+61.0,7.944,0.809,295,0,nan,nan,0.000,0.0,6.020,0.0,nan,0.0
+63.0,8.204,0.836,309,0,nan,nan,0.000,0.0,6.282,0.0,nan,0.0
+65.0,8.465,0.863,293,0,nan,nan,0.000,0.0,7.214,0.0,nan,0.0
+67.0,8.725,0.889,278,0,nan,nan,0.000,0.0,8.283,0.0,nan,0.0
+69.0,8.985,0.916,206,0,nan,nan,0.000,0.0,11.302,0.0,nan,0.0
+71.0,9.246,0.942,163,0,nan,nan,0.000,0.0,51.402,0.0,nan,0.0
+73.0,9.506,0.969,129,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+75.0,9.767,0.995,99,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+77.0,10.027,1.022,76,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+79.0,10.288,1.048,66,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+81.0,10.548,1.075,57,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+83.0,10.809,1.101,44,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+85.0,11.069,1.128,34,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+87.0,11.329,1.155,24,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+89.0,11.590,1.181,15,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+91.0,11.850,1.208,5,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0
+93.0,12.111,1.234,0,0,nan,nan,0.000,0.0,nan,0.0,nan,0.0

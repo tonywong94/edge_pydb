@@ -1,0 +1,286 @@
+Name:
+   Standard CALIFA name for galaxy 
+ledaRA:
+   RA J2000 from LEDA (hours). 
+ledaDE:
+   DEC J2000 from LEDA (degrees). 
+ledaA_Bgal:
+   Galactic extinction in B band from LEDA (mag). See doc for ag in LEDA. Based on Schlegel 
+   et al. (1998). 
+ledaType:
+   Morphological code from LEDA (-5 to 10). See doc for t in LEDA. 
+ledaMorph:
+   Morphology according to LEDA. See doc for type in LEDA. 
+ledaD25:
+   D25 B-band apparent diameter according to LEDA, linearized to be in arcmin. See doc 
+   for logd25 in LEDA. 
+ledaAxRatio:
+   Axis ratio from LEDA, linearized. See doc for logr25 in LEDA. 
+ledaPA:
+   PA from LEDA (degrees). See doc for pa in LEDA. 
+ledaIncl:
+   Inclination from LEDA (degrees). See doc for incl in LEDA. 
+ledaVrad:
+   Heliocentric radial velocity from radio according to LEDA (km/s). It really corresponds 
+   to cz, so it is in the optical convention. Convert to radio convention using cz=v/(1-v/c). 
+   See doc for vrad in LEDA. 
+ledaVmaxg:
+   Apparent maximum rotation velocity of the HI uncorrected by inclination (km/s). See 
+   doc for vmaxg in LEDA. 
+ledaVrot:
+   Maximum rotation velocity according to LEDA (km/s). See doc for vrot in LEDA. 
+ledaBar:
+   Detection of a bar reported (B). See doc for bar in LEDA. 
+ledaRing:
+   Detection of a ring reported (R). See doc for ring in LEDA. 
+ledaMultiple:
+   Object belongs to a multiple system (M). See doc for multiple in LEDA. 
+ledaBt:
+   Apparent B total magnitude from LEDA (mag). See doc for bt in LEDA. 
+ledaIt:
+   Apparent I total magnitude from LEDA (mag). See doc for it in LEDA. 
+ledaMfir:
+   Far infrared flux from LEDA (mag). Computed as mfir=-2.5 log(2.58*f60+f100)+14.75 
+   with fluxes in Jy. See doc for mfir in LEDA. 
+ledaM21:
+   HI line flux from LEDA (mag). Computed as m21=2.5 log f + 17.40. See doc for m21 in LEDA. 
+ledaVvir:
+   Galaxy systemic velocity corrected by Virgo Infall from LEDA. See doc for vvir in LEDA. 
+ledaModz:
+   Kinematic distance modulus from LEDA. Uses modz=5 log(D_L)+25, with D_L luminosity 
+   distance from cosmology with Ho=70, Om=0.27, and Ol=0.73 based on Virgo infall corrected 
+   velocity. See doc for modz in LEDA. NGC2880 has a very wrong value in LEDA, substituted 
+   with NED scaled to same cosmology. NGC4211 and UGC05498 are both missing from LEDA and 
+   were substituted in the same way. 
+ledaDistMpc:
+   Distance in Mpc corresponding to ledaModz kinematic distance modulus. 
+W1:
+   W1 Vega magnitude from image photometry from table by Th. Bitsakis. Two galaxies (NGC0598 
+   and NGC4676A) are not in the tables, and W1 is from w1mpro in the allWISE catalog in IPAC. 
+eW1:
+   Error in W1 in Vega magnitudes from table by Th. Bitsakis. For NGC0598 and NGC4676A is 
+   computed as w1mpro+2.5*log(w1snr) from AllWISE catalog. 
+W2:
+   W2 see W1 doc 
+eW2:
+   Error in W2 see W1 doc 
+W3:
+   W3 see W1 doc 
+eW3:
+   Error in W3 see W1 doc 
+W4:
+   W4 see W1 doc 
+eW4:
+   Error in W4 see W1 doc 
+coNomask:
+   CO flux from unmasked EDGE cube (Jy km/s). 
+coeNomask:
+   Error in CO flux from masked EDGE cube using Dilated method (Jy km/s). 
+coDilated:
+   CO flux from masked EDGE cube using Dilated method (Jy km/s). 
+coSmooth:
+   CO flux from masked EDGE cube using Smooth method (Jy km/s). 
+coeSmooth:
+   Error in CO flux from masked EDGE cube using Smooth method (Jy km/s). 
+coMask2d:
+   CO flux from masked EDGE cube using fixed 2D mask method (Jy km/s). 
+coeMask2d:
+   Error in CO flux from masked EDGE cube using fixed 2D mask method (Jy km/s). 
+coNomaskDv:
+   Velocity width for unmasked cube (km/s). 
+coSmoothDv:
+   Velocity extent for smooth mask (km/s). 
+coBmaj:
+   Beam major axis from CO map (arcsec). 
+coBmin:
+   Beam minor axis from CO map (arcsec). 
+coBpa:
+   Beam PA from CO map (degrees). 
+coDvhel:
+   Correction from LSR to Heliocentric (km/s) 
+nsaZdist:
+   From NSA Atlas, distance estimate using pecular velocity model of Willick et al. (1997); 
+   multiply by c/H0 for Mpc. 
+nsaAu:
+   From NSA Atlas, Galactic extinction in u from Schlegel, Finkbeiner & Davis (1997). 
+nsaAg:
+   From NSA Atlas, Galactic extinction in g from Schlegel, Finkbeiner & Davis (1997). 
+nsaAr:
+   From NSA Atlas, Galactic extinction in r from Schlegel, Finkbeiner & Davis (1997). 
+nsaAi:
+   From NSA Atlas, Galactic extinction in i from Schlegel, Finkbeiner & Davis (1997). 
+nsaAz:
+   From NSA Atlas, Galactic extinction in z from Schlegel, Finkbeiner & Davis (1997). 
+caMass:
+   Stellar mass as log(Mass/Msun) from column 149 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caeMass:
+   Error in stellar mass as log(Mass/Msun) from column 149 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caSFR:
+   SFR as log(SFR/[Msun/yr]) from column 151 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caeSFR:
+   Error in SFR as log(SFR/[Msun/yr]) from column 151 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caOH:
+   Oxygen abundance as 12+log(O/H) from column 153 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caeOH:
+   Error in oxygen abundance as 12+log(O/H) from column 153 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caAvgas:
+   Nebular extinction as Av from column 155 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caeAvgas:
+   Error in nebular extinction as Av from column 155 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caAvstars:
+   Stellar extinction as Av from column 157 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+caeAvstars:
+   Error in stellar extinction as Av from column 157 in Pipe3D_NSA_CALIFA-DR3_candidates.csv 
+Su:
+   SDSS u magnitude from CALIFA synthetic photometry, from ubandmag in get_mag_cubes_v2.2.csv. 
+   Foreground extinction corrected. 
+Sg:
+   SDSS g magnitude from CALIFA synthetic photometry, from gbandmag in get_mag_cubes_v2.2.csv. 
+   Foreground extinction corrected. 
+Sr:
+   SDSS r magnitude from CALIFA synthetic photometry, from rbandmag in get_mag_cubes_v2.2.csv. 
+   Foreground extinction corrected. 
+Si:
+   SDSS i magnitude from CALIFA synthetic photometry, from ibandmag in get_mag_cubes_v2.2.csv. 
+   Foreground extinction corrected. 
+caB:
+   B magnitude from Bbandmag in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry 
+   corrected for foreground extinction. 
+caV:
+   V magnitude from Vbandmag in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry 
+   corrected for foreground extinction. 
+caR:
+   R magnitude from Rbandmag in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry 
+   corrected for foreground extinction. 
+caRe:
+   Equivalent radius Re (arcsec) from Re in get_mag_cubes_v2.2.csv 
+caeRe:
+   Error in equivalent radius Re (arcsec) from error Re in get_mag_cubes_v2.2.csv 
+caEllipticity:
+   Ellipticity sqrt(1-b^2/a^2) from ellipticy in get_mag_cubes_v2.2.csv 
+caPA:
+   PA (degrees) from Pa in get_mag_cubes_v2.2.csv 
+caR50:
+   R50 (arcsec) from R50 in get_mag_cubes_v2.2.csv 
+caeR50:
+   Error in R50 (arcsec) from R50 in get_mag_cubes_v2.2.csv 
+caR90:
+   R90 (arcsec) from R90 in get_mag_cubes_v2.2.csv 
+caeR90:
+   Error in R90 (arcsec) from R90 in get_mag_cubes_v2.2.csv 
+caOH_O3N2:
+   CALIFA metallicity from O3N2, from OH_O3N2 column in get_proc_elines_CALIFA.csv 
+caZgas:
+   CALIFA redshift for gas lines, from z_gas column in get_proc_elines_CALIFA.csv 
+caZstars:
+   CALIFA redshift for stars, from z_stars column in get_proc_elines_CALIFA.csv 
+caAge:
+   CALIFA mean age, from log_age_mean_LW column in get_proc_elines_CALIFA.csv 
+caeAge:
+   Error in CALIFA mean age, from s_log_age_mean_LW column in get_proc_elines_CALIFA.csv 
+caFHa:
+   Measured log of Halpha flux, from log_F_Ha column in get_proc_elines_CALIFA.csv 
+caFHacorr:
+   Log of Halpha flux corrected by extinction, from log_F_Ha_cor column in get_proc_elines_CALIFA.csv 
+caLHacorr:
+   Log of Halpha luminosity corrected by extinction, from log_L_Ha_cor column in get_proc_elines_CALIFA.csv 
+caMstars:
+   Log of stellar mass, from column 73 log_Mass in get_proc_elines_CALIFA.csv 
+caDistMpc:
+   Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73 
+coMmol:
+   Molecular mass from coSmooth flux and caDistMpc distance and redshift using Eq. 3 in 
+   Bolatto, Wolfire, & Leroy (2013) and alpha=4.36. ARP 220 uses alpha=0.8. 
+coeMmol:
+   Error in molecular mass from coeSmooth flux and caDistMpc distance and redshift. If 
+   not detected, error is replaced with coeNomask for calculation 
+W1lum:
+   Luminosity in W1 (erg/s) from caDistMpc and W1 magnitude using the zero point, frequency, 
+   and bandwidth from Jarrett et al. (2011). 
+W2lum:
+   Luminosity in W2 (erg/s) from caDistMpc and W2 magnitude using the zero point, frequency, 
+   and bandwidth from Jarrett et al. (2011). 
+W3lum:
+   Luminosity in W3 (erg/s) from caDistMpc and W3 magnitude using the zero point, frequency, 
+   and bandwidth from Jarrett et al. (2011). 
+W4lum:
+   Luminosity in W4 (erg/s) from caDistMpc and W4 magnitude using the zero point, frequency, 
+   and bandwidth from Jarrett et al. (2011). 
+W4SFR:
+   SFR (Msun/yr) from W4lum using Catalan-Torrecilla et al. (2014) calibration. 
+coVsys:
+   Systemic galaxy velocity (relativistic convention), derived from CO rotation curve 
+   or taken from Ha or from LEDA if no rotation curve is possible. 
+coPA:
+   Galaxy PA determined from the CO/Ha rotation curve using the orientation that minimizes 
+   the radial component, or if not available from Glenn van de Ven table of orientation 
+   of outer isophotes, or otherwise from LEDA. 
+coInc:
+   Galaxy PA determined from the CO/Ha rotation curve using the inclination that produces 
+   the best fit, or if not available from Glenn van de Ven table of orientation of outer isophotes, 
+   or otherwise from LEDA. 
+coScaleMol:
+   Exponential scale length for CO disk (kpc). Derived by filling in undetected values 
+   in annulii with 1-sigma. 
+coeScaleMol:
+   Statistical error from fit to exponential scale length (kpc). 
+coScaleMolHi:
+   Upper limit to exponential scale length by filling in annulii with 2-sigma values (kpc). 
+coScaleMolLo:
+   Lower limit to exponential scale length by filling in annulii with zeros (kpc). 
+coNormMol:
+   Normalization of exponential disk profile, i.e. density at R=0 (Msun/pc^2). 
+coeNormMol:
+   Error in normalization of exponential disk profile (Msun/pc^2). 
+coScaleSt:
+   Exponential scale length for the mass of the stellar disk (kpc). 
+coeScaleSt:
+   Formal error in stellar scale length fit (kpc). 
+coNormSt:
+   Normalization in stellar exponential disk profile, i.e. density at R=0 (Msun/pc^2). 
+coeNormSt:
+   Formal error in stellar disk normalization (Msun/pc^2). 
+coR50Mol:
+   Radius enclosing 50% of the molecular mass (kpc). 
+coeR50Mol:
+   Error in radius enclosing 50% of the molecular mass (kpc), including beam size. 
+coR50St:
+   Radius enclosing 50% of the stellar mass (kpc). 
+coeR50St:
+   Error in radius enclosing 50% of the stellar mass (kpc), including beam size. 
+coScaleSFR:
+   Exponential scale length for SFR from extinction corrected Ha (kpc). 
+coeScaleSFR:
+   Error in exponential scale length for SFR from extinction corrected Ha (kpc). 
+coObstime:
+   CARMA observing time on this object (hours). 
+coNptng:
+   Number of pointings in CARMA mosaic. 
+coRMS10mJybm:
+   CARMA observation sensitivity as RMS in cube (mJy/beam in 10 km/s channels). 
+coRMS10mK:
+   CARMA observation sensitivity as RMS in cube (mK in 10 km/s channels). 
+coTpeakmK:
+   Peak signal in cube in 10 km/s channels (mK). 
+coVsysFlag:
+   Origin of coVsys, 0=CO kinematics, 1=Ha kinematics, 3=LEDA. 
+coVrotmax:
+   Maximum rotational velocity of the CO (km/s), determined using the Lelli et al. (2016) 
+   algorithm. 
+coeVrotmax:
+   Error in Vrotmax (km/s). 
+coRflat:
+   Radius at which the rotation curve flattens (arcsec), according to Lelli et al. (2016) 
+   algorithm. 
+coPAFlag:
+   Origin of coPA, 0=CO kinematics 1=Ha kinematics 2=outer optical isophotes 3=LEDA. 
+coKinXoff:
+   offset of CO kinematic center from LEDA RA (arcsec), RAkc=RA-xoff. 
+coKinYoff:
+   offset of CO kinematic center from LEDA DE (arcsec), DEkc=DE-yoff. 
+coNbeamsDet:
+   Number of beams with >5 sigma detections in smooth moment 0 map. 
+coNbeamsDet5:
+   Number of beams with >=5 sigma detections in smooth moment 0 map. 
+coNbeamsDet3:
+   Number of beams with >=3 sigma detections in smooth moment 0 map. 
