@@ -1,5 +1,4 @@
-# edge_1dprof
-1D data products for CARMA EDGE
+# 1D data products for CARMA EDGE
 
 Currently includes:
 * CO Rotation curves from Leung et al. (2018 MNRAS 477, 254).
