@@ -7,8 +7,8 @@ from astropy.table import Table,Column,vstack,hstack
 import numpy as np
 
 bbdir = '/Volumes/Data/tonywong/sharenb/bbarolo_7as/'
-runs=['gal_nrad8','gal_nrad8_smolist','gal_nrad8_vdisp8','gal_nrad8_vdisp8_smolist']
-#runs=['bb_fitvd_dilmsk','bb_fitvd_bbmsk','bb_fixvd_dilmsk','bb_fixvd_bbmsk']
+#runs=['gal_nrad8','gal_nrad8_smolist','gal_nrad8_vdisp8','gal_nrad8_vdisp8_smolist']
+runs=['fitvd_dilmsk','fitvd_bbmsk','fixvd_dilmsk','fixvd_bbmsk']
 
 with open(bbdir+'detected.txt') as f:
     namelist = f.read().splitlines()
@@ -153,7 +153,7 @@ for run in runs:
         t_run[col].unit = 'arcsec'
     for col in pixparam:
         t_run[col].unit = 'pixel'
-    t_run.write(run+'.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
+    t_run.write('bb_'+run+'.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
 
 
 # Write the radial profile tables
@@ -188,5 +188,5 @@ for run in runs:
     t_run_densprof['SURFDENS'].description = 'average intensity in ring, not corrected for inclination'
     t_run_densprof['ERR_SD'].description = 'standard deviation of intensity in ring'
     
-    t_run_densprof.write(run+'_densprof.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
+    t_run_densprof.write('bb_'+run+'_densprof.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
 
