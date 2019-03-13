@@ -29,7 +29,7 @@ def edgeprof(datdir='.', gname=None, line='co', type='de20_smo', delr=3,
     delr     - ring spacing in arcsec (default 3 arcsec)
     alpha    - conversion from K km/s to Msol/pc^2 (default 4.3 for Galactic CO)
     fmask    - minimum fraction of non-NaN pixels in a ring (default 0.2)
-    deproj   - True to deproject the mass surface density (default=True)
+    deproj   - True to deproject surface densities & noises (default=True)
     blanksig - constant to multiply RMS image for blank replacement (default 0)
     replace  - Replace values < blanksig*RMS with blanksig*RMS? (default=False)
     radimg   - True to write out radius image (default=False)
@@ -169,6 +169,7 @@ def edgeprof(datdir='.', gname=None, line='co', type='de20_smo', delr=3,
         projfac = np.cos(np.radians(inc))
         print('Multiplying sigmol by {0:.2f} to project to face-on'.format(projfac))
         tab['wtmean'] *= projfac
+        tab['rms']    *= projfac
         tab['detlim'] *= projfac
     else:
         projfac = 1.
