@@ -1,17 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[58]:
-
-
 import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
-
-
-# In[59]:
-
 
 def fitsextract(filename, stride=[1,1,1], keepref=True, keepnan=True):
     hdu   = fits.open(filename)[0]
@@ -86,25 +76,4 @@ def fitsextract(filename, stride=[1,1,1], keepref=True, keepnan=True):
         newtab = tab[~np.isnan(tab['imgdata'])]
         tab = newtab
     return tab
-
-
-# In[61]:
-
-
-tab0 = fitsextract('fitsdata/NGC4047.co.smo7_dil.mom0.fits.gz', keepnan=True, stride=[3,3,1])
-tab0['imgdata'].name = 'mom0'
-print(tab[20:50])
-etab0 = fitsextract('fitsdata/NGC4047.co.smo7_dil.emom0.fits.gz', keepnan=True, stride=[3,3,1])
-etab0['imgdata'].name = 'emom0'
-join1 = join(tab0, etab0)
-#join1.show_in_notebook()
-join1.write('NGC4047.co.smo7_dil.hdf5', path='data', overwrite=True, serialize_meta=True, compression=True)
-
-
-# In[62]:
-
-
-tab = fitsextract('../img_cocube/fitsdata/NGC4047.co.smo7msk.K.fits.gz', keepnan=True, stride=[3,3,3])
-print(tab[20:50])
-#tab.write('test.hdf5', path='data', overwrite=True, serialize_meta=True, compression=True)
 
