@@ -4,7 +4,7 @@
 
 import sys
 sys.path.append('../edge_pydb')
-from fitsextract import *
+from fitsextract import fitsextract
 import glob
 import os
 import numpy as np
