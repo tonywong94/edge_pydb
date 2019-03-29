@@ -116,13 +116,13 @@ def getlabels(product):
     if product == 'ELINES':
         nz = 20
         zsel = range(nz)
-        bright = ['[OII]3727', '[OIII]5007', '[OIII]4959', 'Hbeta',
-                  'Halpha', '[NII]6583', '[NII]6548', '[SII]6731', '[SII]6717']
+        bright = ['[OII]3727','[OIII]5007','[OIII]4959','Hbeta',
+                  'Halpha',   '[NII]6583', '[NII]6548', '[SII]6731', '[SII]6717']
         elbl = ['e_'+txt for txt in bright]
-        lbl = ['Havel', 'Vdisp'] + bright + elbl
+        lbl  = ['Havel', 'Vdisp'] + bright + elbl
         units = lbl.copy()
         units[0:2] = ['km/s', 'Angstrom']
-        units[2:] = ['10^-16 erg cm^-2 s^-1']*(nz-2)
+        units[2:]  = ['10^-16 erg cm^-2 s^-1']*(nz-2)
     elif product == 'flux_elines':
         # We only select the bright lines that were in ELINES
         nz = 408
@@ -135,7 +135,7 @@ def getlabels(product):
         evel  = list(np.array(flux)+255)
         edisp = list(np.array(flux)+306)
         eew   = list(np.array(flux)+357)
-        zsel = flux + vel + disp + ew + eflux + evel + edisp + eew
+        zsel  = flux + vel + disp + ew + eflux + evel + edisp + eew
         flbl  = ['flux_[OII]3727', 'flux_[OIII]5007', 'flux_[OIII]4959', 
                  'flux_Hbeta',     'flux_Halpha',     'flux_[NII]6583', 
                  'flux_[NII]6548', 'flux_[SII]6717',  'flux_[SII]6731']
@@ -159,9 +159,9 @@ def getlabels(product):
     elif product == 'indices':
         nz = 18
         zsel = range(nz)
-        albl = ['Hd_idx', 'Hb_idx', 'Mgb_idx', 
+        albl = ['Hdel_idx',   'Hbet_idx',   'Mgb_idx', 
                 'Fe5270_idx', 'Fe5335_idx', 'D4000_idx', 
-                'Hdmod_idx', 'Hgam_idx', 'SN_idx']
+                'Hdmod_idx',  'Hgam_idx',   'SN_idx']
         elbl = ['e_'+txt for txt in albl]
         lbl = albl + elbl
         units = ['Angstrom']*len(lbl)
@@ -187,11 +187,11 @@ def getlabels(product):
     elif product == 'SSP':
         nz = 20
         zsel = range(nz)
-        lbl = ['Vcont_ssp', 'cont_segm', 'cont_dezon', 'medflx_ssp', 
-               'e_medflx_ssp', 'age_lwt', 'age_mwt', 'e_age_lwt', 
-               'ZH_lwt', 'ZH_mwt', 'e_ZH_lwt', 'Av_ssp', 
-               'e_Av_ssp', 'vel_ssp', 'e_vel_ssp', 'vdisp_ssp', 
-               'e_vdisp_ssp', 'ML_ssp', 'mass_ssp', 'mass_Avcor_ssp']
+        lbl = ['Vcont_ssp',   'cont_segm','cont_dezon','medflx_ssp', 
+               'e_medflx_ssp','age_lwt',  'age_mwt',   'e_age_lwt', 
+               'ZH_lwt',      'ZH_mwt',   'e_ZH_lwt',  'Av_ssp', 
+               'e_Av_ssp',    'vel_ssp',  'e_vel_ssp', 'vdisp_ssp', 
+               'e_vdisp_ssp', 'ML_ssp',   'mass_ssp',  'mass_Avcor_ssp']
         units = ['10^-16 erg cm^-2 s^-1 AA^-1', 'none', 'none', '10^-16 erg cm^-2 s^-1 AA^-1', 
                  '10^-16 erg cm^-2 s^-1', 'dex(yr)', 'dex(yr)', 'fraction', 
                  'dex', 'dex', 'fraction', 'mag', 
