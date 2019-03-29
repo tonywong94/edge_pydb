@@ -12,28 +12,29 @@ from astropy.wcs import WCS
 from reproject import reproject_interp
 import sys
 sys.path.append('../../edge_pydb')
-from fitsextract import fitsextract
+from fitsextract import fitsextract, getlabels
 
 codir = '../../img_comom/fitsdata/'
 cadir = '../fitsdata/'
-prodtype = ['ELINES', 'SFH', 'SSP', 'indices']
+prodtype = ['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines']
 
 for prod in prodtype:
-    filelist = glob.glob(cadir+'*'+prod+'*.fits.gz')
+    zsel, labels, units, nsel = getlabels(prod)
+    filelist = [fn for fn in glob.glob(cadir+'*'+prod+'*.fits.gz')
+            if not os.path.basename(fn).startswith('x')]
+    print('\n',filelist)
     tablelist=[]
     for file in filelist:
         base = os.path.basename(file)
         if prod not in ['indices', 'flux_elines']:
             gal = base.split('.')[0]
-            idx = 'DESC_'
         elif prod == 'indices':
             gal = base.split('.')[2]
-            bunit = 'Angstrom'
-            idx = 'INDEX_'
         else:
             gal = base.split('.')[1]
-            idx = 'NAME'
 
+        print('\nWorking on galaxy {} product {} nsel={}'.format(
+            gal, prod, nsel))
         # Generate output header using CO astrometry
         cohd = fits.getheader(codir+gal+'.co.smo7_dil.mom0.fits.gz')
         cahd = fits.getheader(cadir+'x'+base, ignore_missing_end=True)
@@ -43,7 +44,7 @@ for prod in prodtype:
             outhd[key] = cohd[key]
         for key in ['CD1_1','CD1_2','CD2_1','CD2_2']:
             del outhd[key]
-        print(repr(outhd))
+        #print(repr(outhd))
 
         # First process the native resolution file since it has the astrometry
         hdu = fits.open(cadir+'x'+base, ignore_missing_end=True)[0]
@@ -51,7 +52,7 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto('regridded.fits.gz', newim, outhd)
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=None, lbl=idx, suffix='_rg')
+            bunit=units, lbl=labels, zselect=zsel, suffix='_rg')
 
         # Then process the smoothed file
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
@@ -60,7 +61,7 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto('smoothed.fits.gz', newim, outhd)
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=None, lbl=idx, suffix='_sm')
+            bunit=units, lbl=labels, zselect=zsel, suffix='_sm')
 
         joint=join(tab0,tab1)
 
@@ -69,12 +70,12 @@ for prod in prodtype:
         gname = Column([np.string_(gal)]*len(joint), name='Name', 
                        description='Galaxy Name')
         joint.add_column(gname, index=0)
-        print(joint[20:50])
+        #print(joint[20:50])
         tablelist.append(joint)
 
     if len(tablelist) > 0:
         t_merge = vstack(tablelist)
-    print(t_merge[20:50])
+    print(t_merge.colnames)
     if (len(filelist) > 1):
         outname = 'edge'
     else:
