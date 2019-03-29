@@ -34,6 +34,7 @@ for prod in prodtype:
 
         print('\nWorking on galaxy {} product {} nsel={}'.format(
             gal, prod, nsel))
+
         # Generate output header using CO astrometry
         cohd = fits.getheader(codir+gal+'.co.smo7_dil.mom0.fits.gz')
         cahd = fits.getheader(cadir+'x'+base, ignore_missing_end=True)
@@ -45,33 +46,26 @@ for prod in prodtype:
         for key in cdkeys:
             if key in outhd.keys():
                 del outhd[key]
-        ##for key in ['CD1_3','CD2_3','CD3_1','CD3_2','CD3_3']:
-         #   del outhd[key]
-        #print(repr(outhd))
 
         # First process the native resolution file since it has the astrometry
         hdu = fits.open(cadir+'x'+base, ignore_missing_end=True)[0]
         hdu.data[hdu.data==0] = np.nan
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
-        fits.writeto(base.replace('fits','rgd.fits'), newim, outhd, overwrite=True)
+        #fits.writeto(base.replace('fits','rgd.fits'), newim, outhd, overwrite=True)
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, lbl=labels, zselect=zsel, suffix='_rg')
-        print('There are',len(tab0),'rows')
 
         # Then process the smoothed file
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
         hdu.data[hdu.data==0] = np.nan
         hdu.header = cahd
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
-        fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
+        #fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, lbl=labels, zselect=zsel, suffix='_sm')
-        print('There are',len(tab1),'rows')
 
         joint=join(tab0,tab1)
 
-#         tab0 = fitsextract(file, keepnan=True, stride=[3,3,1])
-#         tab0['imgdata'].name = 'mom0'
         gname = Column([np.string_(gal)]*len(joint), name='Name', 
                        description='Galaxy Name')
         joint.add_column(gname, index=0)
