@@ -3,8 +3,12 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
 
+# -----------------------------------------------------
+# fitsextract: Extract data from FITS file into astropy table
+# -----------------------------------------------------
+
 def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None, 
-                lbl='index',bunit=None, col_name=None, zselect=None, suffix=''):
+                lbl='index', bunit=None, col_name=None, zselect=None, suffix=''):
     if isinstance(input, np.ndarray):
         if header is None:
             raise TypeError("Header must be given if input is not FITS file")
@@ -15,7 +19,7 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
         hdu   = fits.open(input)[0]
         data  = hdu.data
         hdr   = hdu.header if header is None else header
-        bunit = hdr['BUNIT'] if bunit is None else bunit
+    bunit = hdr['BUNIT'] if bunit is None else bunit
     w     = WCS(hdr)
     print('RA ref is',w.wcs.crval[0])
     print('DEC ref is',w.wcs.crval[1])
@@ -59,9 +63,13 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
     # Use order = 'F' because the velocity axis is first
     if pseudo:
         zsel = range(nz) if zselect is None else zselect
-        for i in zsel:
-            col_data = Column(np.ravel(data[i],order='F'), 
-                              name=hdr[lbl+str(i)]+suffix, dtype='f4', unit=bunit)
+        if not isinstance(bunit, list):
+            bunit = [bunit]*len(zsel)
+        if not isinstance(lbl, list):
+            lbl = [lbl+str(i) for i in range(len(zsel))]
+        for i, sel in enumerate(zsel):
+            col_data = Column(np.ravel(data[sel],order='F'), 
+                              name=lbl[i]+suffix, dtype='f4', unit=bunit[i])
             tab.add_column(col_data)
     else:
         cname = 'imgdata' if col_name is None else col_name
@@ -100,51 +108,83 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
             tab = newtab
     return tab
 
+# -----------------------------------------------------
 # getlabels: Interpret the FITS output from Pipe3D
+# -----------------------------------------------------
 
 def getlabels(product):
     if product == 'ELINES':
         nz = 20
         zsel = range(nz)
-        lbl = ['Havel', 'Vdisp', 
-               'OII_3727', 'OIII_5007', 'OIII_4959', 'Hbeta', 
-               'Halpha', 'NII_6583', 'NII_6548', 'SII_6731', 'SII_6717',
-               'e_OII_3727', 'e_OIII_5007', 'e_OIII_4959', 'e_Hbeta', 
-               'e_Halpha', 'e_NII_6583', 'e_NII_6548', 'e_SII_6731', 'e_SII_6717']
+        bright = ['[OII]3727', '[OIII]5007', '[OIII]4959', 'Hbeta',
+                  'Halpha', '[NII]6583', '[NII]6548', '[SII]6731', '[SII]6717']
+        elbl = ['e_'+txt for txt in bright]
+        lbl = ['Havel', 'Vdisp'] + bright + elbl
         units = lbl.copy()
-        units[0:1] = ['km/s', 'Angstrom']
+        units[0:2] = ['km/s', 'Angstrom']
         units[2:] = ['10^-16 erg cm^-2 s^-1']*(nz-2)
     elif product == 'flux_elines':
         # We only select the bright lines that were in ELINES
         nz = 408
-        zsel = []
-        lbl = []
+        flux  = [0, 26, 27, 28, 45, 46, 47, 49, 50]
+        nline = len(flux)
+        vel   = list(np.array(flux)+51)
+        disp  = list(np.array(flux)+102)
+        ew    = list(np.array(flux)+153)
+        eflux = list(np.array(flux)+204)
+        evel  = list(np.array(flux)+255)
+        edisp = list(np.array(flux)+306)
+        eew   = list(np.array(flux)+357)
+        zsel = flux + vel + disp + ew + eflux + evel + edisp + eew
+        flbl  = ['flux_[OII]3727', 'flux_[OIII]5007', 'flux_[OIII]4959', 
+                 'flux_Hbeta',     'flux_Halpha',     'flux_[NII]6583', 
+                 'flux_[NII]6548', 'flux_[SII]6717',  'flux_[SII]6731']
+        vlbl  = [ w.replace('flux', 'vel')    for w in flbl ]
+        dlbl  = [ w.replace('flux', 'disp')   for w in flbl ]
+        wlbl  = [ w.replace('flux', 'EW')     for w in flbl ]
+        eflbl = [ w.replace('flux', 'e_flux') for w in flbl ]
+        evlbl = [ w.replace('flux', 'e_vel')  for w in flbl ]
+        edlbl = [ w.replace('flux', 'e_disp') for w in flbl ]
+        ewlbl = [ w.replace('flux', 'e_EW')   for w in flbl ]
+        lbl   = flbl + vlbl + dlbl + wlbl + eflbl + evlbl + edlbl + ewlbl
         units = lbl.copy()
+        units[0*nline:1*nline] = ['10^-16 erg cm^-2 s^-1']*nline
+        units[1*nline:2*nline] = ['km/s']*nline
+        units[2*nline:3*nline] = ['Angstrom']*nline
+        units[3*nline:4*nline] = ['Angstrom']*nline
+        units[4*nline:5*nline] = ['10^-16 erg cm^-2 s^-1']*nline
+        units[5*nline:6*nline] = ['km/s']*nline
+        units[6*nline:7*nline] = ['Angstrom']*nline
+        units[7*nline:8*nline] = ['Angstrom']*nline
     elif product == 'indices':
         nz = 18
         zsel = range(nz)
-        lbl = []
-        units = ['Angstrom']*nz
-    elif product == 'sfh':
+        albl = ['Hd_idx', 'Hb_idx', 'Mgb_idx', 
+                'Fe5270_idx', 'Fe5335_idx', 'D4000_idx', 
+                'Hdmod_idx', 'Hgam_idx', 'SN_idx']
+        elbl = ['e_'+txt for txt in albl]
+        lbl = albl + elbl
+        units = ['Angstrom']*len(lbl)
+    elif product == 'SFH':
         # We only select the age bins
         nz = 398
         z_age = list(range(156,195))
         n_age = len(z_age)
-        z_err = list(range(355,382))
+        z_err = list(range(355,394))
         n_err = len(z_err)
-        zsel = z_age + z_err
-        ages = ['0.0010', '0.0030', '0.0040', '0.0056', '0.0089', '0.0100',
-                '0.0126', '0.0141', '0.0178', '0.0199', '0.0251', '0.0316',
-                '0.0398', '0.0562', '0.0630', '0.0631', '0.0708', '0.1000',
-                '0.1122', '0.1259', '0.1585', '0.1995', '0.2818', '0.3548',
-                '0.5012', '0.7079', '0.8913', '1.1220', '1.2589', '1.4125',
-                '1.9953', '2.5119', '3.5481', '4.4668', '6.3096', '7.9433', 
-                '10.000', '12.5893', '14.1254']
+        zsel  = z_age + z_err
+        ages  = ['0.0010', '0.0030', '0.0040', '0.0056', '0.0089', '0.0100',
+                 '0.0126', '0.0141', '0.0178', '0.0199', '0.0251', '0.0316',
+                 '0.0398', '0.0562', '0.0630', '0.0631', '0.0708', '0.1000',
+                 '0.1122', '0.1259', '0.1585', '0.1995', '0.2818', '0.3548',
+                 '0.5012', '0.7079', '0.8913', '1.1220', '1.2589', '1.4125',
+                 '1.9953', '2.5119', '3.5481', '4.4668', '6.3096', '7.9433', 
+                 '10.000', '12.5893', '14.1254']
         albl = ['lumfrac_age_'+age for age in ages]
         elbl = ['e_lumfrac_age_'+age for age in ages]
-        lbl = albl + elbl
+        lbl  = albl + elbl
         units = ['fraction']*len(lbl)
-    elif product == 'ssp':
+    elif product == 'SSP':
         nz = 20
         zsel = range(nz)
         lbl = ['Vcont_ssp', 'cont_segm', 'cont_dezon', 'medflx_ssp', 
