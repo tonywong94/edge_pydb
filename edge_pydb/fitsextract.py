@@ -67,9 +67,9 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
             bunit = [bunit]*len(zsel)
         if not isinstance(lbl, list):
             lbl = [lbl+str(i) for i in range(len(zsel))]
-        for i, sel in enumerate(zsel):
+        for iz, sel in enumerate(zsel):
             col_data = Column(np.ravel(data[sel],order='F'), 
-                              name=lbl[i]+suffix, dtype='f4', unit=bunit[i])
+                              name=lbl[iz]+suffix, dtype='f4', unit=bunit[iz])
             tab.add_column(col_data)
     else:
         cname = 'imgdata' if col_name is None else col_name
