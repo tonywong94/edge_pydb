@@ -3,12 +3,54 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
 
-# -----------------------------------------------------
-# fitsextract: Extract data from FITS file into astropy table
-# -----------------------------------------------------
+def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
+                zselect=None, col_lbl='imdat', bunit=None):
 
-def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None, 
-                lbl='index', bunit=None, col_name=None, zselect=None, suffix=''):
+    """
+    Sample data from an image into an AstroPy table indexed by coordinates.
+    Simple approach taking every nth pixel along each image axis.
+    Pseudocubes are handled as separate images and are detected by a blank 
+    value for CTYPE3 in the header.
+
+    Parameters
+    ----------
+    input : str or `~numpy.ndarray`
+        The input data to reproject. This can be:
+            * The name of a FITS file
+            * A numpy array (in which case header must be separately given)
+    header : `~astropy.io.fits.Header` object
+        Header corresponding to the input array.  Must be provided if the
+        input is a numpy array.
+    stride : tuple of ints, optional
+        step size to select pixels along each axis.  Axes are ordered using
+        the FITS convention, not numpy convention (i.e. velaxis last).
+        Default is [1,1,1] to keep all pixels.
+        Note: stride in z is ignored for pseudocubes.
+    keepref : bool, optional
+        If dropping pixels, try to ensure that the reference pixel is kept.
+        Default is True (keep the reference pixel).
+    keepnan : bool, optional
+        If False, the output table drops rows which are all-NaN.
+        Default is True (keep the NaNs).
+    zselect : list of ints, optional
+        Indices of planes in cube/pseudocube to be selected.
+        Default is to keep all planes.
+    col_lbl : string or list of strings, optional
+        Column label for the data values, can be list corresponding to each 
+        plane to be selected, for CALIFA pseudocubes.
+        Default is "imdat"+possible integer.
+    bunit : string or list of strings, optional
+        Astropy units for data values, can be list corresponding to each plane
+        to be selected, for CALIFA pseudocubes.
+        Default is obtained from BUNIT in the header.
+
+    Returns
+    -------
+    tab : `~astropy.Table`
+        The selected pixels as a 1-D table.
+    """
+
+    # Read the inputs
     if isinstance(input, np.ndarray):
         if header is None:
             raise TypeError("Header must be given if input is not FITS file")
@@ -29,6 +71,8 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
     	pseudo = (hdr['ctype3'] == '')
     else:
     	pseudo = False
+
+    # Create the coordinate columns
     if iscube and not pseudo:
         print('This is a data cube of shape', data.shape)
         data = np.squeeze(data)
@@ -63,22 +107,29 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
     if iscube and not pseudo:
         col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', unit='km/s')
         tab.add_column(col_vel)
+
+    # Flatten the cube into a 1-D table
     # Use order = 'F' because the velocity axis is first
+    # For pseudocubes, each plane becomes a separate column
     if pseudo:
         zsel = range(nz) if zselect is None else zselect
         if not isinstance(bunit, list):
             bunit = [bunit]*len(zsel)
-        if not isinstance(lbl, list):
-            lbl = [lbl+str(i) for i in range(len(zsel))]
+        if not isinstance(col_lbl, list):
+            col_lbl = [col_lbl+str(i) for i in range(len(zsel))]
         for iz, sel in enumerate(zsel):
             col_data = Column(np.ravel(data[sel],order='F'), 
-                              name=lbl[iz]+suffix, dtype='f4', unit=bunit[iz])
+                              name=col_lbl[iz], dtype='f4', unit=bunit[iz])
             tab.add_column(col_data)
     else:
-        cname = 'imgdata' if col_name is None else col_name
-        col_data = Column(np.ravel(data,order='F'), name=cname, dtype='f4', unit=bunit)
+        if isinstance(bunit, list):
+            bunit = bunit[0]
+        if isinstance(col_lbl, list):
+            col_lbl = col_lbl[0]
+        col_data = Column(np.ravel(data,order='F'), name=col_lbl, dtype='f4', unit=bunit)
         tab.add_column(col_data)
-    # Select the desired rows from the full table
+
+    # Use stride to select the desired rows from the full table
     idx = ['ix', 'iy', 'iz']
     rem = [0, 0, 0]
     select = [[],[],[]]
@@ -104,11 +155,16 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
         if len(xy) < len(tab):
             newtab = tab[xy]
             tab = newtab
+
     # Remove NaN rows if desired
     if not keepnan:
         if not pseudo:
             newtab = tab[~np.isnan(tab[cname])]
             tab = newtab
+        else:
+            df = tab.to_pandas()
+            df.dropna(how='all', subset=col_lbl)
+            tab = Table.from_pandas(df)
     return tab
 
 # -----------------------------------------------------
