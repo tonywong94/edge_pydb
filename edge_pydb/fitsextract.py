@@ -25,7 +25,10 @@ def fitsextract(input, stride=[1,1,1], keepref=True, keepnan=True, header=None,
     print('DEC ref is',w.wcs.crval[1])
     ndim  = len(data.shape)
     iscube = (ndim > 2 and data.shape[ndim-3] > 1)
-    pseudo = (hdr['ctype3'] == '')
+    if 'ctype3' in hdr.keys():
+    	pseudo = (hdr['ctype3'] == '')
+    else:
+    	pseudo = False
     if iscube and not pseudo:
         print('This is a data cube of shape', data.shape)
         data = np.squeeze(data)

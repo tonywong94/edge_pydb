@@ -13,24 +13,29 @@ from astropy.table import Table, Column, join, vstack
 
 msktyp = ['dil', 'smo']
 
-for msk in msktyp:
+for i, msk in enumerate(msktyp):
     filelist = glob.glob('fitsdata/*.co.smo7_'+msk+'.mom0.fits.gz')
     tablelist=[]
     for file in filelist:
+    	# Read the mom0 image
         gal = os.path.basename(file).split('.')[0]
-        tab0 = fitsextract(file, keepnan=True, stride=[3,3,1])
-        tab0['imgdata'].name = 'mom0'
+        tab0 = fitsextract(file, bunit='K km/s', col_name='mom0',
+        					keepnan=True, stride=[3,3,1])
         gname = Column([np.string_(gal)]*len(tab0), name='Name', description='Galaxy Name')
         tab0.add_column(gname, index=0)
         print(tab0[20:50])
+    	# Read the other images
         if msk == 'smo':
             dotypes = ['emom0', 'emom0max']
+            unit    = ['K km/s', 'K km/s']
         else:
             dotypes = ['emom0', 'emom0max', 'mom1', 'emom1', 'mom2', 'emom2', 'snrpk']
-        for type in dotypes:
+            unit    = ['K km/s', 'K km/s', 'km/s', 'km/s', 'km/s', 'km/s', '']
+        for j, type in enumerate(dotypes):
             addtb = fitsextract('fitsdata/'+gal+'.co.smo7_'+msk+'.'+type+'.fits.gz', 
-                                keepnan=True, stride=[3,3,1])
-            addtb['imgdata'].name = type
+                                bunit=unit[j], col_name=type, keepnan=True, 
+                                stride=[3,3,1])
+            #addtb['imgdata'].name = type
             jointb = join(tab0, addtb)
             tab0 = jointb
         tablelist.append(tab0)
@@ -41,5 +46,9 @@ for msk in msktyp:
         outname = 'edge'
     else:
         outname = gal
-    t_merge.write(outname+'.comom.smo7_'+msk+'.hdf5', path='data', overwrite=True, 
+    if i == 0:
+    	t_merge.write(outname+'.comom_smo7.hdf5', path=msk, overwrite=True, 
+                serialize_meta=True, compression=True)
+    else:
+    	t_merge.write(outname+'.comom_smo7.hdf5', path=msk, append=True, 
                 serialize_meta=True, compression=True)
