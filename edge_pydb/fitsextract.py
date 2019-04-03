@@ -67,8 +67,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     print('DEC ref is',w.wcs.crval[1])
     ndim  = len(data.shape)
     iscube = (ndim > 2 and data.shape[ndim-3] > 1)
-    if 'ctype3' in hdr.keys():
-    	pseudo = (hdr['ctype3'] == '')
+    if 'CTYPE3' in hdr.keys():
+    	pseudo = (hdr['CTYPE3'] == '')
     else:
     	pseudo = False
 
