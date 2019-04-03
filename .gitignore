@@ -4,5 +4,4 @@
 *.co.smo7*fits.gz
 *.cube.fits.gz
 edge*.hdf5
-!*NGC4047*
 __pycache__/
