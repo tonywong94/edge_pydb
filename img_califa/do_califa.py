@@ -10,11 +10,11 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from reproject import reproject_interp
 import sys
-sys.path.append('../../edge_pydb')
+sys.path.append('../edge_pydb')
 from fitsextract import fitsextract, getlabels
 
-codir = '../../img_comom/fitsdata/'
-cadir = '../fitsdata/'
+codir = '../img_comom/fitsdata/'
+cadir = 'fitsdata/'
 prodtype = ['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines']
 
 for prod in prodtype:
@@ -22,7 +22,9 @@ for prod in prodtype:
     filelist = [fn for fn in glob.glob(cadir+'*'+prod+'*.fits.gz')
             if not os.path.basename(fn).startswith('x')]
     print('\n',filelist)
-    tablelist=[]
+    rglist = []
+    smlist = []
+
     for file in filelist:
         base = os.path.basename(file)
         if prod not in ['indices', 'flux_elines']:
@@ -36,7 +38,7 @@ for prod in prodtype:
             gal, prod, nsel))
 
         # Generate output header using CO astrometry
-        cohd = fits.getheader(codir+gal+'.co.smo7_dil.mom0.fits.gz')
+        cohd = fits.getheader(codir+gal+'.co.smo7_dil.emom0max.fits.gz')
         cahd = fits.getheader(cadir+'x'+base, ignore_missing_end=True)
         outhd = cahd.copy()
         for key in ['NAXIS1', 'NAXIS2', 'CTYPE1', 'CTYPE2', 'CRVAL1', 'CRVAL2', 
@@ -53,7 +55,11 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto(base.replace('fits','rgd.fits'), newim, outhd, overwrite=True)
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=units, lbl=labels, zselect=zsel, suffix='_rg')
+            bunit=units, col_lbl=labels, zselect=zsel)
+        gname = Column([np.string_(gal)]*len(tab0), name='Name', 
+                       description='Galaxy Name')
+        tab0.add_column(gname, index=0)
+        rglist.append(tab0)
 
         # Then process the smoothed file
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
@@ -62,24 +68,33 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=units, lbl=labels, zselect=zsel, suffix='_sm')
-
-        joint=join(tab0,tab1)
-
-        gname = Column([np.string_(gal)]*len(joint), name='Name', 
+            bunit=units, col_lbl=labels, zselect=zsel)
+        #joint=join(tab0,tab1)
+        gname = Column([np.string_(gal)]*len(tab1), name='Name', 
                        description='Galaxy Name')
-        joint.add_column(gname, index=0)
-        #print(joint[20:50])
-        tablelist.append(joint)
+        tab1.add_column(gname, index=0)
+        smlist.append(tab1)
 
-    if len(tablelist) > 0:
-        t_merge = vstack(tablelist)
-    print(t_merge.colnames)
-    print('There are',len(t_merge),'rows')
+    if len(rglist) > 0:
+        rg_merge = vstack(rglist)
+    print(rg_merge.colnames)
+    print('There are',len(rg_merge),'rows in native table')
+
+    if len(smlist) > 0:
+        sm_merge = vstack(smlist)
+    print(sm_merge.colnames)
+    print('There are',len(sm_merge),'rows in smoothed table')
+
     if (len(filelist) > 1):
         outname = 'edge'
     else:
         outname = gal
-    t_merge.write('../'+outname+'.'+prod+'.hdf5', path='data', overwrite=True, 
+    if prod == prodtype[0]:
+        rg_merge.write(outname+'.pipe3d.hdf5', path=prod+'_rg', overwrite=True, 
+                serialize_meta=True, compression=True)
+    else:
+        rg_merge.write(outname+'.pipe3d.hdf5', path=prod+'_rg', append=True, 
+                serialize_meta=True, compression=True)
+    sm_merge.write(outname+'.pipe3d.hdf5', path=prod+'_sm', append=True, 
                 serialize_meta=True, compression=True)
 
