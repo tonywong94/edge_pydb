@@ -50,52 +50,56 @@ def ulogratio(a, b, ae = 0.0, be = 0.0):
 
 # BPT classification, see Husemann et al. (2013) Figure 7.
 def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
-    n2ha, _ = ulogratio(flux_nii,  flux_ha)
-    o3hb, _ = ulogratio(flux_oiii, flux_hb)    
+    n2ha = np.log10(flux_nii)  - np.log10(flux_ha)
+    o3hb = np.log10(flux_oiii) - np.log10(flux_hb)    
 
     kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47)
     kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05)
     cidfer10 = lambda nii: 0.48 + 1.01*nii
 
-    try:
-        if n2ha > -1.5 and n2ha < -0.1 and o3hb < kewley01(n2ha) and abs(ew_ha) > 6.0:
-            BPT = -1  # Starforming
-        elif n2ha < 0.3 and o3hb < kauffm03(n2ha):
-            BPT = 0   # Intermediate
-        elif o3hb > -1  and o3hb < cidfer10(n2ha):
-            BPT = 1   # LINER
-        elif o3hb > -1:
-            BPT = 2   # Seyfert
+    BPT = np.zeros(len(n2ha))
+    for i in range(len(n2ha)):
+        if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
+                o3hb[i] < kewley01(n2ha[i]) and abs(ew_ha[i]) > 6.0):
+            BPT[i] = -1  # Starforming, below Kewley line
+        elif n2ha[i] < 0.3 and o3hb[i] < kauffm03(n2ha[i]):
+            BPT[i] = 0   # Intermediate, between Kewley & Kauffmann
+        elif o3hb[i] > -1  and o3hb[i] < cidfer10(n2ha[i]):
+            BPT[i] = 1   # LINER
+        elif o3hb[i] > -1:
+            BPT[i] = 2   # Seyfert
         else:
-            BPT = np.nan
-        return BPT
-    except:
-        return np.nan    
+            BPT[i] = np.nan
+    return BPT
 
-# Metallicity derived from O3N2 line ratio. 
-def ZOH_o3n2(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha, err_nii, err_oiii, 
-             err_ha, err_hb, err=False):
-    try:
-        uNIIF = ufloat(flux_nii, err_nii)
-        uOIIIF = ufloat(flux_oiii, err_oiii)
-        uHaF = ufloat(flux_ha, err_ha)
-        uHbF = ufloat(flux_hb, err_hb)
+# Metallicity derived from O3N2 line ratio, Marino+13 calibration.
+# Input is a table containing the appropriate columns.
+def ZOH_o3n2(fluxtab, err=False):
     
-        uO3N2 = unp.log10(uOIIIF) - unp.log10(uHbF) - (unp.log10(uNIIF) 
-                    - unp.log10(uHaF))  
+    nelt = len(fluxtab['flux_[NII]6583'])
+    uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
+    uO3F = unp.uarray(fluxtab['flux_[OIII]5007'], fluxtab['e_flux_[OIII]5007'])
+    uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
+    uHbF = unp.uarray(fluxtab['flux_Hbeta'], fluxtab['e_flux_Hbeta'])
     
-        BPT = bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha)
-                
-        if BPT == -1:
-            uOH_M13  = 8.533 - 0.214*uO3N2 # Eq(2) from Marino+2013
-            if err: 
-                return uOH_M13.s
-            else:            
-                return uOH_M13.n
-        else:
-            return np.nan
-    except:
-        return np.nan
+    uO3N2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
+#    good = (~unp.isnan(uN2F)) & (~unp.isnan(uO3F)) & (~unp.isnan(uHaF)) & (~unp.isnan(uHbF))
+    good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uO3F)>0) 
+            & (unp.nominal_values(uHaF)>0) & (unp.nominal_values(uHbF)>0))
+    uO3N2[good] = (unp.log10(uO3F[good]) - unp.log10(uHbF[good]) 
+                    - (unp.log10(uN2F[good]) - unp.log10(uHaF[good])))
+
+    BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
+            fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
+            
+    uOH_M13 = 8.533 - 0.214 * uO3N2
+    uOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
+
+    if err: 
+        return unp.std_devs(uOH_M13)
+    else:            
+        return unp.nominal_values(uOH_M13)
+
  
 # Prepare a 2D histogram from a scatterplot
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
