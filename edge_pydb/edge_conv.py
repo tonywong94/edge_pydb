@@ -60,9 +60,9 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     BPT = np.zeros(len(n2ha))
     for i in range(len(n2ha)):
         if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
-                o3hb[i] < kewley01(n2ha[i]) and abs(ew_ha[i]) > 6.0):
-            BPT[i] = -1  # Starforming, below Kewley line
-        elif n2ha[i] < 0.3 and o3hb[i] < kauffm03(n2ha[i]):
+                o3hb[i] < kauffm03(n2ha[i]) and abs(ew_ha[i]) > 6.0):
+            BPT[i] = -1  # Starforming, below Kauffmann line
+        elif n2ha[i] < 0.3 and o3hb[i] < kewley01(n2ha[i]):
             BPT[i] = 0   # Intermediate, between Kewley & Kauffmann
         elif o3hb[i] > -1  and o3hb[i] < cidfer10(n2ha[i]):
             BPT[i] = 1   # LINER
