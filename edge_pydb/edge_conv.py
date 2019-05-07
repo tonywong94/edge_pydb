@@ -2,13 +2,33 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy import units as u
+from astropy.coordinates import SkyCoord
 from uncertainties import ufloat
 import uncertainties.unumpy as unp 
 
 # To-do: Return Column object only if inputs are Columns
 
+# Calculate galactocentric polar coordinates 
+# (radius in arcsec, azangle in degrees from receding majaxis)
+# Inputs should all be in degrees
+def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
+    ctr = SkyCoord(ra_gc, dec_gc, unit="deg")
+    pos = SkyCoord(ra, dec, unit="deg")
+    # Polar vector in sky plane
+    t_sky = ctr.position_angle(pos).degree
+    r_sky = ctr.separation(pos).arcsec
+    # Convert to galaxy plane
+    x_sky = r_sky * np.cos(np.radians(t_sky - pa))
+    y_sky = r_sky * np.sin(np.radians(t_sky - pa))
+    x_gal = x_sky
+    y_gal = y_sky/np.cos(np.radians(inc))
+    radius = np.sqrt(x_gal**2 + y_gal**2)
+    azang  = np.degrees(np.arctan2(y_gal, x_gal))
+    return radius*u.arcsec, azang*u.deg
+
+
 # Convert Halpha intensity to A_V-corrected SFR surface density
-def sfr_ha(flux_ha, flux_hb, name=None):
+def sfr_ha(flux_ha, flux_hb, name='sig_sfr'):
     # Extinction curve from Cardelli+(1989).
     K_Ha = 2.53
     K_Hb = 3.61
@@ -22,21 +42,34 @@ def sfr_ha(flux_ha, flux_hb, name=None):
     lsd_ha = 4*np.pi * sb_ha
     # Eq(4) from Catalan-Torrecilla+(2015).
     lumcon = 5.5e-42 * (u.solMass/u.yr) / (u.erg/u.s)
-    sigsfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
-    return Column(sigsfr, name=name)
+    sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
+    if isinstance(flux_ha, Column) and isinstance(flux_hb, Column):
+        return Column(sig_sfr, name=name)
+    else:
+        return sig_sfr
     
+
 # Convert CO intensity to H2(+He) surface density
-def msd_co(sb_co, alphaco=4.3, name=None):
+def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
     sig_mol = (convfac*sb_co).to(u.solMass/u.pc**2)
-    return Column(sig_mol, name=name)
+    if isinstance(sb_co, Column):
+        return Column(sig_mol, name=name)
+    else:
+        return sig_mol
     
+
 # Convert units for stellar surface density
-def stmass_pc2(stmass_as2, dist=10*u.Mpc, name=None):
+def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
     sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
     stmass_pc2 = 10**stmass_as2 * u.solMass / pxarea
-    return Column(stmass_pc2, name=name)
+    if isinstance(stmass_as2, Column):
+        return Column(stmass_pc2, name=name)
+    else:
+        return stmass_pc2
+#    return Column(stmass_pc2, name=name)
+
 
 # return log10(a/b), taking care of -InF values from the logarithm. 
 def ulogratio(a, b, ae = 0.0, be = 0.0): 
@@ -47,6 +80,7 @@ def ulogratio(a, b, ae = 0.0, be = 0.0):
         return logr.n, logr.s
     except:
         return np.nan, np.nan
+
 
 # BPT classification, see Husemann et al. (2013) Figure 7.
 def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
@@ -71,6 +105,7 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
         else:
             BPT[i] = np.nan
     return BPT
+
 
 # Metallicity derived from O3N2 line ratio, Marino+13 calibration.
 # Input is a table containing the appropriate columns.
@@ -100,7 +135,30 @@ def ZOH_o3n2(fluxtab, err=False):
     else:            
         return unp.nominal_values(uOH_M13)
 
- 
+
+# Metallicity derived from N2 line ratio, Marino+13 calibration.
+# Input is a table containing the appropriate columns.
+def ZOH_n2(fluxtab, err=False):
+    nelt = len(fluxtab['flux_[NII]6583'])
+    uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
+    uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
+
+    uN2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
+    good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uHaF)>0))
+    uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good])
+
+    BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
+            fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
+            
+    uOH_N2 = 8.743 + 0.462*uN2  # Eq(4) from Marino+2013
+    uOH_N2[BPT != -1] = ufloat(np.nan, np.nan)
+
+    if err: 
+        return unp.std_devs(uOH_N2)
+    else:            
+        return unp.nominal_values(uOH_N2)
+
+
 # Prepare a 2D histogram from a scatterplot
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     if log:
