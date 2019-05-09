@@ -16,15 +16,18 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
     pos = SkyCoord(ra, dec, unit="deg")
     # Polar vector in sky plane
     t_sky = ctr.position_angle(pos).degree
-    r_sky = ctr.separation(pos).arcsec
+    r_sky = ctr.separation(pos).arcsecond
+    #print(t_sky,r_sky)
     # Convert to galaxy plane
     x_sky = r_sky * np.cos(np.radians(t_sky - pa))
     y_sky = r_sky * np.sin(np.radians(t_sky - pa))
     x_gal = x_sky
     y_gal = y_sky/np.cos(np.radians(inc))
+    # Reject very high inclinations (cannot be deprojected)
+    y_gal[inc>89] = np.nan
     radius = np.sqrt(x_gal**2 + y_gal**2)
     azang  = np.degrees(np.arctan2(y_gal, x_gal))
-    return radius*u.arcsec, azang*u.deg
+    return radius, azang
 
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
@@ -63,12 +66,14 @@ def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
 def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
     sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
-    stmass_pc2 = 10**stmass_as2 * u.solMass / pxarea
     if isinstance(stmass_as2, Column):
+        stmass_pc2 = 10**np.array(stmass_as2) * u.solMass / pxarea
+        stmass_pc2[~np.isfinite(stmass_pc2)] = np.nan
         return Column(stmass_pc2, name=name)
     else:
+        stmass_pc2 = 10**stmass_as2 * u.solMass / pxarea
+        stmass_pc2[~np.isfinite(stmass_pc2)] = np.nan
         return stmass_pc2
-#    return Column(stmass_pc2, name=name)
 
 
 # return log10(a/b), taking care of -InF values from the logarithm. 
@@ -91,25 +96,35 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05)
     cidfer10 = lambda nii: 0.48 + 1.01*nii
 
-    BPT = np.zeros(len(n2ha))
-    for i in range(len(n2ha)):
-        if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
-                o3hb[i] < kauffm03(n2ha[i]) and abs(ew_ha[i]) > 6.0):
-            BPT[i] = -1  # Starforming, below Kauffmann line
-        elif n2ha[i] < 0.3 and o3hb[i] < kewley01(n2ha[i]):
-            BPT[i] = 0   # Intermediate, between Kewley & Kauffmann
-        elif o3hb[i] > -1  and o3hb[i] < cidfer10(n2ha[i]):
-            BPT[i] = 1   # LINER
-        elif o3hb[i] > -1:
-            BPT[i] = 2   # Seyfert
-        else:
-            BPT[i] = np.nan
+    BPT = np.full(len(n2ha), np.nan)
+    #BPT = np.zeros(len(n2ha))
+    sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
+    BPT[sf] = -1
+    inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
+    BPT[inter] = 0
+    liner = (~sf) & (~inter) & (o3hb > -1) & (o3hb < cidfer10(n2ha))
+    BPT[liner] = 1
+    seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
+    BPT[seyfert] = 2
+
+#     for i in range(len(n2ha)):
+#         if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
+#                 o3hb[i] < kauffm03(n2ha[i]) and abs(ew_ha[i]) > 6.0):
+#             BPT[i] = -1  # Starforming, below Kauffmann line
+#         elif n2ha[i] < 0.3 and o3hb[i] < kewley01(n2ha[i]):
+#             BPT[i] = 0   # Intermediate, between Kewley & Kauffmann
+#         elif o3hb[i] > -1  and o3hb[i] < cidfer10(n2ha[i]):
+#             BPT[i] = 1   # LINER
+#         elif o3hb[i] > -1:
+#             BPT[i] = 2   # Seyfert
+#         else:
+#             BPT[i] = np.nan
     return BPT
 
 
 # Metallicity derived from O3N2 line ratio, Marino+13 calibration.
 # Input is a table containing the appropriate columns.
-def ZOH_o3n2(fluxtab, err=False):
+def ZOH_o3n2(fluxtab, name='ZOH', err=False):
     
     nelt = len(fluxtab['flux_[NII]6583'])
     uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
@@ -131,9 +146,10 @@ def ZOH_o3n2(fluxtab, err=False):
     uOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
 
     if err: 
-        return unp.std_devs(uOH_M13)
+        return (Column(unp.nominal_values(uOH_M13), name=name), 
+                Column(unp.std_devs(uOH_M13), name=name+'_err'))
     else:            
-        return unp.nominal_values(uOH_M13)
+        return Column(unp.nominal_values(uOH_M13), name=name)
 
 
 # Metallicity derived from N2 line ratio, Marino+13 calibration.
@@ -145,7 +161,7 @@ def ZOH_n2(fluxtab, err=False):
 
     uN2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
     good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uHaF)>0))
-    uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good])
+    uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good]))
 
     BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
             fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
