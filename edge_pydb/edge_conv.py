@@ -6,7 +6,6 @@ from astropy.coordinates import SkyCoord
 from uncertainties import ufloat
 import uncertainties.unumpy as unp 
 
-# To-do: Return Column object only if inputs are Columns
 
 # Calculate galactocentric polar coordinates 
 # (radius in arcsec, azangle in degrees from receding majaxis)
@@ -32,11 +31,13 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
 def sfr_ha(flux_ha, flux_hb, name='sig_sfr'):
+    # TODO: Return A_Ha column as well.
     # Extinction curve from Cardelli+(1989).
     K_Ha = 2.53
     K_Hb = 3.61
     # Eq(1) from Catalan-Torrecilla+(2015). 
     A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * np.log10((flux_ha/flux_hb)/2.86)
+    # Do not apply negative extinction.
     A_Ha[A_Ha < 0] = 0.
     flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
     # input line flux is actually flux per arcsec^2
@@ -89,6 +90,7 @@ def ulogratio(a, b, ae = 0.0, be = 0.0):
 
 # BPT classification, see Husemann et al. (2013) Figure 7.
 def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
+    # TODO: trap bad values before taking log
     n2ha = np.log10(flux_nii)  - np.log10(flux_ha)
     o3hb = np.log10(flux_oiii) - np.log10(flux_hb)    
 
@@ -97,7 +99,6 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     cidfer10 = lambda nii: 0.48 + 1.01*nii
 
     BPT = np.full(len(n2ha), np.nan)
-    #BPT = np.zeros(len(n2ha))
     sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
     BPT[sf] = -1
     inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
@@ -107,6 +108,7 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
     BPT[seyfert] = 2
 
+#     BPT = np.zeros(len(n2ha))
 #     for i in range(len(n2ha)):
 #         if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
 #                 o3hb[i] < kauffm03(n2ha[i]) and abs(ew_ha[i]) > 6.0):
@@ -123,6 +125,7 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
 
 
 # Metallicity derived from O3N2 line ratio, Marino+13 calibration.
+# Require star-forming in BPT diagram.
 # Input is a table containing the appropriate columns.
 def ZOH_o3n2(fluxtab, name='ZOH', err=False):
     
