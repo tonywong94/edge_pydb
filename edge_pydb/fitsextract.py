@@ -2,9 +2,11 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
+from edge_conv import gc_polr
 
 def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
-                zselect=None, col_lbl='imdat', bunit=None):
+                zselect=None, col_lbl='imdat', ra_gc=None, dec_gc=None,
+                pa=0, inc=0, bunit=None):
 
     """
     Sample data from an image into an AstroPy table indexed by coordinates.
@@ -39,6 +41,22 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         Column label for the data values, can be list corresponding to each 
         plane to be selected, for CALIFA pseudocubes.
         Default is "imdat"+possible integer.
+    ra_gc : float, optional
+        Right ascension of galaxy center.  Used to determine
+        polar coordinates of each sample in the plane of the galaxy.
+        Default is reference RA value of the image.
+    dec_gc : float, optional
+        Declination of galaxy center.  Used to determine
+        polar coordinates of each sample in the plane of the galaxy.
+        Default is reference DEC value of the image.
+    pa : float, optional
+        Position angle of the galaxy disk in degrees E of N.  Used to determine
+        polar coordinates of each sample in the plane of the galaxy.
+        Default is 0 (due north).
+    inc : float, optional
+        Inclination of the galaxy disk in degrees from face-on.  Used to
+        determine polar coordinates of each sample in the plane of the galaxy.
+        Default is 0 (face-on).
     bunit : string or list of strings, optional
         Astropy units for data values, can be list corresponding to each plane
         to be selected, for CALIFA pseudocubes.
@@ -103,7 +121,16 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     wcsout = wfix.wcs_pix2world(wcsin,0)
     col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', unit='deg')
     col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', unit='deg')
-    tab.add_columns([col_ra,col_dc])
+    if ra_gc is None:
+    	ra_gc = w.wcs.crval[0]
+    if dec_gc is None:
+    	dec_gc = w.wcs.crval[1]
+    r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
+    col_r = Column(r, name='rad_arc',  dtype='f4', unit='arcsec',
+    	description='radius using ra_gc={:.4f} dec_gc={:4f} pa={:.1f} inc={:.1f}'.format(
+    	ra_gc, dec_gc, pa, inc))
+    col_th = Column(theta, name='azi_ang', dtype='f4', unit='deg')
+    tab.add_columns([col_ra,col_dc,col_r,col_th])
     if iscube and not pseudo:
         col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', unit='km/s')
         tab.add_column(col_vel)
