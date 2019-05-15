@@ -6,7 +6,7 @@ from edge_conv import gc_polr
 
 def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
                 zselect=None, col_lbl='imdat', ra_gc=None, dec_gc=None,
-                pa=0, inc=0, bunit=None):
+                pa=0, inc=0, ortlabel='default', bunit=None, first=False):
 
     """
     Sample data from an image into an AstroPy table indexed by coordinates.
@@ -57,10 +57,18 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         Inclination of the galaxy disk in degrees from face-on.  Used to
         determine polar coordinates of each sample in the plane of the galaxy.
         Default is 0 (face-on).
+    ortlabel : string, optional
+        String label describing the origin of the orientation parameters.
     bunit : string or list of strings, optional
         Astropy units for data values, can be list corresponding to each plane
         to be selected, for CALIFA pseudocubes.
         Default is obtained from BUNIT in the header.
+    first : bool, optional
+        True to write the coordinate columns, which only need to be done once
+        per table.  When combining multiple FITS images into a table, fitsextract
+        should be called initially with first=True and then subsequently with
+        first=False.
+        Default is False.
 
     Returns
     -------
@@ -118,22 +126,25 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         # Get the pixel coordinates as tuples
         wcsin = (np.array([tab['ix'],tab['iy']])).T
     wfix = w.sub(naxis)
-    wcsout = wfix.wcs_pix2world(wcsin,0)
-    col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', unit='deg')
-    col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', unit='deg')
-    if ra_gc is None:
-    	ra_gc = w.wcs.crval[0]
-    if dec_gc is None:
-    	dec_gc = w.wcs.crval[1]
-    r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
-    col_r = Column(r, name='rad_arc',  dtype='f4', unit='arcsec',
-    	description='radius using ra_gc={:.4f} dec_gc={:4f} pa={:.1f} inc={:.1f}'.format(
-    	ra_gc, dec_gc, pa, inc))
-    col_th = Column(theta, name='azi_ang', dtype='f4', unit='deg')
-    tab.add_columns([col_ra,col_dc,col_r,col_th])
-    if iscube and not pseudo:
-        col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', unit='km/s')
-        tab.add_column(col_vel)
+    if first:
+        wcsout = wfix.wcs_pix2world(wcsin,0)
+        col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
+                        unit='deg', format='.6f')
+        col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
+                        unit='deg', format='.6f')
+        if ra_gc is None:
+            ra_gc = w.wcs.crval[0]
+        if dec_gc is None:
+            dec_gc = w.wcs.crval[1]
+        r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
+        col_r = Column(r, name='rad_arc', dtype='f4', unit='arcsec', format='.3f',
+            description='radius based on {}'.format(ortlabel))
+        col_th = Column(theta, name='azi_ang', dtype='f4', unit='deg', format='.3f',
+            description='azang based on {}'.format(ortlabel))
+        tab.add_columns([col_ra,col_dc,col_r,col_th])
+        if iscube and not pseudo:
+            col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', unit='km/s')
+            tab.add_column(col_vel)
 
     # Flatten the cube into a 1-D table
     # Use order = 'F' because the velocity axis is first

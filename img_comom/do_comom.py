@@ -12,14 +12,25 @@ from astropy.table import Table, Column, join, vstack
 
 msktyp = ['dil', 'smo']
 
+# Get the orientation parameters from LEDA
+globaldir = '../dat_glob/'
+ort = Table.read(globaldir+'external/edge_leda.csv', format='ascii.ecsv')
+ort.add_index('Name')
+
 for i, msk in enumerate(msktyp):
     filelist = glob.glob('fitsdata/*.co.smo7_'+msk+'.emom0max.fits.gz')
     tablelist=[]
     for file in filelist:
+        print('Reading',file)
     	# Read the emom0max image first (available for all galaxies)
         gal = os.path.basename(file).split('.')[0]
         tab0 = fitsextract(file, bunit='K km/s', col_lbl='emom0max',
-        					keepnan=True, stride=[3,3,1])
+        					keepnan=True, stride=[3,3,1],
+        					ra_gc=15*ort.loc[gal]['ledaRA'],
+						    dec_gc=ort.loc[gal]['ledaDE'],
+                            pa=ort.loc[gal]['ledaPA'],
+                            inc=ort.loc[gal]['ledaIncl'],
+                            ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab0), name='Name', description='Galaxy Name')
         tab0.add_column(gname, index=0)
         print(tab0[20:50])
@@ -33,9 +44,15 @@ for i, msk in enumerate(msktyp):
         for j, type in enumerate(dotypes):
             getfile = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+type+'.fits.gz'
             if os.path.exists(getfile):
+                print('Reading',getfile)
                 addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type, 
-                                keepnan=True, stride=[3,3,1])
-                jointb = join(tab0, addtb)
+                                keepnan=True, stride=[3,3,1],
+                                ra_gc=15*ort.loc[gal]['ledaRA'],
+						        dec_gc=ort.loc[gal]['ledaDE'],
+                                pa=ort.loc[gal]['ledaPA'],
+                                inc=ort.loc[gal]['ledaIncl'],
+                                ortlabel='LEDA')
+                jointb = join(tab0, addtb, keys=['ix','iy'])
                 tab0 = jointb
             else:
                 newcol = Column(data=[np.nan]*len(tab0), name=type, 
