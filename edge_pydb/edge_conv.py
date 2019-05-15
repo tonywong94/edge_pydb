@@ -3,8 +3,6 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
-from uncertainties import ufloat
-import uncertainties.unumpy as unp 
 
 
 # Calculate galactocentric polar coordinates 
@@ -78,21 +76,24 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 
 
 # return log10(a/b), taking care of -InF values from the logarithm. 
-def ulogratio(a, b, ae = 0.0, be = 0.0): 
-    try: 
-        ua = ufloat(a, ae)
-        ub = ufloat(b, be)
-        logr = unp.log10(ua) - unp.log10(ub)
-        return logr.n, logr.s
-    except:
-        return np.nan, np.nan
+# def ulogratio(a, b, ae = 0.0, be = 0.0): 
+#     try: 
+#         ua = ufloat(a, ae)
+#         ub = ufloat(b, be)
+#         logr = unp.log10(ua) - unp.log10(ub)
+#         return logr.n, logr.s
+#     except:
+#         return np.nan, np.nan
 
 
 # BPT classification, see Husemann et al. (2013) Figure 7.
 def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
-    # TODO: trap bad values before taking log
-    n2ha = np.log10(flux_nii)  - np.log10(flux_ha)
-    o3hb = np.log10(flux_oiii) - np.log10(flux_hb)    
+
+    good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
+    n2ha = np.full(len(flux_nii), np.nan)
+    n2ha[good] = np.log10(flux_nii[good])  - np.log10(flux_ha[good])
+    o3hb = np.full(len(flux_oiii), np.nan)
+    o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])    
 
     kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47)
     kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05)
@@ -124,58 +125,84 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     return BPT
 
 
-# Metallicity derived from O3N2 line ratio, Marino+13 calibration.
+# Metallicity derived from Marino+13 calibration.
+# use method='o3n2' or method='n2'
 # Require star-forming in BPT diagram.
 # Input is a table containing the appropriate columns.
-def ZOH_o3n2(fluxtab, name='ZOH', err=False):
-    
-    nelt = len(fluxtab['flux_[NII]6583'])
-    uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
-    uO3F = unp.uarray(fluxtab['flux_[OIII]5007'], fluxtab['e_flux_[OIII]5007'])
-    uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
-    uHbF = unp.uarray(fluxtab['flux_Hbeta'], fluxtab['e_flux_Hbeta'])
-    
-    uO3N2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
-#    good = (~unp.isnan(uN2F)) & (~unp.isnan(uO3F)) & (~unp.isnan(uHaF)) & (~unp.isnan(uHbF))
-    good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uO3F)>0) 
-            & (unp.nominal_values(uHaF)>0) & (unp.nominal_values(uHbF)>0))
-    uO3N2[good] = (unp.log10(uO3F[good]) - unp.log10(uHbF[good]) 
+def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
+
+    N2F = fluxtab['flux_[NII]6583']
+    O3F = fluxtab['flux_[OIII]5007']
+    HaF = fluxtab['flux_Halpha']
+    HbF = fluxtab['flux_Hbeta']
+    if method == 'o3n2':
+        good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
+    elif method == 'n2':
+        good = (N2F>0) & (HaF>0)
+    else:
+        raise Exception('Method {} is not recognized'.format(method))
+    nelt = len(N2F)
+
+    BPT = bpt_type(N2F, O3F, HaF, HbF, fluxtab['EW_Halpha'])
+
+    if err == False:
+        O3N2 = np.full(nelt, np.nan)
+        O3N2[good] = (np.log10(O3F[good]) - np.log10(HbF[good]) 
+                    - (np.log10(N2F[good]) - np.log10(HaF[good])))                    
+        N2 = np.full(nelt, np.nan)
+        N2[good] = np.log10(N2F[good]) - np.log10(HaF[good])                   
+    else:
+        try:
+            from uncertainties import ufloat
+            import uncertainties.unumpy as unp 
+        except:
+            print('uncertainties package required for err=True')
+
+        uN2F = unp.uarray(N2F, fluxtab['e_flux_[NII]6583'])
+        uO3F = unp.uarray(O3F, fluxtab['e_flux_[OIII]5007'])
+        uHaF = unp.uarray(HaF, fluxtab['e_flux_Halpha'])
+        uHbF = unp.uarray(HbF, fluxtab['e_flux_Hbeta'])
+        O3N2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
+        O3N2[good] = (unp.log10(uO3F[good]) - unp.log10(uHbF[good]) 
                     - (unp.log10(uN2F[good]) - unp.log10(uHaF[good])))
+        N2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
+        N2[good] = unp.log10(uN2F[good]) - unp.log10(uHaF[good])
 
-    BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
-            fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
-            
-    uOH_M13 = 8.533 - 0.214 * uO3N2
-    uOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
+    if method == 'o3n2':
+        ZOH_M13 = 8.533 - 0.214 * O3N2 # Eq(2) from Marino+2013
+    else:
+        ZOH_M13 = 8.743 + 0.462 * N2   # Eq(4) from Marino+2013
 
-    if err: 
-        return (Column(unp.nominal_values(uOH_M13), name=name), 
-                Column(unp.std_devs(uOH_M13), name=name+'_err'))
+    if err == False: 
+        ZOH_M13[BPT != -1] = np.nan
+        return Column(ZOH_M13, name=name)
     else:            
-        return Column(unp.nominal_values(uOH_M13), name=name)
+        ZOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
+        return (Column(unp.nominal_values(ZOH_M13), name=name), 
+                Column(unp.std_devs(ZOH_M13), name=name+'_err'))
 
 
 # Metallicity derived from N2 line ratio, Marino+13 calibration.
 # Input is a table containing the appropriate columns.
-def ZOH_n2(fluxtab, err=False):
-    nelt = len(fluxtab['flux_[NII]6583'])
-    uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
-    uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
-
-    uN2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
-    good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uHaF)>0))
-    uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good]))
-
-    BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
-            fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
-            
-    uOH_N2 = 8.743 + 0.462*uN2  # Eq(4) from Marino+2013
-    uOH_N2[BPT != -1] = ufloat(np.nan, np.nan)
-
-    if err: 
-        return unp.std_devs(uOH_N2)
-    else:            
-        return unp.nominal_values(uOH_N2)
+# def ZOH_n2(fluxtab, err=False):
+#     nelt = len(fluxtab['flux_[NII]6583'])
+#     uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
+#     uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
+# 
+#     uN2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
+#     good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uHaF)>0))
+#     uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good]))
+# 
+#     BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
+#             fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
+#             
+#     uOH_N2 = 8.743 + 0.462*uN2  
+#     uOH_N2[BPT != -1] = ufloat(np.nan, np.nan)
+# 
+#     if err: 
+#         return unp.std_devs(uOH_N2)
+#     else:            
+#         return unp.nominal_values(uOH_N2)
 
 
 # Prepare a 2D histogram from a scatterplot
