@@ -10,13 +10,22 @@ import os
 import numpy as np
 from astropy.table import Table, Column, join, vstack
 
+# Get the orientation parameters from LEDA
+globaldir = '../dat_glob/'
+ort = Table.read(globaldir+'external/edge_leda.csv', format='ascii.ecsv')
+ort.add_index('Name')
+
 filelist = glob.glob('fitsdata/*.co.smo7msk.K.fits.gz')
 tablelist=[]
 for file in filelist:
     # Read the FOV masked, gain-corrected cube
     gal = os.path.basename(file).split('.')[0]
     tab0 = fitsextract(file, bunit='K', col_lbl='co_data',
-                        keepnan=True, stride=[3,3,1])
+                        keepnan=True, stride=[3,3,1], 
+						ra_gc=15*ort.loc[gal]['ledaRA'],
+						dec_gc=ort.loc[gal]['ledaDE'],
+                        pa=ort.loc[gal]['ledaPA'],
+                        inc=ort.loc[gal]['ledaIncl'])
     gname = Column([np.string_(gal)]*len(tab0), name='Name', description='Galaxy Name')
     tab0.add_column(gname, index=0)
     print(tab0[20:50])
@@ -28,7 +37,11 @@ for file in filelist:
         getfile = 'fitsdata/'+gal+'.co.'+file+'.fits.gz'
         if os.path.exists(getfile):
             addtb = fitsextract(getfile, bunit=unit[j], col_lbl=labels[j], 
-                            keepnan=True, stride=[3,3,1])
+                            keepnan=True, stride=[3,3,1], 
+                            ra_gc=15*ort.loc[gal]['ledaRA'],
+                            dec_gc=ort.loc[gal]['ledaDE'],
+                            pa=ort.loc[gal]['ledaPA'],
+                            inc=ort.loc[gal]['ledaIncl'])
             jointb = join(tab0, addtb)
             tab0 = jointb
         else:
