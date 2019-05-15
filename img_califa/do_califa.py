@@ -13,6 +13,12 @@ import sys
 sys.path.append('../edge_pydb')
 from fitsextract import fitsextract, getlabels
 
+# Get the orientation parameters from LEDA
+globaldir = '../dat_glob/'
+ort = Table.read(globaldir+'external/edge_leda.csv', format='ascii.ecsv')
+ort.add_index('Name')
+
+# Read the FITS data
 codir = '../img_comom/fitsdata/'
 cadir = 'fitsdata/'
 prodtype = ['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines']
@@ -55,7 +61,9 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto(base.replace('fits','rgd.fits'), newim, outhd, overwrite=True)
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=units, col_lbl=labels, zselect=zsel)
+            bunit=units, col_lbl=labels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
+			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
+            inc=ort.loc[gal]['ledaIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab0), name='Name', 
                        description='Galaxy Name')
         tab0.add_column(gname, index=0)
@@ -68,8 +76,9 @@ for prod in prodtype:
         newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
         #fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
-            bunit=units, col_lbl=labels, zselect=zsel)
-        #joint=join(tab0,tab1)
+            bunit=units, col_lbl=labels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
+			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
+            inc=ort.loc[gal]['ledaIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab1), name='Name', 
                        description='Galaxy Name')
         tab1.add_column(gname, index=0)
