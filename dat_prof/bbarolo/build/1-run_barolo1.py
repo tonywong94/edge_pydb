@@ -12,12 +12,21 @@ import shutil
 os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
 tout = 180
-runs = ['nrad8', 'nrad8_vdisp8']
+masks = ['dilmsk', 'bbmsk']
+fits = ['fitvd', 'fixvd']
+sets = ['natv', 'smo5', 'smo7']
+runs = []
+for set in sets:
+    for fit in fits:
+        for mask in masks:
+            runs.append(set+'_'+fit+'_'+mask)
+print(runs)
+#runs = ['nrad8', 'nrad8_vdisp8', 'nrad8_smolist', 'nrad8_vdisp8_smolist']
 
 for run in runs:
     noPlot_txt = open(run+'_fail1.txt','w')
     noPlot=[]
-    os.chdir('./gal_'+run)
+    os.chdir(run)
     plist = glob.glob('param_*.par')
     for pfile in plist:
         gal = pfile.strip('param_.par')
@@ -42,4 +51,4 @@ for run in runs:
         noPlot_txt.write(obj+'\n')
     noPlot_txt.close()
     print (run+' Done')
- 
+

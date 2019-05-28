@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-# This script takes the galaxies which failed twice and changes the MASK
-# to SMOOTH and runs Bbarolo again with both varying and fixed VDISP.
-# Galaxies which fail are listed in nrad8_fail3.txt and nrad8_vdisp8_fail3.txt
+# This script tries repeating the runs which failed the first time.
+# Galaxies which still fail are listed in nrad8_fail2.txt and nrad8_vdisp8_fail2.txt
 
 import os
 import glob
@@ -12,30 +11,28 @@ import shutil
 os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
 tout = 180
-runs = ['nrad8', 'nrad8_vdisp8']
+masks = ['dilmsk', 'bbmsk']
+fits = ['fitvd', 'fixvd']
+sets = ['natv', 'smo5', 'smo7']
+runs = []
+for set in sets:
+    for fit in fits:
+        for mask in masks:
+            runs.append(set+'_'+fit+'_'+mask)
+print(runs)
+#runs = ['nrad8', 'nrad8_vdisp8', 'nrad8_smolist', 'nrad8_vdisp8_smolist']
 
 for run in runs:
-    with open(run+'_fail2.txt') as f:
+    with open(run+'_fail1.txt') as f:
         namelist = f.read().splitlines()
-    noPlot_txt = open(run+'_fail3.txt','w')
+    noPlot_txt = open(run+'_fail2.txt','w')
     noPlot=[]
-    if os.path.isdir('./gal_'+run+'_smolist'):
-        shutil.rmtree('./gal_'+run+'_smolist')
-    os.makedirs('./gal_'+run+'_smolist')
-    os.chdir('./gal_'+run+'_smolist')
+    os.chdir(run)
     for gal in namelist:
         print(gal)
-        oldpfile = '../gal_'+run+'/param_'+gal+'.par'
         pfile = 'param_'+gal+'.par'
-        # Change the MASK to SMOOTH
-        with open(oldpfile) as p:
-            with open(pfile,'w') as p_smo:
-                for line in p:
-                    rest = line.split('MASK        ')
-                    if len(rest) == 2:
-                        p_smo.write(line.replace(rest[1],'SMOOTH'))
-                    else:
-                        p_smo.write(line)
+        if os.path.isdir('output/'+gal[:8]):
+            shutil.rmtree('output/'+gal[:8])
         os.makedirs('output/'+gal[:8])
         with open('output/'+gal[:8]+'/'+gal+'.bblog.txt', "wb") as outfile:
             try:
