@@ -1,0 +1,2 @@
+gal_name,ractr_ned,dcctr_ned,ractr_fit,dcctr_fit
+IC0480,118.84662,26.74333,118.84683631967756,26.742580457664108

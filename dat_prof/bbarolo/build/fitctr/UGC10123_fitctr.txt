@@ -1,0 +1,2 @@
+gal_name,ractr_ned,dcctr_ned,ractr_fit,dcctr_fit
+UGC10123,239.76233,51.30467,239.76284523202642,51.30462108838879

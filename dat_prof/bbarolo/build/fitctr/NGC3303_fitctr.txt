@@ -1,0 +1,2 @@
+gal_name,ractr_ned,dcctr_ned,ractr_fit,dcctr_fit
+NGC3303,159.24917,18.13667,159.2499749841211,18.13631693542655

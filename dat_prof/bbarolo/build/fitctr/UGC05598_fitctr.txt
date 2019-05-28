@@ -1,0 +1,2 @@
+gal_name,ractr_ned,dcctr_ned,ractr_fit,dcctr_fit
+UGC05598,155.55837,20.58942,155.55840483413797,20.58909909607811
