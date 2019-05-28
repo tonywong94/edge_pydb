@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 from astropy.table import Table, join
 from astropy.io.fits import getheader
@@ -7,33 +9,42 @@ import glob
 
 def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carmaedge', db=None):
     # Prepare output directory
-    if not os.path.exists('gal_'+run):
-        os.makedirs('gal_'+run)
+    if not os.path.exists(run):
+        os.makedirs(run)
     else:
-        for f in glob.glob('gal_'+run+'/*.par'):
+        for f in glob.glob(run+'/*.par'):
             os.remove(f)
 
     # List of galaxies with override positions
-    with open('gallist_fitctr.txt') as f:
-        namelist_fitctr = f.read().splitlines()
-    gallist_fitctr = [gal for gal in namelist_fitctr if not gal.startswith("#")]
+    if os.path.exists('gallist_fitctr.txt'):
+        with open('gallist_fitctr.txt') as f:
+            namelist_fitctr = f.read().splitlines()
+        gallist_fitctr = [gal for gal in namelist_fitctr if not gal.startswith("#")]
+    else:
+        gallist_fitctr = []
 
     # Input template
     with open('templates/'+template) as p:
         paramlist = p.read()
 
     for gal in gallist:
-        if '20' in run:
-            fitsin = edgedir+'comb_de/cmnorm_sub/'+gal+'.co.cmnormsub.fits.gz'
-            maskdir = edgedir+'comb_de/reprojmask/'
+        if run.startswith('smo5'):
+            fitsin = edgedir+'comb_de_10/smo5/'+gal+'.co.smo5normsub.fits.gz'
+            maskin = 'FILE('+edgedir+'comb_de_10/smo5/mom/'+gal+'.co.de10_smo5_dil.mask.fits.gz)'
+        elif run.startswith('smo7'):
+            fitsin = edgedir+'comb_de_10/smo7/'+gal+'.co.smo7normsub.fits.gz'
+            maskin = 'FILE('+edgedir+'comb_de_10/smo7/mom/'+gal+'.co.de10_smo7_dil.mask.fits.gz)'
         else:
             fitsin = edgedir+'comb_de_10/cmnorm_sub/'+gal+'.co.cmnormsub.fits.gz'
-            maskdir = edgedir+'comb_de_10/reprojmask/'
-        if 'smolist' in run: 
+            maskin = 'FILE('+edgedir+'comb_de_10/reprojmask/'+gal+'.co.de10_dil.masksub.fits.gz)'
+        if not os.path.exists(fitsin):
+            print('Galaxy {} not found'.format(gal))
+            continue
+        if 'bbmsk' in run: 
             mask = 'SMOOTH'
         else:
-            mask = 'FILE('+maskdir+gal+'.co.de10_dil.masksub.fits.gz)'
-        if 'vdisp' in run:
+            mask = maskin
+        if 'fixvd' in run:
             free = 'VROT VSYS PA'
         else:
             free = 'VROT VDISP VSYS PA'
@@ -69,7 +80,7 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         xpos   = nedpx[0][0]
         ypos   = nedpx[0][1]
         # --- Use RA and DEC from 2D Gaussian fitting for certain galaxies
-        if gal in namelist_fitctr:
+        if gal in gallist_fitctr:
             gal_table = Table.read('fitctr/'+gal+'_fitctr.txt',format='ascii.csv')
             ractr_fit = gal_table['ractr_fit'][0]
             dcctr_fit = gal_table['dcctr_fit'][0]
@@ -87,23 +98,22 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         z0 = 206265*100/(dmpc*1e6)  # 100 pc thickness, fixed
         print('  Assumed INC, PA, Z0: {:.2f} {:.2f} {:.2f}'.format(inc,pa,z0))
         gal_param = paramlist % (fitsin, vsys, xpos, ypos, inc, pa, z0, free, mask)
-        file = open('./gal_'+run+'/param_'+gal+'.par','w')
+        file = open(run+'/param_'+gal+'.par','w')
         file.write(gal_param)
         file.close()
     print (run+' Done')
     return
 
-#edgedir = '/home/jovyan/carmaedge/'
 edgedir = '/Volumes/Scratch2/tonywong/EDGE/'
-basedir = edgedir+'edge-sql-base/'
+basedir = '../edge_pydb/'
 # CALIFA table: source for distance
-db_ca = Table.read(basedir+'global_values/external/edge_califa.csv', format='ascii.ecsv')
+db_ca = Table.read(basedir+'dat_glob/external/edge_califa.csv', format='ascii.ecsv')
 # CO observations table: source for VSYS
-db_co = Table.read(basedir+'global_values/obs/edge_coobs_de20.csv', format='ascii.csv')
+db_co = Table.read(basedir+'dat_glob/obs/edge_coobs_de20.csv', format='ascii.csv')
 # Becca's fits: source for PA, INC
-db_rf = Table.read(basedir+'global_values/derived/edge_rfpars.csv', format='ascii.ecsv')
+db_rf = Table.read(basedir+'dat_glob/derived/edge_rfpars.csv', format='ascii.ecsv')
 # NED table: source for XPOS, YPOS
-db_nd = Table.read(basedir+'global_values/external/edge_ned.csv', format='ascii.ecsv')
+db_nd = Table.read(basedir+'dat_glob/external/edge_ned.csv', format='ascii.ecsv')
 
 db12 = join(db_ca, db_co, keys='Name')
 db123 = join(db12, db_rf, keys='Name')
@@ -117,7 +127,16 @@ with open(listfile) as f:
 gallist = [gal for gal in namelist if not gal.startswith("#")]
 print (gallist)
 
-runs = ['nrad8', 'nrad8_vdisp8']
+masks = ['dilmsk', 'bbmsk']
+fits = ['fitvd', 'fixvd']
+sets = ['natv', 'smo5', 'smo7']
+runs = []
+for set in sets:
+    for fit in fits:
+        for mask in masks:
+            runs.append(set+'_'+fit+'_'+mask)
+print(runs)
+
 for run in runs:
     write_par(gallist, run=run, template='edge_bb.par', edgedir=edgedir, db=db)    
 
