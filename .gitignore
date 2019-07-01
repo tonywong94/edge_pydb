@@ -5,3 +5,7 @@
 *.cube.fits.gz
 edge*.hdf5
 __pycache__/
+build
+dbfiles
+dist
+SQL-test.ipynb
