@@ -2,7 +2,7 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
-from edge_conv import gc_polr
+from edge_pydb.edge_conv import gc_polr
 
 def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
                 zselect=None, col_lbl='imdat', ra_gc=None, dec_gc=None,
