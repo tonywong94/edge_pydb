@@ -3,9 +3,12 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirement.txt", 'r') as req:
+    requirement = req.read()
+
 setuptools.setup(
     name="edge_pydb",
-    version="0.0.1",
+    version="0.0.4",
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
@@ -18,4 +21,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    license='MIT',
+    include_package_data=True,
+    install_requires=requirement,
 )
