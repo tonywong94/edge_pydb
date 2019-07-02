@@ -1,3 +1,4 @@
+
 path = input("where do you want to put the files? ")
 print("the path is %s" % path)
 
