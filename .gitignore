@@ -8,3 +8,4 @@ __pycache__/
 dbfiles
 dist
 SQL-test.ipynb
+build/lib
