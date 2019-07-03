@@ -29,7 +29,7 @@ if not _config:
 json.dump(_config, _fp)
 _fp.close()
 
-def list_file(file_type=None):
+def listfiles(file_type=None):
     suffix = ''
     if file_type:
         suffix = file_type
@@ -41,17 +41,17 @@ def list_file(file_type=None):
             _files.append(key)
     return _files
 
-def get_file(names):
+def getfiles(names):
     if isinstance(names, list):
         retval = []
         for name in names:
             if name not in _config:
-                raise Exception("Cannot find the specified _file %s" % name)
+                raise Exception("Cannot find the specified file %s" % name)
             retval.append(_config[name])
         return retval
     else:
         if names not in _config:
-            raise Exception("Cannot find the specified _file %s" % names)
+            raise Exception("Cannot find the specified file %s" % names)
         return _config[names]
 
 
