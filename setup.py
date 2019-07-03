@@ -15,7 +15,13 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tonywong94/edge_pydb",
-    packages=setuptools.find_packages(),
+    packages=['edge_pydb'],
+    package_data={
+        'edge_pydb': [
+            'dat_*/*/*.csv',
+            'img_*/*/*.csv'
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
