@@ -9,3 +9,8 @@ dbfiles
 dist
 SQL-test.ipynb
 build/lib
+
+# created by distribution
+dist/
+*/__pycache__/
+*.egg-info
