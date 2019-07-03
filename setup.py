@@ -8,14 +8,20 @@ with open("requirement.txt", 'r') as req:
 
 setuptools.setup(
     name="edge_pydb",
-    version="0.0.4",
+    version="0.1.1",
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tonywong94/edge_pydb",
-    packages=setuptools.find_packages(),
+    packages=['edge_pydb'],
+    package_data={
+        'edge_pydb': [
+            'dat_*/*/*.csv',
+            'img_*/*/*.csv'
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
