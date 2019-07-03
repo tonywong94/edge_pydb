@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: edge-pydb
-Version: 0.0.4
+Version: 0.1.0
 Summary: Python based database for CARMA EDGE
 Home-page: https://github.com/tonywong94/edge_pydb
 Author: Tony Wong
