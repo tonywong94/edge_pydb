@@ -2,7 +2,6 @@
 LICENSE
 MANIFEST.in
 README.md
-build.sh
 requirement.txt
 setup.cfg
 setup.py
