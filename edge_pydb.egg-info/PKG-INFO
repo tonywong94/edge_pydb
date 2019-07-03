@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: edge-pydb
+Version: 0.0.4
+Summary: Python based database for CARMA EDGE
+Home-page: https://github.com/tonywong94/edge_pydb
+Author: Tony Wong
+Author-email: tonywong94@gmail.com
+License: MIT
+Description: # edge_pydb
+        Python-based database for CARMA EDGE
+        
+        The EDGE database has several components:
+        * Zero-dimensional tables (one value per galaxy), found in `dat_glob`.
+        * One-dimensional tables (e.g. radial profiles or spectra), found in `dat_prof`.
+        * Downsampled 2D or 3D images, saved as HDF5 binary tables in the `img_` directories.
+        
+        Sub-directories provide a space for building the database from the original text or FITS files.  Sample HDF5 files are provided for one galaxy for testing purposes; the entire set is too large to host on a Github repo.
+        
+        A `demo_notebk` folder provides examples of accessing database values from a Jupyter notebook.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
