@@ -1,16 +1,16 @@
 # find _configuration _file
-import os
-import json
+import os as _os
+import json as _json
 
 
-_ROOT = os.path.abspath(os.path.dirname(__file__))
+_ROOT = _os.path.abspath(_os.path.dirname(__file__))
 
-_filepath = os.path.join(_ROOT, 'config.json')
+_filepath = _os.path.join(_ROOT, 'config.json')
 # print(_ROOT)
 # print(_filepath)
 try:
     _fp = open(_filepath, 'r+')
-    _config = json.load(_fp)
+    _config = _json.load(_fp)
 
 except:
     _fp = open(_filepath, 'w') 
@@ -18,16 +18,16 @@ except:
 
 if not _config:
     # print(os.listdir(_ROOT))
-    for _root, _dirs, _files in os.walk(_ROOT):
+    for _root, _dirs, _files in _os.walk(_ROOT):
         # print(_files)
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 # print(_file)
                 # print(os.path.join(_ROOT, _file))
                 # print(_dirs)
-                _config[_file] = os.path.join(_root, _file)
+                _config[_file] = _os.path.join(_root, _file)
 
-json.dump(_config, _fp)
+_json.dump(_config, _fp)
 _fp.close()
 
 def listfiles(file_type=None):
