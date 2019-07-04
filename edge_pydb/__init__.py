@@ -5,7 +5,7 @@ import json
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
 
-_filepath = os.path.join(_ROOT, '_config.json')
+_filepath = os.path.join(_ROOT, 'config.json')
 # print(_ROOT)
 # print(_filepath)
 try:
@@ -24,7 +24,8 @@ if not _config:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 # print(_file)
                 # print(os.path.join(_ROOT, _file))
-                _config[_file] = os.path.join(_ROOT, _file)
+                # print(_dirs)
+                _config[_file] = os.path.join(_root, _file)
 
 json.dump(_config, _fp)
 _fp.close()
@@ -46,12 +47,12 @@ def getfiles(names):
         retval = []
         for name in names:
             if name not in _config:
-                raise Exception("Cannot find the specified file %s" % name)
+                raise Exception("Cannot find the specified file: %s" % name)
             retval.append(_config[name])
         return retval
     else:
         if names not in _config:
-            raise Exception("Cannot find the specified file %s" % names)
+            raise Exception("Cannot find the specified file: %s" % names)
         return _config[names]
 
 
