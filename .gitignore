@@ -14,3 +14,5 @@ build/lib
 dist/
 */__pycache__/
 *.egg-info
+test/
+build.sh
