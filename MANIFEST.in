@@ -1,6 +1,1 @@
-# include dat_glob/*/*.csv
-# include dat_prof/*/*.csv
-# include edge_pydb/*.py
-# include *.md
-# include *.cfg
-# include *.txt
+recursive-exclude edge_pydb *.txt
