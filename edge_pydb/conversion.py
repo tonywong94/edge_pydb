@@ -86,7 +86,7 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 #         return np.nan, np.nan
 
 
-# BPT classification, see Husemann et al. (2013) Figure 7.
+# BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
 def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
 
     good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
@@ -203,23 +203,3 @@ def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
 #         return unp.std_devs(uOH_N2)
 #     else:            
 #         return unp.nominal_values(uOH_N2)
-
-
-# Prepare a 2D histogram from a scatterplot
-def xy2hist(xarr, yarr, log=True, bins=[100,100]):
-    if log:
-        x = np.log10(xarr)
-        y = np.log10(yarr)
-    else:
-        x = xarr
-        y = yarr
-    # Histogram the data
-    # https://stackoverflow.com/questions/49662964/density-scatter-plot-for-huge-dataset-in-matplotlib
-    hh, locx, locy = np.histogram2d(x, y, bins=bins)
-    # Get the bin value for each point
-    z = np.array([hh[np.argmax(a<=locx[1:]),np.argmax(b<=locy[1:])] for a,b in zip(x,y)])
-    idx = z.argsort()
-    x, y, z = x[idx], y[idx], z[idx]
-    if log:
-        z = np.log10(z)
-    return x, y, z, hh, locx, locy
