@@ -95,9 +95,9 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     o3hb = np.full(len(flux_oiii), np.nan)
     o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])    
 
-    kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47)
-    kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05)
-    cidfer10 = lambda nii: 0.48 + 1.01*nii
+    kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47) # Eq. 5 of 2001ApJ...556..121K
+    kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05) # Eq. 1 of 2003MNRAS.346.1055K
+    cidfer10 = lambda nii: 0.48 + 1.01*nii          # Eq. 3 of 2010MNRAS.403.1036C
 
     BPT = np.full(len(n2ha), np.nan)
     sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
