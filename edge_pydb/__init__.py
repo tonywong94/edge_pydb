@@ -11,7 +11,10 @@ _runtime = False
 
 try:
     _fp = open(_filepath, 'r+')
-    _config = _json.load(_fp)
+    if _os.stat(_filepath).st_size == 0:
+        _config = {}
+    else:
+        _config = _json.load(_fp)
 
 except FileNotFoundError:
     _fp = open(_filepath, 'w') 
@@ -19,10 +22,9 @@ except FileNotFoundError:
 
 except OSError as _err:
     if _err.errno == 30:
-        print("WARNING! Read-only file system, cannot record the package data file location.\n\
-            Please consider change the mode of this file for reliability.")
-        print("If you need to change the files in the package data, \
-            please consider run as root, the manipulation of files requires the sudo priority.")
+        print("WARNING! Read-only file system, cannot record the package data file location.\n" + \
+            "Please consider change the mode of this file for reliability.")
+        print("If you need to change the files in the package data, please consider run as root, the manipulation of files requires the sudo priority.")
     _runtime = True
     _config = {}
 
@@ -32,9 +34,7 @@ def _walkthrough(dir=_ROOT):
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 if _file in retval:
-                    print("{} location will be changed\n\
-                        Current location: {}\n\
-                        New location: {}".format(_file, retval[_file], _os.path.join(_root, _file)))
+                    print("{} location will be changed\nCurrent location: {}\nNew location: {}".format(_file, retval[_file], _os.path.join(_root, _file)))
                 retval[_file] = _os.path.join(_root, _file)
     return retval
 
