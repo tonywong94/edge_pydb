@@ -8,7 +8,7 @@ with open("requirement.txt", 'r') as req:
 
 setuptools.setup(
     name="edge_pydb",
-    version="0.1.8",
+    version="0.1.9",
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
@@ -26,7 +26,7 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: MIT Lilcense",
         "Operating System :: OS Independent",
     ],
     license='MIT',
