@@ -23,7 +23,7 @@ except FileNotFoundError:
 except OSError as _err:
     if _err.errno == 30:
         print("WARNING! Read-only file system, cannot record the package data file location.\n" + \
-            "Please consider change the mode of this file for reliability.")
+            "For better longterm performance, consider provide a config file by using the extConfig() function.")
         print("If you need to change the files in the package data, please consider run as root, the manipulation of files requires the sudo priority.")
     _runtime = True
     _config = {}
@@ -47,6 +47,33 @@ if not _config:
 
 if not _runtime:
     _fp.close()
+
+
+'''
+This function will read the config from a file or write back to a file.
+If the persistent is true, then will directly use the provided file rather than the _config in the package directory.
+'''
+def extConfig(src, mode, persistent=False):
+    valid = {'w', 'r', 'u'}
+    if mode not in valid:
+        print("The valid mode is\n" + \
+            "'w': write\n'r': read\n'u':update, update the current config with the new file")
+        return
+    if mode == 'w':
+        _fp = open(src, 'w')
+        _config = _json.dump(_config, _fp)
+    else:
+        _fp = open(src, 'r')
+        if mode == 'r':
+            _config = _json.load(_fp)
+        elif mode == 'u':
+            _config.update(_json.load(_fp))
+
+    _fp.close()
+    if persistent:
+        _filepath = src
+        _runtime = False
+
 
 
 '''
@@ -128,7 +155,7 @@ def Addfile(src, dest='', copy=True):
     else:
         _config[name] = src
 
-    print("Updated file %s" % name)    
+    print("Update file %s" % name)    
     if not _runtime:
         with open(_filepath, 'w') as _fp:
             _json.dump(_config, _fp)
