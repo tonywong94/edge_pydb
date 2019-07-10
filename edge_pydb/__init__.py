@@ -123,18 +123,21 @@ def Addfile(src, dest='', copy=True):
         _json.dump(_config, _fp)
 
 
-def AddDir(src, dest='', copy=True):
-    dirname = _os.path.abspath(_os.path.dirname(src))
+def AddDir(src, dest='', copy=True, overwrite=False):
+    dirname = _os.path.basename(src)
+    # dirname = _os.path.abspath(_os.path.dirname(src))
     if not dest:
-        if not _os.path.exists(_ROOT + '/' + dirname):
-            dest = _ROOT + dirname
-        else:
-            dest = _ROOT + '/data/' + dirname
-
-        _os.mkdir(dest)
+        dest = _ROOT + '/' + dirname
         
     if copy:
-        _shutil.copytree(src, dest)
+        try:
+            _shutil.copytree(src, dest)
+        except:
+            if overwrite:
+                _shutil.rmtree(dest)
+                _shutil.copytree(src, dest)
+            else:
+                _shutil.copy(src, dest)
         _config.update(_walkthrough(dest))
     else:
         _config.update(_walkthrough(src))
