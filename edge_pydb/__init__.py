@@ -42,9 +42,10 @@ def _walkthrough(dir=_ROOT):
 if not _config:
     # print(os.listdir(_ROOT))
     _config = _walkthrough()
+    if not _runtime:
+        _json.dump(_config, _fp)
 
 if not _runtime:
-    _json.dump(_config, _fp)
     _fp.close()
 
 
