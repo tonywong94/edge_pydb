@@ -16,3 +16,4 @@ dist/
 *.egg-info
 test/
 build.sh
+*.json
