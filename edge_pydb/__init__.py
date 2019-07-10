@@ -146,4 +146,4 @@ def AddDir(src, dest='', copy=True, overwrite=False):
         _json.dump(_config, _fp)
 
 
-from edge_pydb import conversion, fitsextract
+from edge_pydb import conversion, fitsextract, xy2hist
