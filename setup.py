@@ -8,7 +8,7 @@ with open("requirement.txt", 'r') as req:
 
 setuptools.setup(
     name="edge_pydb",
-    version="0.1.7",
+    version="0.1.8",
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
@@ -20,6 +20,7 @@ setuptools.setup(
         'edge_pydb': [
             'dat_*/*/*.csv',
             'img_*/*/*.csv',
+            'img_*/*.hdf5',
             '_config.json'
         ]
     },
