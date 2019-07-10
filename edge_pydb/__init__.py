@@ -1,4 +1,3 @@
-# find _configuration _file
 import os as _os
 import json as _json
 import shutil as _shutil
@@ -8,28 +7,34 @@ import shutil as _shutil
 _ROOT = _os.path.abspath(_os.path.dirname(__file__))
 
 _filepath = _os.path.join(_ROOT, '_config.json')
-# print(_ROOT)
-# print(_filepath)
+_runtime = False
+
 try:
     _fp = open(_filepath, 'r+')
     _config = _json.load(_fp)
 
-except:
+except FileNotFoundError:
     _fp = open(_filepath, 'w') 
     _config = {}
 
+except OSError as _err:
+    if _err.errno == 30:
+        print("WARNING! Read-only file system, cannot record the package data file location.\n\
+            Please consider change the mode of this file for reliability.")
+        print("If you need to change the files in the package data, \
+            please consider run as root, the manipulation of files requires the sudo priority.")
+    _runtime = True
+    _config = {}
 
-def _walkthrough(dir=''):
+def _walkthrough(dir=_ROOT):
     retval = {}
-    if not dir:
-        dir = _ROOT
     for _root, _dirs, _files in _os.walk(dir):
-        # print(_files)
         for _file in _files:
-            if _file.endswith('.csv') or _file.endswith('.hdf5') and _file not in retval:
-                # print(_file)
-                # print(os.path.join(_ROOT, _file))
-                # print(_dirs)
+            if _file.endswith('.csv') or _file.endswith('.hdf5'):
+                if _file in retval:
+                    print("{} location will be changed\n\
+                        Current location: {}\n\
+                        New location: {}".format(_file, retval[_file], _os.path.join(_root, _file)))
                 retval[_file] = _os.path.join(_root, _file)
     return retval
 
@@ -38,8 +43,9 @@ if not _config:
     # print(os.listdir(_ROOT))
     _config = _walkthrough()
 
-_json.dump(_config, _fp)
-_fp.close()
+if not _runtime:
+    _json.dump(_config, _fp)
+    _fp.close()
 
 
 '''
@@ -88,19 +94,22 @@ def getfiles(names, dir=False):
 
 
 # update the files
-def Updatefiles():
-    tmp = _walkthrough()
+def Updatefiles(dir=_ROOT):
+    tmp = _walkthrough(dir)
     for k, v in tmp:
         if k not in _config:
-            print("Added file %s" % k)
+            print("Add file %s" % k)
         elif v != _config[k]:
-            print("Updated file %s" % k)
-    _config = tmp
-    with open(_filepath, 'w') as _fp:
-        _json.dump(_config, _fp)
+            print("Update file %s" % k)
+    _config.update(tmp)
+    if not _runtime:
+        with open(_filepath, 'w') as _fp:
+            _json.dump(_config, _fp)
 
 
 def Addfile(src, dest='', copy=True):
+    if _runtime:
+        print("WARNING! No sudo permission, take care, will break")
     name = _os.path.basename(src)
     src = _os.path.abspath(src)
     if copy:
@@ -119,11 +128,16 @@ def Addfile(src, dest='', copy=True):
         _config[name] = src
 
     print("Updated file %s" % name)    
-    with open(_filepath, 'w') as _fp:
-        _json.dump(_config, _fp)
+    if not _runtime:
+        with open(_filepath, 'w') as _fp:
+            _json.dump(_config, _fp)
+    else:
+        print("WARNING! The location of this file will be recorded runtime only")
 
 
 def AddDir(src, dest='', copy=True, overwrite=False):
+    if _runtime:
+        print("WARNING! No sudo permission, take care, will break")
     dirname = _os.path.basename(src)
     # dirname = _os.path.abspath(_os.path.dirname(src))
     if not dest:
@@ -132,18 +146,21 @@ def AddDir(src, dest='', copy=True, overwrite=False):
     if copy:
         try:
             _shutil.copytree(src, dest)
-        except:
+        except FileExistsError:
             if overwrite:
                 _shutil.rmtree(dest)
                 _shutil.copytree(src, dest)
             else:
                 _shutil.copy(src, dest)
-        _config.update(_walkthrough(dest))
+        Updatefiles(dest)
     else:
-        _config.update(_walkthrough(src))
+        Updatefiles(src)
 
-    with open(_filepath, 'w') as _fp:
-        _json.dump(_config, _fp)
+    if not _runtime:
+        with open(_filepath, 'w') as _fp:
+            _json.dump(_config, _fp)
+    else:
+        print("WARNING! The location of this file will be recorded runtime only")
 
 
 from edge_pydb import conversion, fitsextract, xy2hist
