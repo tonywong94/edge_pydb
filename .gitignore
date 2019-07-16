@@ -9,6 +9,7 @@ dbfiles
 dist
 SQL-test.ipynb
 build/lib
+hispec_default.csv
 
 # created by distribution
 dist/
