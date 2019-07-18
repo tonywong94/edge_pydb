@@ -1,32 +1,33 @@
+from edge_pydb import conversion, fitsextract, xy2hist
 import os as _os
 import json as _json
 import shutil as _shutil
-
+import requests
 
 
 _ROOT = _os.path.abspath(_os.path.dirname(__file__))
 
 _filepath = _os.path.join(_ROOT, '_config.json')
 _runtime = False
+_config = {}
 
 try:
     _fp = open(_filepath, 'r+')
-    if _os.stat(_filepath).st_size == 0:
-        _config = {}
-    else:
+    if _os.stat(_filepath).st_size > 0:
         _config = _json.load(_fp)
 
 except FileNotFoundError:
-    _fp = open(_filepath, 'w') 
-    _config = {}
+    _fp = open(_filepath, 'w')
+    # _config = {}
 
 except OSError as _err:
     if _err.errno == 30:
-        print("WARNING! Read-only file system, cannot record the package data file location.\n" + \
-            "For better longterm performance, consider provide a config file by using the extConfig() function.")
-        print("If you need to change the files in the package data, please consider run as root, the manipulation of files requires the sudo priority.")
+        print("WARNING! Read-only file system, cannot save the package data file location.\n" +
+              "For better longterm performance, consider providing a config file by using the extConfig() function.")
+        print("If you need to change the files in the package data, please consider running as root, the manipulation of files requires the sudo priority.")
     _runtime = True
-    _config = {}
+    # _config = {}
+
 
 def _walkthrough(dir=_ROOT):
     retval = {}
@@ -34,9 +35,34 @@ def _walkthrough(dir=_ROOT):
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 if _file in retval:
-                    print("{} redundant file detected\n--Current location: {}\n++New location: {}".format(_file, retval[_file], _os.path.join(_root, _file)))
+                    print("{} redundant file detected\n--Current location: {}\n++New location: {}".format(
+                        _file, retval[_file], _os.path.join(_root, _file)))
                 retval[_file] = _os.path.join(_root, _file)
     return retval
+
+
+# update the files
+def updatefiles(dir=_ROOT):
+    tmp = _walkthrough(dir)
+    for k, v in tmp.items():
+        if k not in _config.keys():
+            print("Add file %s" % k)
+        elif v != _config[k]:
+            print("Update file %s" % k)
+    _config.update(tmp)
+    if not _runtime:
+        with open(_filepath, 'w') as _fp:
+            _json.dump(_config, _fp)
+
+
+def downloadFiles(file, loc='', user='', password='', url='http://www.astro.umd.edu/~bolatto/EDGE/data/pybase/'):
+    if not loc:
+        loc = _ROOT + '/data/'
+    data = requests.get(url + file, verify=False, auth=(user, password))
+    if data.status_code != 200:
+        data.raise_for_status()
+    with open(loc + file, "wb") as _fp:
+        _fp.write(data.content)
 
 
 if not _config:
@@ -53,11 +79,14 @@ if not _runtime:
 This function will read the config from a file or write back to a file.
 If the persistent is true, then will directly use the provided file rather than the _config in the package directory.
 '''
+# some bugs here
+
+
 def extConfig(src, mode, persistent=False):
     valid = {'w', 'r', 'u'}
     if mode not in valid:
-        print("The valid mode is\n" + \
-            "'w': write\n'r': read\n'u':update, update the current config with the new file")
+        print("The valid mode is\n" +
+              "'w': write\n'r': read\n'u':update, update the current config with the new file")
         return
     if mode == 'w':
         _fp = open(src, 'w')
@@ -75,12 +104,12 @@ def extConfig(src, mode, persistent=False):
         _runtime = False
 
 
-
 '''
 List the current available files in the package data directory
 list all the specified file type such as hdf5 or csv
 list all the files otherwise
 '''
+
 
 def listfiles(file_type=None):
     suffix = ''
@@ -93,11 +122,12 @@ def listfiles(file_type=None):
             print(key)
             _files.append(key)
     return _files
-    
+
 
 '''
 Get all the files by its file name, can either be a single file or a list of files
 '''
+
 
 def getfiles(names):
     if isinstance(names, list):
@@ -121,21 +151,7 @@ def getfiles(names):
             return _config[names]
 
 
-# update the files
-def Updatefiles(dir=_ROOT):
-    tmp = _walkthrough(dir)
-    for k, v in tmp.items():
-        if k not in _config.keys():
-            print("Add file %s" % k)
-        elif v != _config[k]:
-            print("Update file %s" % k)
-    _config.update(tmp)
-    if not _runtime:
-        with open(_filepath, 'w') as _fp:
-            _json.dump(_config, _fp)
-
-
-def Addfile(src, dest='', copy=True, overwrite=False):
+def addfile(src, dest='', copy=True, overwrite=False):
     if _runtime:
         print("WARNING! No sudo permission, take care, will break")
     name = _os.path.basename(src)
@@ -168,22 +184,22 @@ def Addfile(src, dest='', copy=True, overwrite=False):
                 raise FileExistsError('%s exists: ' % name + _config[name])
         _config[name] = src
 
-    print("Update file %s" % name)    
+    print("Update file %s" % name)
     if not _runtime:
         with open(_filepath, 'w') as _fp:
             _json.dump(_config, _fp)
     else:
-        print("WARNING! The location of this file will be recorded runtime only")
+        print("WARNING! The location of this file will be saved runtime only")
 
 
-def AddDir(src, dest='', copy=True, overwrite=False):
+def addDir(src, dest='', copy=True, overwrite=False):
     if _runtime:
         print("WARNING! No sudo permission, take care, will break")
     dirname = _os.path.basename(src)
     # dirname = _os.path.abspath(_os.path.dirname(src))
     if not dest:
         dest = _ROOT + '/' + dirname
-        
+
     if copy:
         try:
             _shutil.copytree(src, dest)
@@ -202,7 +218,44 @@ def AddDir(src, dest='', copy=True, overwrite=False):
         with open(_filepath, 'w') as _fp:
             _json.dump(_config, _fp)
     else:
-        print("WARNING! The location of this file will be recorded runtime only")
+        print("WARNING! The location of this file will be saved runtime only")
 
 
-from edge_pydb import conversion, fitsextract, xy2hist
+_init_files = ['edge.cocube_smo7.hdf5', 'edge.comom_smo7.hdf5',
+               'edge.pipe3d.hdf5', 'edge_hispectra.csv', 'edgealma_hispectra.csv']
+_flag = False
+for _item in _init_files:
+    if _item not in list(_config.keys()):
+        _flag = True
+if _flag:
+    _setup = -1
+    _down = False
+    while _setup == -1:
+        if _setup == -1:
+            _setup = input(
+                "Do you want to download the additional package data? [y]/n/info ").lower()
+        if _setup == 'info':
+            print("the following files will be downloaded: %s" % _init_files)
+            _setup = -1
+        elif _setup in ['', 'y', 'yes']:
+            _down = True
+            break
+        elif _setup in ['n', 'no']:
+            break
+        else:
+            print("Input is not recognized, please re-enter")
+            _setup = -1
+
+    if _down:
+        _user = input("Please type your user name: ")
+        _password = input("Please type your password: ")
+        _location = input(
+            "Please type path to download files to: default [{}]".format(_ROOT + '/data/'))
+        if not _location:
+            _location = _ROOT + '/data/'
+        for _item in _init_files:
+            if _item not in list(_config.keys()):
+                print("Downloading %s" % _item)
+                downloadFiles(_item, loc=_location,
+                              user=_user, password=_password)
+        updatefiles(_location)

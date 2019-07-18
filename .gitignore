@@ -19,3 +19,6 @@ test/
 build.sh
 *.json
 *.pdf
+
+# runtime file
+_config.json
