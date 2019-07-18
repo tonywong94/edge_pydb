@@ -16,9 +16,9 @@ dist/
 */__pycache__/
 *.egg-info
 test/
-build.sh
+*.sh
 *.json
 *.pdf
-
+Untitled*
 # runtime file
 _config.json

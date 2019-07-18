@@ -35,7 +35,7 @@ def _walkthrough(dir=_ROOT):
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 if _file in retval:
-                    print("{} redundant file detected\n--Current location: {}\n++New location: {}".format(
+                    print("{} redundant file detected\n--Current location: {}\n++New location: {}\n".format(
                         _file, retval[_file], _os.path.join(_root, _file)))
                 retval[_file] = _os.path.join(_root, _file)
     return retval
@@ -57,6 +57,8 @@ def updatefiles(dir=_ROOT):
 
 def downloadFiles(file, loc='', user='', password='', url='http://www.astro.umd.edu/~bolatto/EDGE/data/pybase/'):
     if not loc:
+        if not _os.path.exists(_ROOT + '/data'):
+                _os.mkdir(_ROOT + '/data')
         loc = _ROOT + '/data/'
     data = requests.get(url + file, verify=False, auth=(user, password))
     if data.status_code != 200:
@@ -251,11 +253,12 @@ if _flag:
         _password = input("Please type your password: ")
         _location = input(
             "Please type path to download files to: default [{}]".format(_ROOT + '/data/'))
-        if not _location:
-            _location = _ROOT + '/data/'
         for _item in _init_files:
             if _item not in list(_config.keys()):
                 print("Downloading %s" % _item)
                 downloadFiles(_item, loc=_location,
                               user=_user, password=_password)
-        updatefiles(_location)
+        if _location:
+            updatefiles(_location)
+        else:
+            updatefiles()
