@@ -2,7 +2,7 @@ from edge_pydb import conversion, fitsextract, xy2hist
 import os as _os
 import json as _json
 import shutil as _shutil
-import requests
+import requests as _requests
 
 
 _ROOT = _os.path.abspath(_os.path.dirname(__file__))
@@ -62,7 +62,7 @@ def downloadFiles(file, loc='', user='', password='', url='http://www.astro.umd.
         if not _os.path.exists(_ROOT + '/data'):
             _os.mkdir(_ROOT + '/data')
         loc = _ROOT + '/data/'
-    data = requests.get(url + file, verify=False, auth=(user, password))
+    data = _requests.get(url + file, verify=False, auth=(user, password))
     if data.status_code != 200:
         data.raise_for_status()
     with open(loc + file, "wb") as _fp:
