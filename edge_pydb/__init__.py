@@ -9,6 +9,7 @@ _ROOT = _os.path.abspath(_os.path.dirname(__file__))
 
 _filepath = _os.path.join(_ROOT, '_config.json')
 _runtime = False
+global _config
 _config = {}
 
 try:
@@ -24,7 +25,8 @@ except OSError as _err:
     if _err.errno == 30:
         print("WARNING! Read-only file system, cannot save the package data file location.\n" +
               "For better longterm performance, consider providing a config file by using the extConfig() function.")
-        print("If you need to change the files in the package data, please consider running as root, the manipulation of files requires the sudo priority.")
+        print("If you need to change the files in the package data, please consider running as root, \
+        the manipulation of files requires the sudo priority.")
     _runtime = True
     # _config = {}
 
@@ -58,7 +60,7 @@ def updatefiles(dir=_ROOT):
 def downloadFiles(file, loc='', user='', password='', url='http://www.astro.umd.edu/~bolatto/EDGE/data/pybase/'):
     if not loc:
         if not _os.path.exists(_ROOT + '/data'):
-                _os.mkdir(_ROOT + '/data')
+            _os.mkdir(_ROOT + '/data')
         loc = _ROOT + '/data/'
     data = requests.get(url + file, verify=False, auth=(user, password))
     if data.status_code != 200:
@@ -79,13 +81,15 @@ if not _runtime:
 
 '''
 This function will read the config from a file or write back to a file.
-If the persistent is true, then will directly use the provided file rather than the _config in the package directory.
+If the persistent is true, then will directly use the provided file 
+rather than the _config in the package directory.
 '''
 # some bugs here
 
 
 def extConfig(src, mode, persistent=False):
     valid = {'w', 'r', 'u'}
+    global _config
     if mode not in valid:
         print("The valid mode is\n" +
               "'w': write\n'r': read\n'u':update, update the current config with the new file")
@@ -162,7 +166,7 @@ def addfile(src, dest='', copy=True, overwrite=False):
         if dest:
             if name in _config.keys():
                 if overwrite:
-                    os.remove(_config[name])
+                    _os.remove(_config[name])
                 else:
                     raise FileExistsError(_config[name])
             _shutil.copyfile(src, dest)
@@ -212,9 +216,9 @@ def addDir(src, dest='', copy=True, overwrite=False):
             else:
                 dest = _ROOT + '/data/' + dirname
                 _shutil.copytree(src, dest)
-        Updatefiles(dest)
+        updatefiles(dest)
     else:
-        Updatefiles(src)
+        updatefiles(src)
 
     if not _runtime:
         with open(_filepath, 'w') as _fp:
