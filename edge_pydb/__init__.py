@@ -57,7 +57,7 @@ def updatefiles(dir=_ROOT):
             _json.dump(_config, _fp)
 
 
-def downloadFiles(file, url, loc='', user='', password=''):
+def download(file, url, loc='', user='', password=''):
     if not loc:
         if not _os.path.exists(_ROOT + '/data'):
             _os.mkdir(_ROOT + '/data')
@@ -87,27 +87,21 @@ rather than the _config in the package directory.
 # some bugs here
 
 
-def extConfig(src, mode, persistent=False):
-    valid = {'w', 'r', 'u'}
+def save_config(src):
     global _config
-    if mode not in valid:
-        print("The valid mode is\n" +
-              "'w': write\n'r': read\n'u':update, update the current config with the new file")
-        return
-    if mode == 'w':
-        _fp = open(src, 'w')
+    with open(src, 'w') as _fp:
         _json.dump(_config, _fp)
-    else:
-        _fp = open(src, 'r')
-        if mode == 'r':
-            _config = _json.load(_fp)
-        elif mode == 'u':
-            _config.update(_json.load(_fp))
-    _fp.close()
 
-    if persistent:
+
+def load_config(src, readonly=False):
+    _fp = open(src, 'r')
+    if readonly:
+        _config = _json.load(_fp)
+    else:
+        _config.update(_json.load(_fp))
         _filepath = src
         _runtime = False
+    _fp.close()
 
 
 '''
@@ -134,8 +128,7 @@ def listfiles(file_type=None):
 Get all the files by its file name, can either be a single file or a list of files
 '''
 
-
-def getfiles(names):
+def fetch(names):
     if isinstance(names, list):
         retval = []
         for name in names:
@@ -198,7 +191,7 @@ def addfile(src, dest='', copy=True, overwrite=False):
         print("WARNING! The location of this file will be saved runtime only")
 
 
-def addDir(src, dest='', copy=True, overwrite=False):
+def add_from_dir(src, dest='', copy=True, overwrite=False):
     if _runtime:
         print("WARNING! No sudo permission, take care, will break")
     dirname = _os.path.basename(src)
@@ -225,4 +218,3 @@ def addDir(src, dest='', copy=True, overwrite=False):
             _json.dump(_config, _fp)
     else:
         print("WARNING! The location of this file will be saved runtime only")
-
