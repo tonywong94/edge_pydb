@@ -133,7 +133,7 @@ def fetch(names):
         retval = []
         for name in names:
             if name not in _config.keys():
-                raise Exception("Cannot find the specified file: %s" % name)
+                raise FileNotFoundError("Cannot find the specified file: %s" % name)
             # if dir:
             #     dirpath = _os.path.abspath(_os.path.dirname(name))
             #     if dirpath not in retval:
@@ -143,7 +143,7 @@ def fetch(names):
         return retval
     else:
         if names not in _config.keys():
-            raise Exception("Cannot find the specified file: %s" % names)
+            raise FileNotFoundError("Cannot find the specified file: %s" % names)
         # if dir:
         #     return _os.path.abspath(_os.path.dirname(names))
         else:
