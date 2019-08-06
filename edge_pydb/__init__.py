@@ -1,7 +1,7 @@
 from edge_pydb import conversion, fitsextract, xy2hist, util
 from astropy.table import Table as _Table
 from astropy.table import join as _join
-
+import h5py as _h5py
 
 class EdgeTable(_Table):
     def __init__(self, file='', path='', cols=None):
@@ -11,6 +11,10 @@ class EdgeTable(_Table):
                 self.read(file)
             elif path:
                 self.read(file, path)
+            else:
+                # no path specified with hdf5 file
+                f = _h5py.File(util.fetch(file), 'r')
+                print('Columns in',file,':\n',list(f.keys()))
         else:
             print("Choose from the following files to read:")
             util.listfiles(printing=True)
