@@ -3,8 +3,8 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("requirement.txt", 'r') as req:
-    requirement = req.read()
+with open("requirements.txt", 'r') as req:
+    requirements = req.read()
 
 setuptools.setup(
     name="edge_pydb",
@@ -31,5 +31,5 @@ setuptools.setup(
     ],
     license='MIT',
     include_package_data=True,
-    install_requires=requirement,
+    install_requires=requirements,
 )
