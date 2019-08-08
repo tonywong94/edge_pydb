@@ -4,10 +4,13 @@ from astropy.table import join as _join
 import h5py as _h5py
 
 class EdgeTable(_Table):
-    def __init__(self, file='', path='', cols=None):
-        super().__init__()
+    def __init__(self, file='', path='', cols=None, masked=None):
+        super().__init__(masked=masked)
         if file:
-            if file.endswith('csv'):
+            if file == 'list':
+                print("Choose from the following files to read:")
+                util.listfiles(printing=True)
+            elif file.endswith('csv'):
                 self.read(file)
             elif path:
                 self.read(file, path)
@@ -15,9 +18,9 @@ class EdgeTable(_Table):
                 # no path specified with hdf5 file
                 f = _h5py.File(util.fetch(file), 'r')
                 print('Columns in',file,':\n',list(f.keys()))
-        else:
-            print("Choose from the following files to read:")
-            util.listfiles(printing=True)
+#         else:
+#             print("Choose from the following files to read:")
+#             util.listfiles(printing=True)
         if cols:
             data = []
             for i in cols:
@@ -31,7 +34,10 @@ class EdgeTable(_Table):
         
     def read(self, file, path=''):
         if 'csv' in file:
-            self.table = _Table.read(util.fetch(file), format='ascii.ecsv')
+            try:
+                self.table = _Table.read(util.fetch(file), format='ascii.ecsv')
+            except ValueError:
+                self.table = _Table.read(util.fetch(file), format='ascii.csv')
         elif path:
             self.table = _Table.read(util.fetch(file), path=path)
         self.__dict__.update(self.table.__dict__)
@@ -55,7 +61,10 @@ class EdgeTable(_Table):
         # else:
         #     # raise the error
         #     target = None
-        self.table = _join(self.table, table.table, join_type=join_type, keys='Name')
+        if isinstance(table, _Table):
+            self.table = _join(self.table, table, join_type=join_type, keys='Name')
+        elif isinstance(table, self.__class__):
+            self.table = _join(self.table, table.table, join_type=join_type, keys='Name')
+            self.joined.append((table.srcfile, join_type))
         # update the data
         self.__dict__.update(self.table.__dict__)
-        self.joined.append((table.srcfile, join_type))
