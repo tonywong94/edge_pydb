@@ -46,7 +46,7 @@ A `demo_notebk` folder provides examples of accessing database values from a Jup
 `leda  = EdgeTable('edge_leda.csv', cols=['Name', 'ledaD25', 'ledaPA', 'ledaIncl'])`  
 `ctrpos.join(leda)`
 
-- will merge the sub-table from `edge_leda.csv` with the sub-table from `edge_coflux_smo7.csv`
+- will merge the sub-table from `edge_leda.csv` into `ctrpos`
 
 `comom = EdgeTable('NGC4047.comom_smo7.hdf5', path='smo')`
 
