@@ -27,7 +27,6 @@ class EdgeTable(_Table):
                 data.append(self.table[i])
             self.table = _Table(data=data)
             self.__dict__.update(self.table.__dict__)
-
         self.srcfile = file
         self.path = path
         self.joined = []
@@ -42,7 +41,7 @@ class EdgeTable(_Table):
             self.table = _Table.read(util.fetch(file), path=path)
         self.__dict__.update(self.table.__dict__)
         
-    def join(self, table, join_type='inner', path=''):
+    def join(self, table, join_type='inner', keys='Name'):
         # if table:
         #     self.table = _join(self.table, table.table)
         #     # update the data
@@ -62,9 +61,9 @@ class EdgeTable(_Table):
         #     # raise the error
         #     target = None
         if isinstance(table, _Table):
-            self.table = _join(self.table, table, join_type=join_type, keys='Name')
+            self.table = _join(self.table, table, join_type=join_type, keys=keys)
         elif isinstance(table, self.__class__):
-            self.table = _join(self.table, table.table, join_type=join_type, keys='Name')
+            self.table = _join(self.table, table.table, join_type=join_type, keys=keys)
             self.joined.append((table.srcfile, join_type))
         # update the data
         self.__dict__.update(self.table.__dict__)
