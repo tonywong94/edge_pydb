@@ -25,6 +25,8 @@
 # - {name: ledaDistMpc, unit: Mpc, datatype: float64, format: .2f, description: Luminosity distance in Mpc corresponding to ledaModz}
 # - {name: ledaHIflux, unit: Jy km / s, datatype: float64, format: .2f, description: 21cm flux from LEDA <m21> linearized}
 # delimiter: ','
+# meta: !!omap
+# - {date: '2019-08-31'}
 # schema: astropy-2.0
 Name,ledaRA,ledaDE,ledaMorph,ledaBar,ledaRing,ledaMultiple,ledaType,ledaPA,ledaBt,ledaIt,ledaVmaxg,ledaFIR,ledaVrad,ledaA_Bgal,ledaIncl,ledaVrot,ledaVvir,ledaModz,ledaD25,ledaAxrat,ledaDistMpc,ledaHIflux
 ARP220,15.5825825,23.5028574,Sm,,,,9.3,96.46,13.955,,147.44,8.283,5427.0,0.22,56.98,175.83,5662.2,34.585,1.11,0.6471,82.60,18.30

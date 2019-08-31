@@ -2,6 +2,7 @@
 
 from astropy.table import Table
 import numpy as np
+from datetime import datetime
 
 infile = "EDGE_COparameters_20180604.csv"
 
@@ -23,5 +24,21 @@ for cname in t.colnames:
     t[cname].description = headnames[cname]
     #t[cname].name = t[cname].name
 
+t['rfVsys'].unit = 'km / s'
+t['rfLSRK2helio'].unit = 'km / s'
+t['rfRflat'].unit = 'arcsec'
+t['rfVrotMaxL'].unit = 'km / s'
+t['rfeVrotMaxL'].unit = 'km / s'
+t['rfVrotMax'].unit = 'km / s'
+t['rfeVrotMax'].unit = 'km / s'
+t['rfPA'].unit = 'deg'
+t['rfInc'].unit = 'deg'
+t['rfKinXoff'].unit = 'arcsec'
+t['rfKinYoff'].unit = 'arcsec'
+t['rfKinRA'].unit = 'hour'
+t['rfKinDecl'].unit = 'deg'
+
+t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+print(t.meta)
 t.write('edge_rfpars.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
