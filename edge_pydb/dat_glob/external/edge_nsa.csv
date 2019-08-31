@@ -2,19 +2,16 @@
 # ---
 # datatype:
 # - {name: Name, datatype: string}
-# - {name: nsaZdist, datatype: float64, description: Redshift from NASA-Sloan Atlas
-#     using pecular velocity model of Willick+ 97}
-# - {name: nsaAu, unit: mag, datatype: float64, description: Galactic extinction in
-#     u from Schlegel+ 97}
-# - {name: nsaAg, unit: mag, datatype: float64, description: Galactic extinction in
-#     g from Schlegel+ 97}
-# - {name: nsaAr, unit: mag, datatype: float64, description: Galactic extinction in
-#     r from Schlegel+ 97}
-# - {name: nsaAi, unit: mag, datatype: float64, description: Galactic extinction in
-#     i from Schlegel+ 97}
-# - {name: nsaAz, unit: mag, datatype: float64, description: Galactic extinction in
-#     z from Schlegel+ 97}
+# - {name: nsaZdist, datatype: float64, description: Redshift from NASA-Sloan Atlas using pecular velocity model of Willick+ 97}
+# - {name: nsaAu, unit: mag, datatype: float64, description: Galactic extinction in u from Schlegel+ 97}
+# - {name: nsaAg, unit: mag, datatype: float64, description: Galactic extinction in g from Schlegel+ 97}
+# - {name: nsaAr, unit: mag, datatype: float64, description: Galactic extinction in r from Schlegel+ 97}
+# - {name: nsaAi, unit: mag, datatype: float64, description: Galactic extinction in i from Schlegel+ 97}
+# - {name: nsaAz, unit: mag, datatype: float64, description: Galactic extinction in z from Schlegel+ 97}
 # delimiter: ','
+# meta: !!omap
+# - {date: '2019-08-31'}
+# schema: astropy-2.0
 Name,nsaZdist,nsaAu,nsaAg,nsaAr,nsaAi,nsaAz
 ARP220,0.0188555,0.420428,0.414849,0.261436,0.192362,0.139517
 IC0480,0.0170385,0.349359,0.344723,0.217243,0.159845,0.115933

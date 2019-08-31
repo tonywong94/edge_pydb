@@ -3,89 +3,94 @@
 from astropy.coordinates import SkyCoord
 from astropy.table import Table, join
 import numpy as np
+from datetime import datetime
 #import numpy.ma as ma
 
 # Which tables to rewrite with this execution of the script
-#rewrite=['wise','rdist','rfpars']
-rewrite=['ned']
+rewrite=['ned','wise','nsa','califa','rdist']
 
 # Alberto's master table, last updated April 14, 2017
-t = Table.read('inputs/DETableFinal.csv', format='ascii.csv')
+t = Table.read('DETableFinal.csv', format='ascii.csv')
 
 # CALIFA Quality Tables
-tq5 = Table.read('inputs/QCflags_std_V500_DR3.csv', format='ascii.csv', 
-            names=('CALIFAID','Name','FLAG_OBS_SKYMAG','FLAG_OBS_EXT',
-                'FLAG_OBS_AM','FLAG_RED_STRAYLIGHT','FLAG_RED_DISP',
-                'FLAG_RED_CDISP','FLAG_RED_SKYLINES','FLAG_RED_LIMSB',
-                'FLAG_RED_ERRSPEC','FLAG_CAL_SPECPHOTO','FLAG_CAL_WL',
-                'FLAG_CAL_IMGQUAL','FLAG_CAL_SPECQUAL','FLAG_CAL_FLATSDSS',
-                'FLAG_CAL_REGISTRATION','FLAG_RELEASE','NOTES'),
-            data_start=0, comment='#')
-tq12 = Table.read('inputs/QCflags_std_V1200_DR3.csv', format='ascii.csv', 
-            names=('CALIFAID','Name','FLAG_OBS_SKYMAG','FLAG_OBS_EXT',
-                'FLAG_OBS_AM','FLAG_RED_STRAYLIGHT','FLAG_RED_DISP',
-                'FLAG_RED_CDISP','FLAG_RED_SKYLINES','FLAG_RED_LIMSB',
-                'FLAG_RED_ERRSPEC','FLAG_CAL_WL',
-                'FLAG_CAL_IMGQUAL','FLAG_CAL_SPECQUAL','FLAG_CAL_FLATSDSS',
-                'FLAG_CAL_REGISTRATION','FLAG_RELEASE','NOTES'),
-            data_start=0, comment='#')
-ca_qc = join(tq5, tq12, keys='Name', join_type='left', table_names=['V500','V1200'])
+if 'califa' in rewrite:
+    # Distance used in Pipe3D, needed to convert stmass_pc2
+    dl_pipe3d = Table.read('pipe3d_distance.txt', format='ascii.basic', 
+                           names=('Name', 'caDistP3d'))
+    dl_pipe3d['caDistP3d'] /= 3.0857e24
+    # Quality control flags
+    tq5 = Table.read('QCflags_std_V500_DR3.csv', format='ascii.csv', 
+                names=('CALIFAID','Name','FLAG_OBS_SKYMAG','FLAG_OBS_EXT',
+                    'FLAG_OBS_AM','FLAG_RED_STRAYLIGHT','FLAG_RED_DISP',
+                    'FLAG_RED_CDISP','FLAG_RED_SKYLINES','FLAG_RED_LIMSB',
+                    'FLAG_RED_ERRSPEC','FLAG_CAL_SPECPHOTO','FLAG_CAL_WL',
+                    'FLAG_CAL_IMGQUAL','FLAG_CAL_SPECQUAL','FLAG_CAL_FLATSDSS',
+                    'FLAG_CAL_REGISTRATION','FLAG_RELEASE','NOTES'),
+                data_start=0, comment='#')
+    tq12 = Table.read('QCflags_std_V1200_DR3.csv', format='ascii.csv', 
+                names=('CALIFAID','Name','FLAG_OBS_SKYMAG','FLAG_OBS_EXT',
+                    'FLAG_OBS_AM','FLAG_RED_STRAYLIGHT','FLAG_RED_DISP',
+                    'FLAG_RED_CDISP','FLAG_RED_SKYLINES','FLAG_RED_LIMSB',
+                    'FLAG_RED_ERRSPEC','FLAG_CAL_WL',
+                    'FLAG_CAL_IMGQUAL','FLAG_CAL_SPECQUAL','FLAG_CAL_FLATSDSS',
+                    'FLAG_CAL_REGISTRATION','FLAG_RELEASE','NOTES'),
+                data_start=0, comment='#')
+    ca_qc = join(tq5, tq12, keys='Name', join_type='left', table_names=['V500','V1200'])
 
-# NED positions
-nedt = Table.read('inputs/nedpos.txt', format='ascii.csv', delimiter='\t')
 
 # ---------------------------------------------------------------------------------
 
-# Write the LEDA table:
-t['ledaRA'].unit = 'hourangle'
-t['ledaRA'].description = 'RA J2000 from LEDA <celpos>'
-t['ledaDE'].unit = 'deg'
-t['ledaDE'].description = 'DEC J2000 from LEDA <celpos>' 
-t['ledaA_Bgal'].unit = 'mag'
-t['ledaA_Bgal'].description = 'Galactic A_B from LEDA <ag>'
-t['ledaType'].description = 'Morphological type from LEDA <t>'
-t['ledaD25'].unit = 'arcmin'
-t['ledaD25'].description = 'Apparent B diameter from LEDA <logd25> linearized' 
-t['ledaAxRatio'].description = 'Maj/min axis ratio from LEDA <logr25> linearized' 
-t['ledaPA'].unit = 'deg'
-t['ledaPA'].description = 'PA from LEDA <pa>, N to E' 
-t['ledaIncl'].unit = 'deg'
-t['ledaIncl'].description = 'Morph inclination from LEDA <incl>' 
-t['ledaVrad'].unit = 'km / s'
-t['ledaVrad'].description = 'cz from radio data from LEDA <vrad>' 
-t['ledaVmaxg'].unit = 'km / s'
-t['ledaVmaxg'].description = 'HI max v_rot not corr for incl from LEDA <vmaxg>' 
-t['ledaVrot'].unit = 'km / s'
-t['ledaVrot'].description = 'HI max v_rot corr for incl from LEDA <vrot>' 
-t['ledaMorph'].description = 'Hubble type from LEDA <type>' 
-t['ledaBar'].description = 'B = bar present from LEDA <bar>' 
-t['ledaRing'].description = 'R = ring present from LEDA <ring>' 
-t['ledaMultiple'].description = 'M = multiple system from LEDA <multiple>' 
-t['ledaBt'].unit = 'mag'
-t['ledaBt'].description = 'Apparent B total magnitude from LEDA <bt>' 
-t['ledaIt'].unit = 'mag'
-t['ledaIt'].description = 'Apparent I total magnitude from LEDA <it>' 
-t['ledaMfir'].unit = 'mag'
-t['ledaMfir'].description = 'FIR flux as magnitude from LEDA <mfir>' 
-t['ledaM21'].unit = 'mag'
-t['ledaM21'].description = 'HI line flux as magnitude from LEDA <m21>' 
-t['ledaVvir'].unit = 'km / s'
-t['ledaVvir'].description = 'Virgo infall corr cz from LEDA <vvir>' 
-t['ledaModz'].unit = 'mag'
-t['ledaModz'].description = 'Dist modulus from LEDA <modz> based on <vvir>; NGC2880 NGC4211 and UGC05498 substituted with NED scaled to same cosmology' 
-t['ledaDistMpc'].unit = 'Mpc'
-t['ledaDistMpc'].description = 'Distance in Mpc corresponding to ledaModz' 
-if 'leda' in rewrite:
-    outcols=['Name']
-    for cname in t.colnames:
-        if "leda" in cname:
-            outcols.append(cname)
-    newt = t[outcols]
-    newt.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
+# Write the LEDA table (edge_leda.csv) - now done in mkleda.py
+# t['ledaRA'].unit = 'hourangle'
+# t['ledaRA'].description = 'RA J2000 from LEDA <celpos>'
+# t['ledaDE'].unit = 'deg'
+# t['ledaDE'].description = 'DEC J2000 from LEDA <celpos>' 
+# t['ledaA_Bgal'].unit = 'mag'
+# t['ledaA_Bgal'].description = 'Galactic A_B from LEDA <ag>'
+# t['ledaType'].description = 'Morphological type from LEDA <t>'
+# t['ledaD25'].unit = 'arcmin'
+# t['ledaD25'].description = 'Apparent B diameter from LEDA <logd25> linearized' 
+# t['ledaAxRatio'].description = 'Maj/min axis ratio from LEDA <logr25> linearized' 
+# t['ledaPA'].unit = 'deg'
+# t['ledaPA'].description = 'PA from LEDA <pa>, N to E' 
+# t['ledaIncl'].unit = 'deg'
+# t['ledaIncl'].description = 'Morph inclination from LEDA <incl>' 
+# t['ledaVrad'].unit = 'km / s'
+# t['ledaVrad'].description = 'cz from radio data from LEDA <vrad>' 
+# t['ledaVmaxg'].unit = 'km / s'
+# t['ledaVmaxg'].description = 'HI max v_rot not corr for incl from LEDA <vmaxg>' 
+# t['ledaVrot'].unit = 'km / s'
+# t['ledaVrot'].description = 'HI max v_rot corr for incl from LEDA <vrot>' 
+# t['ledaMorph'].description = 'Hubble type from LEDA <type>' 
+# t['ledaBar'].description = 'B = bar present from LEDA <bar>' 
+# t['ledaRing'].description = 'R = ring present from LEDA <ring>' 
+# t['ledaMultiple'].description = 'M = multiple system from LEDA <multiple>' 
+# t['ledaBt'].unit = 'mag'
+# t['ledaBt'].description = 'Apparent B total magnitude from LEDA <bt>' 
+# t['ledaIt'].unit = 'mag'
+# t['ledaIt'].description = 'Apparent I total magnitude from LEDA <it>' 
+# t['ledaMfir'].unit = 'mag'
+# t['ledaMfir'].description = 'FIR flux as magnitude from LEDA <mfir>' 
+# t['ledaM21'].unit = 'mag'
+# t['ledaM21'].description = 'HI line flux as magnitude from LEDA <m21>' 
+# t['ledaVvir'].unit = 'km / s'
+# t['ledaVvir'].description = 'Virgo infall corr cz from LEDA <vvir>' 
+# t['ledaModz'].unit = 'mag'
+# t['ledaModz'].description = 'Dist modulus from LEDA <modz> based on <vvir>; NGC2880 NGC4211 and UGC05498 substituted with NED scaled to same cosmology' 
+# t['ledaDistMpc'].unit = 'Mpc'
+# t['ledaDistMpc'].description = 'Distance in Mpc corresponding to ledaModz' 
+# if 'leda' in rewrite:
+#     outcols=['Name']
+#     for cname in t.colnames:
+#         if "leda" in cname:
+#             outcols.append(cname)
+#     newt = t[outcols]
+#     newt.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
 # Write the NED table:
 if 'ned' in rewrite:
+    nedt = Table.read('nedpos.txt', format='ascii.csv', delimiter='\t')
     sc = SkyCoord(nedt['RA'],nedt['Dec']) #convert to degrees
     nedRA=[]
     nedDE=[]
@@ -103,6 +108,8 @@ if 'ned' in rewrite:
     newt['nedVopt']=nedt['cz']
     newt['nedVopt'].unit='km / s'
     newt['nedVopt'].description='cz from NED'
+    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+    print(newt.meta)
     newt.write('edge_ned.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
@@ -142,6 +149,8 @@ if 'wise' in rewrite:
         logged = np.around(np.log10(t[cname]),decimals=4)
         t[cname][:] = logged
     newt = t[outcols]
+    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+    print(newt.meta)
     newt.write('edge_wise.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 # Write the NSA table:
@@ -162,6 +171,8 @@ if 'nsa' in rewrite:
         if cname.startswith("nsa"):
             outcols.append(cname)
     newt = t[outcols]
+    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+    print(newt.meta)
     newt.write('edge_nsa.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 # Write the CALIFA table (edge_califa.csv):
@@ -237,8 +248,9 @@ if 'califa' in rewrite:
     for cname in t.colnames:
         if cname.startswith("ca") or cname.startswith("S"):
             outcols.append(cname)
-    newt = t[outcols]
-    joint = join(t,ca_qc,keys='Name',join_type='left')
+    tsel  = t[outcols]
+    newt  = join(tsel,dl_pipe3d,keys='Name',join_type='left')
+    joint = join(tsel,ca_qc,keys='Name',join_type='left')
     newt.add_columns([joint['FLAG_CAL_WL_V500'], 
                       joint['FLAG_CAL_REGISTRATION_V500'], 
                       joint['FLAG_CAL_IMGQUAL_V500']], 
@@ -247,12 +259,17 @@ if 'califa' in rewrite:
                       joint['FLAG_CAL_REGISTRATION_V1200'], 
                       joint['FLAG_CAL_IMGQUAL_V1200']], 
                       names=['caFlgWav12', 'caFlgReg12', 'caFlgImg12'])
+    newt['caDistP3d'].unit = 'Mpc'
+    newt['caDistP3d'].description = 'Luminosity distance in Mpc from get_proc_elines_CALIFA.csv'
     newt['caFlgWav5'].description  = 'Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V500'
     newt['caFlgWav12'].description = 'Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V1200'
     newt['caFlgReg5'].description  = 'Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V500'
     newt['caFlgReg12'].description = 'Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V1200'
     newt['caFlgImg5'].description  = 'Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V500'
     newt['caFlgImg12'].description = 'Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V1200'
+    del newt.meta['comments']
+    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+    print(newt.meta)
     newt.write('edge_califa.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 # Write the radial distributions table (edge_rdist.csv):
@@ -294,6 +311,8 @@ if 'rdist' in rewrite:
     newt = t[outcols+clist]
     for cname in clist:
         newt[cname].name = t[cname].name.replace('co','rd')
+    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+    print(newt.meta)
     newt.write('edge_rdist.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 # Write the RINGFIT kinematics table (edge_rfpars.csv) - now moved to derived

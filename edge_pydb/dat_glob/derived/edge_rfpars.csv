@@ -2,30 +2,36 @@
 # ---
 # datatype:
 # - {name: Name, datatype: string, description: standard EDGE-CALIFA galaxy name}
-# - {name: rfVsys, datatype: float64, description: CO relativistic helocentric vsys (km/s); see VsysFlag for how this was derived}
+# - {name: rfVsys, unit: km / s, datatype: float64, description: CO relativistic helocentric vsys (km/s); see VsysFlag for how this was
+#     derived}
 # - {name: rfVsysFlag, datatype: int64, description: how is Vsys derived; 0=CO kinematics; 1=Ha kinematics; 3=LEDA}
-# - {name: rfLSRK2helio, datatype: float64, description: conversion from LSRK velocity to heliocentric velocity (km/s); V(helio)=V(LSRK)-LSRK2helio}
-# - {name: rfRflat, datatype: float64, description: the radius (arcsec) at which the rotation curve flattens from the Lelli+16 algorithm}
-# - {name: rfVrotMaxL, datatype: float64, description: the maximum CO rotation velocity (relativistic km/s) from the Lelli+2016 algorithm}
-# - {name: rfeVrotMaxL, datatype: float64, description: the error in rfVrotMaxL from the Lelli+2016 algorithm}
+# - {name: rfLSRK2helio, unit: km / s, datatype: float64, description: conversion from LSRK velocity to heliocentric velocity (km/s);
+#     V(helio)=V(LSRK)-LSRK2helio}
+# - {name: rfRflat, unit: arcsec, datatype: float64, description: the radius (arcsec) at which the rotation curve flattens from the Lelli+16
+#     algorithm}
+# - {name: rfVrotMaxL, unit: km / s, datatype: float64, description: the maximum CO rotation velocity (relativistic km/s) from the Lelli+2016
+#     algorithm}
+# - {name: rfeVrotMaxL, unit: km / s, datatype: float64, description: the error in rfVrotMaxL from the Lelli+2016 algorithm}
 # - {name: rfVrotMaxLFlag, datatype: int64, description: 0 = either rfeVrotMaxL\rfVrotMaxL > 10% rfeVrotMaxL>rfVrotMaxL rfeVrotMaxL=0
 #     so rfRflat rfVrotMaxL and rfeVrotMaxL values are unreliable; 1 = rfRflat rfVrotMaxL and rfeVrotMaxL values are reliable}
-# - {name: rfVrotMax, datatype: float64, description: the maximum CO rotation velocity (relativistic km/s) using median Vrot at radii
+# - {name: rfVrotMax, unit: km / s, datatype: float64, description: the maximum CO rotation velocity (relativistic km/s) using median
+#     Vrot at radii larger than 12 arcsec as used in Levy+18}
+# - {name: rfeVrotMax, unit: km / s, datatype: float64, description: the error in rfVrotMax using standard deviation of Vrot at radii
 #     larger than 12 arcsec as used in Levy+18}
-# - {name: rfeVrotMax, datatype: float64, description: the error in rfVrotMax using standard deviation of Vrot at radii larger than 12
-#     arcsec as used in Levy+18}
-# - {name: rfPA, datatype: float64, description: position angle (degrees) ranging from 0-365 degrees defined counterclockwise from North
-#     to approaching side of major axis; see PAFlag for how this was derived}
+# - {name: rfPA, unit: deg, datatype: float64, description: position angle (degrees) ranging from 0-365 degrees defined counterclockwise
+#     from North to approaching side of major axis; see PAFlag for how this was derived}
 # - {name: rfPAFlag, datatype: int64, description: this describes where the PA listed is from; 0=CO kinematics; 1=Ha kinematics; 2=outer
 #     optical isophotes; 3=LEDA}
-# - {name: rfInc, datatype: float64, description: inclination (degrees); see IncFlag for how this was derived}
+# - {name: rfInc, unit: deg, datatype: float64, description: inclination (degrees); see IncFlag for how this was derived}
 # - {name: rfIncFlag, datatype: int64, description: this describes where the inclination listed is from; 0=CO kinematics; 1=Ha kinematics;
 #     2=outer optical isophotes; 3=LEDA}
-# - {name: rfKinXoff, datatype: float64, description: offset of CO kinematic center from ledaRA (arcsec); RA=ledaRA-xoff}
-# - {name: rfKinYoff, datatype: float64, description: offset of CO kinematic center from ledaDec (arcsec); Dec=ledaDE-yoff}
-# - {name: rfKinRA, datatype: float64, description: RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA-rfKinXoff}
-# - {name: rfKinDecl, datatype: float64, description: Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE-rfKinYoff}
+# - {name: rfKinXoff, unit: arcsec, datatype: float64, description: offset of CO kinematic center from ledaRA (arcsec); RA=ledaRA-xoff}
+# - {name: rfKinYoff, unit: arcsec, datatype: float64, description: offset of CO kinematic center from ledaDec (arcsec); Dec=ledaDE-yoff}
+# - {name: rfKinRA, unit: h, datatype: float64, description: RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA-rfKinXoff}
+# - {name: rfKinDecl, unit: deg, datatype: float64, description: Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE-rfKinYoff}
 # delimiter: ','
+# meta: !!omap
+# - {date: '2019-08-31'}
 # schema: astropy-2.0
 Name,rfVsys,rfVsysFlag,rfLSRK2helio,rfRflat,rfVrotMaxL,rfeVrotMaxL,rfVrotMaxLFlag,rfVrotMax,rfeVrotMax,rfPA,rfPAFlag,rfInc,rfIncFlag,rfKinXoff,rfKinYoff,rfKinRA,rfKinDecl
 ARP220,5247.0,0,-1.06,nan,0.0,113.9,0,138.9,137.9,337.7,2,29.7,2,0.0,0.0,15.5825867,23.5026682

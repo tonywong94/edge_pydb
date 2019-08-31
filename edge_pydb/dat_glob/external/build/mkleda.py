@@ -2,10 +2,11 @@
 
 from astropy.table import Table, join
 import numpy as np
+from datetime import datetime
 #import numpy.ma as ma
 
-list = 'alma'
-#list = 'edge'
+#list = 'alma'
+list = 'edge'
 
 # Process the output from HyperLEDA
 t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
@@ -107,6 +108,8 @@ t['ledaModz'].unit = 'mag'
 t['ledaModz'].description = 'Dist modulus from LEDA <modz> based on <vvir>' 
 
 t.remove_columns(['objname', 'logd25', 'logr25', 'm21'])
+t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+print(t.meta)
 t.write(list+'_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
