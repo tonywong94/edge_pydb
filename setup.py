@@ -6,9 +6,10 @@ with open("README.md", "r") as fh:
 with open("requirements.txt", 'r') as req:
     requirements = req.read()
 
+version_num = input("Input the new version number: ")
 setuptools.setup(
     name="edge_pydb",
-    version="0.1.20",
+    version=version_num,
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
