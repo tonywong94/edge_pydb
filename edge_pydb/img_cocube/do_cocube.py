@@ -2,21 +2,22 @@
 
 # Combine the 7" CO cubes into binary tables.
 
-import sys
-sys.path.append('../edge_pydb')
-from fitsextract import fitsextract
+from datetime import datetime
 import glob
 import os
 import numpy as np
 from astropy.table import Table, Column, join, vstack
+from edge_pydb import EdgeTable
+from edge_pydb.fitsextract import fitsextract
 
 # Get the orientation parameters from LEDA
-globaldir = '../dat_glob/'
-ort = Table.read(globaldir+'external/edge_leda.csv', format='ascii.ecsv')
+ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaIncl'])
+#ort = EdgeTable('edge_rfpars.csv', cols=['Name', 'rfPA', 'rfInc', 'rfKinRA', 'rfKinDecl'])
 ort.add_index('Name')
 
-filelist = glob.glob('fitsdata/*.co.smo7msk.K.fits.gz')
+filelist = sorted(glob.glob('fitsdata/*.co.smo7msk.K.fits.gz'))
 tablelist=[]
+
 for file in filelist:
     # Read the FOV masked, gain-corrected cube
     print('Reading',file)
@@ -48,9 +49,15 @@ for file in filelist:
                             unit=unit[j], dtype='f4')
             tab0.add_column(newcol)
     tablelist.append(tab0)
+
 if len(tablelist) > 0:
     t_merge = vstack(tablelist)
-print(t_merge[20:50])
+    print(t_merge[20:50])
+    t_merge['co_data'].description = 'brightness temperature in cube'
+    t_merge['co_rms'].description = 'estimated 1-sigma channel noise'
+    t_merge['co_dilmsk'].description = 'mask value for dilated mask'
+    t_merge['co_smomsk'].description = 'mask value for smoothed mask'
+    t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 if (len(filelist) > 1):
     outname = 'edge'
 else:

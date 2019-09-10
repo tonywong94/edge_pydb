@@ -27,11 +27,11 @@
 #     2=outer optical isophotes; 3=LEDA}
 # - {name: rfKinXoff, unit: arcsec, datatype: float64, description: offset of CO kinematic center from ledaRA (arcsec); RA=ledaRA-xoff}
 # - {name: rfKinYoff, unit: arcsec, datatype: float64, description: offset of CO kinematic center from ledaDec (arcsec); Dec=ledaDE-yoff}
-# - {name: rfKinRA, unit: h, datatype: float64, description: RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA-rfKinXoff}
+# - {name: rfKinRA, unit: hourangle, datatype: float64, description: RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA-rfKinXoff}
 # - {name: rfKinDecl, unit: deg, datatype: float64, description: Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE-rfKinYoff}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2019-08-31'}
+# - {date: '2019-09-07'}
 # schema: astropy-2.0
 Name,rfVsys,rfVsysFlag,rfLSRK2helio,rfRflat,rfVrotMaxL,rfeVrotMaxL,rfVrotMaxLFlag,rfVrotMax,rfeVrotMax,rfPA,rfPAFlag,rfInc,rfIncFlag,rfKinXoff,rfKinYoff,rfKinRA,rfKinDecl
 ARP220,5247.0,0,-1.06,nan,0.0,113.9,0,138.9,137.9,337.7,2,29.7,2,0.0,0.0,15.5825867,23.5026682
