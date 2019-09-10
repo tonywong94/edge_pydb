@@ -35,7 +35,7 @@ t['rfPA'].unit = 'deg'
 t['rfInc'].unit = 'deg'
 t['rfKinXoff'].unit = 'arcsec'
 t['rfKinYoff'].unit = 'arcsec'
-t['rfKinRA'].unit = 'hour'
+t['rfKinRA'].unit = 'hourangle'
 t['rfKinDecl'].unit = 'deg'
 
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')

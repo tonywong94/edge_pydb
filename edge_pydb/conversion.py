@@ -29,7 +29,7 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
 def sfr_ha(flux_ha, flux_hb, name='sig_sfr'):
-    # TODO: Return A_Ha column as well.
+    # NEW: Returns A_Ha column as well.
     # Extinction curve from Cardelli+(1989).
     K_Ha = 2.53
     K_Hb = 3.61
@@ -46,9 +46,12 @@ def sfr_ha(flux_ha, flux_hb, name='sig_sfr'):
     lumcon = 5.5e-42 * (u.solMass/u.yr) / (u.erg/u.s)
     sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
     if isinstance(flux_ha, Column) and isinstance(flux_hb, Column):
-        return Column(sig_sfr, name=name)
+        return Column(sig_sfr, name=name, dtype='f4',
+            description='BD corrected SFR surface density'), Column(A_Ha, 
+            name='AHa_'+name, dtype='f4', unit='mag', 
+            description='Ha extinction from BD')
     else:
-        return sig_sfr
+        return sig_sfr, A_Ha
     
 
 # Convert CO intensity to H2(+He) surface density
@@ -56,20 +59,30 @@ def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
     sig_mol = (convfac*sb_co).to(u.solMass/u.pc**2)
     if isinstance(sb_co, Column):
-        return Column(sig_mol, name=name)
+        return Column(sig_mol, name=name, dtype='f4',
+                      description='mol gas surface density')
     else:
         return sig_mol
     
 
 # Convert units for stellar surface density
 def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
+    # Assume Mpc units if not given
+    try:
+        unit = dist.unit
+    except:
+        dist = dist * u.Mpc
     sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
     if isinstance(stmass_as2, Column):
-        stmass_pc2 = 10**np.array(stmass_as2) * u.solMass / pxarea
+        stmass_ary = np.array(stmass_as2)
+        stmass_ary[~np.isfinite(stmass_ary)] = np.nan
+        stmass_pc2 = 10**stmass_ary * u.solMass / pxarea
         stmass_pc2[~np.isfinite(stmass_pc2)] = np.nan
-        return Column(stmass_pc2, name=name)
+        return Column(stmass_pc2, name=name, dtype='f4',
+                      description='stellar mass surface density')
     else:
+        stmass_as2[~np.isfinite(stmass_as2)] = np.nan
         stmass_pc2 = 10**stmass_as2 * u.solMass / pxarea
         stmass_pc2[~np.isfinite(stmass_pc2)] = np.nan
         return stmass_pc2
@@ -87,7 +100,14 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 
 
 # BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
-def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
+# Input is a flux_elines table.
+def bpt_type(fluxtab, ext='', name='BPT'):
+
+    flux_nii  = fluxtab['flux_[NII]6583'+ext]
+    flux_oiii = fluxtab['flux_[OIII]5007'+ext]
+    flux_ha   = fluxtab['flux_Halpha'+ext]
+    flux_hb   = fluxtab['flux_Hbeta'+ext]
+    ew_ha     = fluxtab['EW_Halpha'+ext]
 
     good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
     n2ha = np.full(len(flux_nii), np.nan)
@@ -100,12 +120,16 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
     cidfer10 = lambda nii: 0.48 + 1.01*nii          # Eq. 3 of 2010MNRAS.403.1036C
 
     BPT = np.full(len(n2ha), np.nan)
+    # Star forming: below Kauffmann line and EW > 6
     sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
     BPT[sf] = -1
+    # Intermediate: below Kewley line and not star-forming
     inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
     BPT[inter] = 0
+    # LINER: above Kewley line and below Cid Fernandes line
     liner = (~sf) & (~inter) & (o3hb > -1) & (o3hb < cidfer10(n2ha))
     BPT[liner] = 1
+    # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
     BPT[seyfert] = 2
 
@@ -122,19 +146,20 @@ def bpt_type(flux_nii, flux_oiii, flux_ha, flux_hb, ew_ha):
 #             BPT[i] = 2   # Seyfert
 #         else:
 #             BPT[i] = np.nan
-    return BPT
+    return Column(BPT, name=name, dtype='f4', description=
+                 'BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
 
 
 # Metallicity derived from Marino+13 calibration.
 # use method='o3n2' or method='n2'
 # Require star-forming in BPT diagram.
-# Input is a table containing the appropriate columns.
-def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
+# Input is a flux_elines table.
+def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=False):
 
-    N2F = fluxtab['flux_[NII]6583']
-    O3F = fluxtab['flux_[OIII]5007']
-    HaF = fluxtab['flux_Halpha']
-    HbF = fluxtab['flux_Hbeta']
+    N2F = fluxtab['flux_[NII]6583'+ext]
+    O3F = fluxtab['flux_[OIII]5007'+ext]
+    HaF = fluxtab['flux_Halpha'+ext]
+    HbF = fluxtab['flux_Hbeta'+ext]
     if method == 'o3n2':
         good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
     elif method == 'n2':
@@ -143,7 +168,7 @@ def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
         raise Exception('Method {} is not recognized'.format(method))
     nelt = len(N2F)
 
-    BPT = bpt_type(N2F, O3F, HaF, HbF, fluxtab['EW_Halpha'])
+    BPT = bpt_type(fluxtab, ext=ext)
 
     if err == False:
         O3N2 = np.full(nelt, np.nan)
@@ -158,10 +183,10 @@ def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
         except:
             print('uncertainties package required for err=True')
 
-        uN2F = unp.uarray(N2F, fluxtab['e_flux_[NII]6583'])
-        uO3F = unp.uarray(O3F, fluxtab['e_flux_[OIII]5007'])
-        uHaF = unp.uarray(HaF, fluxtab['e_flux_Halpha'])
-        uHbF = unp.uarray(HbF, fluxtab['e_flux_Hbeta'])
+        uN2F = unp.uarray(N2F, fluxtab['e_flux_[NII]6583'+ext])
+        uO3F = unp.uarray(O3F, fluxtab['e_flux_[OIII]5007'+ext])
+        uHaF = unp.uarray(HaF, fluxtab['e_flux_Halpha'+ext])
+        uHbF = unp.uarray(HbF, fluxtab['e_flux_Hbeta'+ext])
         O3N2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
         O3N2[good] = (unp.log10(uO3F[good]) - unp.log10(uHbF[good]) 
                     - (unp.log10(uN2F[good]) - unp.log10(uHaF[good])))
@@ -173,13 +198,16 @@ def ZOH_M13(fluxtab, method='o3n2', name='ZOH', err=False):
     else:
         ZOH_M13 = 8.743 + 0.462 * N2   # Eq(4) from Marino+2013
 
+    desc = '12+log(O/H) using {} method in Marino+13'.format(method)
     if err == False: 
         ZOH_M13[BPT != -1] = np.nan
-        return Column(ZOH_M13, name=name)
+        return Column(ZOH_M13, name=name, unit='dex', dtype='f4', description=desc)
     else:            
         ZOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
-        return (Column(unp.nominal_values(ZOH_M13), name=name), 
-                Column(unp.std_devs(ZOH_M13), name=name+'_err'))
+        return (Column(unp.nominal_values(ZOH_M13), name=name, dtype='f4',
+                       unit='dex', description=desc), 
+                Column(unp.std_devs(ZOH_M13), name='e_'+name, dtype='f4',
+                       unit='dex', description='error in '+desc))
 
 
 # Metallicity derived from N2 line ratio, Marino+13 calibration.

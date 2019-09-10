@@ -110,6 +110,9 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
                                indexing='ij')
         tab = Table([np.ravel(ix), np.ravel(iy), np.ravel(iz)],
                   names=('ix','iy','iz'),dtype=('i4','i4','i4'))
+        tab['ix'].description = '0-based pixel index in x direction'
+        tab['iy'].description = '0-based pixel index in y direction'
+        tab['iz'].description = '0-based pixel index in z direction'
         # Get the pixel coordinates as tuples
         wcsin = (np.array([tab['ix'],tab['iy'],tab['iz']])).T
     else:
@@ -123,15 +126,19 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         ix,iy = np.meshgrid(np.arange(nx), np.arange(ny), indexing='ij')
         tab = Table([np.ravel(ix), np.ravel(iy)],
                     names=('ix','iy'),dtype=('i4','i4'))
+        tab['ix'].description = '0-based pixel index in x direction'
+        tab['iy'].description = '0-based pixel index in y direction'
         # Get the pixel coordinates as tuples
         wcsin = (np.array([tab['ix'],tab['iy']])).T
     wfix = w.sub(naxis)
     if first:
         wcsout = wfix.wcs_pix2world(wcsin,0)
         col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
-                        unit='deg', format='.6f')
+                        unit='deg', format='.6f', 
+                        description='ra offset from {} center'.format(ortlabel))
         col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
-                        unit='deg', format='.6f')
+                        unit='deg', format='.6f', 
+                        description='dec offset from {} center'.format(ortlabel))
         if ra_gc is None:
             ra_gc = w.wcs.crval[0]
         if dec_gc is None:
@@ -143,7 +150,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             description='azang based on {}'.format(ortlabel))
         tab.add_columns([col_ra,col_dc,col_r,col_th])
         if iscube and not pseudo:
-            col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', unit='km/s')
+            col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', 
+                unit='km/s', description='velocity in LSRK frame using radio def')
             tab.add_column(col_vel)
 
     # Flatten the cube into a 1-D table
@@ -156,8 +164,13 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         if not isinstance(col_lbl, list):
             col_lbl = [col_lbl+str(i) for i in range(len(zsel))]
         for iz, sel in enumerate(zsel):
+            try:
+                desc = hdr['DESC_'+str(sel)].strip()
+            except:
+                desc = ''
             col_data = Column(np.ravel(data[sel],order='F'), 
-                              name=col_lbl[iz], dtype='f4', unit=bunit[iz])
+                              name=col_lbl[iz], dtype='f4', 
+                              description=desc, unit=bunit[iz])
             tab.add_column(col_data)
     else:
         if isinstance(bunit, list):
@@ -223,7 +236,7 @@ def getlabels(product):
     elif product == 'flux_elines':
         # We only select the bright lines that were in ELINES
         nz = 408
-        flux  = [0, 26, 27, 28, 45, 46, 47, 49, 50]
+        flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
         nline = len(flux)
         vel   = list(np.array(flux)+51)
         disp  = list(np.array(flux)+102)
@@ -234,8 +247,9 @@ def getlabels(product):
         eew   = list(np.array(flux)+357)
         zsel  = flux + vel + disp + ew + eflux + evel + edisp + eew
         flbl  = ['flux_[OII]3727', 'flux_[OIII]5007', 'flux_[OIII]4959', 
-                 'flux_Hbeta',     'flux_Halpha',     'flux_[NII]6583', 
-                 'flux_[NII]6548', 'flux_[SII]6717',  'flux_[SII]6731']
+                 'flux_Hbeta',     'flux_[OI]6300',   'flux_Halpha',   
+                 'flux_[NII]6583', 'flux_[NII]6548', 'flux_[SII]6717', 
+                 'flux_[SII]6731']
         vlbl  = [ w.replace('flux', 'vel')    for w in flbl ]
         dlbl  = [ w.replace('flux', 'disp')   for w in flbl ]
         wlbl  = [ w.replace('flux', 'EW')     for w in flbl ]
