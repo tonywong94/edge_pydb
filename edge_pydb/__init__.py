@@ -4,7 +4,9 @@ from astropy.table import join as _join
 import h5py as _h5py
 
 class EdgeTable(_Table):
-    def __init__(self, file='', path='', cols=None, masked=None):
+    def __init__(self, file='', path='', cols=None, data=None, masked=None, names=None, dtype=None,
+                 meta=None, copy=True, rows=None, copy_indices=True,
+                 **kwargs):
         super().__init__(masked=masked)
         if file:
             if file == 'list':
