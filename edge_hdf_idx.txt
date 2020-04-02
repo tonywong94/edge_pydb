@@ -1,0 +1,162 @@
+edge.pipe3d.hdf5
+<Table length=351125>
+      name       dtype          unit        format               description                n_bad 
+--------------- ------- ------------------- ------ ---------------------------------------- ------
+           Name bytes16                                                         Galaxy Name      0
+             ix   int32                                  0-based pixel index in x direction      0
+             iy   int32                                  0-based pixel index in y direction      0
+         ra_off float32                 deg    .6f               ra offset from LEDA center      0
+        dec_off float32                 deg    .6f              dec offset from LEDA center      0
+        rad_arc float32              arcsec    .3f                     radius based on LEDA  70225
+        azi_ang float32                 deg    .3f                      azang based on LEDA  70225
+       Havel_rg float32              km / s                                 Halpha velocity 298208
+       Vdisp_rg float32            Angstrom        Velocity dispersion plus instrumenta one 298208
+   [OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line 298383
+  [OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line 298230
+  [OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line 298230
+       Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line 298230
+      Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line 298208
+   [NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line 298208
+   [NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line 298208
+   [SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line 298209
+   [SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line 298209
+ e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line 308236
+e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line 308384
+e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line 302113
+     e_Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line 306700
+    e_Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line 303554
+ e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line 303504
+ e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line 300342
+ e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line 306998
+ e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line 305701
+      sigsfr_rg float32 solMass / (Gyr pc2)                BD corrected SFR surface density 298238
+  AHa_sigsfr_rg float32                 mag                           Ha extinction from BD 298238
+
+
+NGC4047.pipe3d.hdf5
+<Table length=2809>
+      name       dtype          unit        format               description                n_bad
+--------------- ------- ------------------- ------ ---------------------------------------- -----
+           Name bytes10                                                         Galaxy Name     0
+             ix   int32                                  0-based pixel index in x direction     0
+             iy   int32                                  0-based pixel index in y direction     0
+         ra_off float32                 deg    .6f               ra offset from LEDA center     0
+        dec_off float32                 deg    .6f              dec offset from LEDA center     0
+        rad_arc float32              arcsec    .3f                     radius based on LEDA     0
+        azi_ang float32                 deg    .3f                      azang based on LEDA     0
+       Havel_rg float32              km / s                                 Halpha velocity  2327
+       Vdisp_rg float32            Angstrom        Velocity dispersion plus instrumenta one  2327
+   [OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  2328
+  [OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  2326
+  [OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  2326
+       Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line  2326
+      Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line  2327
+   [NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  2327
+   [NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  2327
+   [SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  2327
+   [SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  2327
+ e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  2357
+e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  2350
+e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  2337
+     e_Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line  2336
+    e_Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line  2330
+ e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  2333
+ e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  2330
+ e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  2337
+ e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  2344
+      sigsfr_rg float32 solMass / (Gyr pc2)                BD corrected SFR surface density  2327
+  AHa_sigsfr_rg float32                 mag                           Ha extinction from BD  2327
+
+
+edge.cocube_smo7.hdf5
+<Table length=15514107>
+   name    dtype   unit  format              description                n_bad 
+--------- ------- ------ ------ -------------------------------------- -------
+     Name bytes16                                          Galaxy Name       0
+       ix   int32                   0-based pixel index in x direction       0
+       iy   int32                   0-based pixel index in y direction       0
+       iz   int32                   0-based pixel index in z direction       0
+   ra_off float32    deg    .6f             ra offset from LEDA center       0
+  dec_off float32    deg    .6f            dec offset from LEDA center       0
+  rad_arc float32 arcsec    .3f                   radius based on LEDA 3081473
+  azi_ang float32    deg    .3f                    azang based on LEDA 3081473
+      vel float32 km / s        velocity in LSRK frame using radio def       0
+  co_data float32      K                brightness temperature in cube 9129572
+   co_rms float32      K               estimated 1-sigma channel noise       0
+co_dilmsk float32                          mask value for dilated mask 9129572
+co_smomsk float32                         mask value for smoothed mask 9129572
+
+
+NGC4047.cocube_smo7.hdf5
+<Table length=123596>
+   name    dtype   unit  format              description               n_bad
+--------- ------- ------ ------ -------------------------------------- -----
+     Name bytes10                                          Galaxy Name     0
+       ix   int32                   0-based pixel index in x direction     0
+       iy   int32                   0-based pixel index in y direction     0
+       iz   int32                   0-based pixel index in z direction     0
+   ra_off float32    deg    .6f             ra offset from LEDA center     0
+  dec_off float32    deg    .6f            dec offset from LEDA center     0
+  rad_arc float32 arcsec    .3f                   radius based on LEDA     0
+  azi_ang float32    deg    .3f                    azang based on LEDA     0
+      vel float32 km / s        velocity in LSRK frame using radio def     0
+  co_data float32      K                brightness temperature in cube 73368
+   co_rms float32      K               estimated 1-sigma channel noise     0
+co_dilmsk float32                          mask value for dilated mask 73368
+co_smomsk float32                         mask value for smoothed mask 73368
+
+
+edge.comom_smo7.hdf5
+<Table length=353934>
+    name     dtype       unit     format                   description                    n_bad 
+----------- ------- ------------- ------ ------------------------------------------------ ------
+       Name bytes16                                                           Galaxy Name      0
+         ix   int32                                    0-based pixel index in x direction      0
+         iy   int32                                    0-based pixel index in y direction      0
+     ra_off float32           deg    .6f                       ra offset from LEDA center      0
+    dec_off float32           deg    .6f                      dec offset from LEDA center      0
+    rad_arc float32        arcsec    .3f                             radius based on LEDA  84270
+    azi_ang float32           deg    .3f                              azang based on LEDA  84270
+emom0max_12 float32      K km / s             12CO error in mom0 assuming 200 km/s window 208164
+    mom0_12 float32      K km / s                12CO integrated intensity using dil mask 340918
+   emom0_12 float32      K km / s                    12CO error in mom0 assuming dil mask 340918
+    mom1_12 float32        km / s        12CO intensity wgtd mean velocity using dil mask 341409
+   emom1_12 float32        km / s                    12CO error in mom1 assuming dil mask 341409
+    mom2_12 float32        km / s             12CO intensity wgtd vel disp using dil mask 341409
+   emom2_12 float32        km / s                    12CO error in mom2 assuming dil mask 341409
+   snrpk_12 float32                                       12CO peak signal to noise ratio 208164
+     sigmol float32 solMass / pc2             apparent H2+He surf density not deprojected 340918
+   e_sigmol float32 solMass / pc2                         error in sigmol not deprojected 340918
+emom0max_13 float32      K km / s             13CO error in mom0 assuming 200 km/s window 202075
+    mom0_13 float32      K km / s                13CO integrated intensity using dil mask 340918
+   emom0_13 float32      K km / s                    13CO error in mom0 assuming dil mask 340918
+    mom1_13 float32        km / s        13CO intensity wgtd mean velocity using dil mask 343449
+   emom1_13 float32        km / s                    13CO error in mom1 assuming dil mask 343449
+    mom2_13 float32        km / s             13CO intensity wgtd vel disp using dil mask 343449
+   emom2_13 float32        km / s                    13CO error in mom2 assuming dil mask 343449
+   snrpk_13 float32                                       13CO peak signal to noise ratio 202075
+
+
+NGC4047.comom_smo7.hdf5
+<Table length=2809>
+  name    dtype       unit     format                 description                 n_bad
+-------- ------- ------------- ------ ------------------------------------------- -----
+    Name bytes10                                                      Galaxy Name     0
+      ix   int32                               0-based pixel index in x direction     0
+      iy   int32                               0-based pixel index in y direction     0
+  ra_off float32           deg    .6f                  ra offset from LEDA center     0
+ dec_off float32           deg    .6f                 dec offset from LEDA center     0
+ rad_arc float32        arcsec    .3f                        radius based on LEDA     0
+ azi_ang float32           deg    .3f                         azang based on LEDA     0
+emom0max float32      K km / s             error in mom0 assuming 200 km/s window  1665
+    mom0 float32      K km / s                integrated intensity using dil mask  2611
+   emom0 float32      K km / s                    error in mom0 assuming dil mask  2611
+    mom1 float32        km / s        intensity wgtd mean velocity using dil mask  2615
+   emom1 float32        km / s                    error in mom1 assuming dil mask  2615
+    mom2 float32        km / s             intensity wgtd vel disp using dil mask  2615
+   emom2 float32        km / s                    error in mom2 assuming dil mask  2615
+   snrpk float32                                       peak signal to noise ratio  1665
+  sigmol float32 solMass / pc2        apparent H2+He surf density not deprojected  2611
+e_sigmol float32 solMass / pc2                    error in sigmol not deprojected  2611
+
+
