@@ -6,6 +6,7 @@ with open("README.md", "r") as fh:
 with open("requirements.txt", 'r') as req:
     requirements = req.read()
 
+
 #version_num = input("Input the new version number: ")
 setuptools.setup(
     name="edge_pydb",
