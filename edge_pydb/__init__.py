@@ -18,8 +18,8 @@ class EdgeTable(_Table):
                 self.read(file, path)
             else:
                 # no path specified with hdf5 file
-                f = _h5py.File(util.fetch(file), 'r')
-                print('Columns in',file,':\n',list(f.keys()))
+                # f = _h5py.File(util.fetch(file), 'r')
+                print('Columns in',file,':\n', util.getPath(file))
 #         else:
 #             print("Choose from the following files to read:")
 #             util.listfiles(printing=True)
@@ -69,3 +69,7 @@ class EdgeTable(_Table):
             self.joined.append((table.srcfile, join_type))
         # update the data
         self.__dict__.update(self.table.__dict__)
+
+
+
+

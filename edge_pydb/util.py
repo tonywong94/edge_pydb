@@ -2,6 +2,7 @@ import os as _os
 import json as _json
 import shutil as _shutil
 import requests as _requests
+import h5py as _h5py
 
 
 # Initial setup script to read the file location from config file
@@ -118,6 +119,7 @@ def listfiles(contain='', printing=False):
         if contain in key:
             if printing:
                 print(key)
+                # print the description here
             files.append(key)
     return files
 
@@ -218,3 +220,8 @@ def add_from_dir(src, dest='', copy=True, overwrite=False):
             _json.dump(_config, _fp)
     else:
         print("WARNING! The location of this file will be saved runtime only")
+
+def getPath(file):
+    '''get the hdf5 path'''
+    h5f = _h5py.File(fetch(file), 'r')
+    return [key for key in h5f.keys() if "__table_column_meta__" not in key]
