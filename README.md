@@ -1,5 +1,5 @@
 # edge_pydb
-Python-based database for CARMA EDGE
+Python-based database for CARMA EDGE.  This package requires Python 3.
 
 The EDGE database has several components:
 

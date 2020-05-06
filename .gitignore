@@ -1,8 +1,8 @@
 .ipynb_checkpoints/
 *.co.smo7_dil.flux.out
 *.co.smo7_smo.flux.out
-*.co.smo7*fits.gz
-*.cube.fits.gz
+*co.smo7*fits.gz
+*cube.fits.gz
 edge*.hdf5
 __pycache__/
 dbfiles
