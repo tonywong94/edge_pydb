@@ -8,7 +8,7 @@ from datetime import datetime
 
 # Which tables to rewrite with this execution of the script
 #rewrite=['ned','wise','nsa','califa','rdist']
-rewrite=['leda']
+rewrite=['ned']
 
 # Alberto's master table, last updated April 14, 2017
 t = Table.read('DETableFinal.csv', format='ascii.csv')
@@ -41,67 +41,69 @@ if 'califa' in rewrite:
 
 # ---------------------------------------------------------------------------------
 
-# Write the LEDA table (edge_leda.csv) - can also be done in mkleda.py but there are inconsistencies for some galaxies (e.g. NGC 6027, 6168)
-t['ledaRA'].unit = 'hourangle'
-t['ledaRA'].description = 'RA J2000 from LEDA <celpos>'
-t['ledaDE'].unit = 'deg'
-t['ledaDE'].description = 'DEC J2000 from LEDA <celpos>' 
-t['ledaA_Bgal'].unit = 'mag'
-t['ledaA_Bgal'].description = 'Galactic A_B from LEDA <ag>'
-t['ledaType'].description = 'Morphological type from LEDA <t>'
-t['ledaD25'].unit = 'arcmin'
-t['ledaD25'].description = 'Apparent B diameter from LEDA <logd25> linearized' 
-t['ledaAxRatio'].description = 'Maj/min axis ratio from LEDA <logr25> linearized' 
-t['ledaPA'].unit = 'deg'
-t['ledaPA'].description = 'PA from LEDA <pa>, N to E' 
-t['ledaIncl'].unit = 'deg'
-t['ledaIncl'].description = 'Morph inclination from LEDA <incl>' 
-t['ledaVrad'].unit = 'km / s'
-t['ledaVrad'].description = 'cz from radio data from LEDA <vrad>' 
-t['ledaVmaxg'].unit = 'km / s'
-t['ledaVmaxg'].description = 'HI max v_rot not corr for incl from LEDA <vmaxg>' 
-t['ledaVrot'].unit = 'km / s'
-t['ledaVrot'].description = 'HI max v_rot corr for incl from LEDA <vrot>' 
-t['ledaMorph'].description = 'Hubble type from LEDA <type>' 
-t['ledaBar'].description = 'B = bar present from LEDA <bar>' 
-t['ledaRing'].description = 'R = ring present from LEDA <ring>' 
-t['ledaMultiple'].description = 'M = multiple system from LEDA <multiple>' 
-t['ledaBt'].unit = 'mag'
-t['ledaBt'].description = 'Apparent B total magnitude from LEDA <bt>' 
-t['ledaIt'].unit = 'mag'
-t['ledaIt'].description = 'Apparent I total magnitude from LEDA <it>' 
-t['ledaMfir'].unit = 'mag'
-t['ledaMfir'].description = 'FIR flux as magnitude from LEDA <mfir>' 
-t['ledaM21'].unit = 'mag'
-t['ledaM21'].description = 'HI line flux as magnitude from LEDA <m21>' 
-t['ledaVvir'].unit = 'km / s'
-t['ledaVvir'].description = 'Virgo infall corr cz from LEDA <vvir>' 
-t['ledaModz'].unit = 'mag'
-t['ledaModz'].description = 'Dist modulus from LEDA <modz> based on <vvir>; NGC2880 NGC4211 and UGC05498 substituted with NED scaled to same cosmology' 
-t['ledaDistMpc'].unit = 'Mpc'
-t['ledaDistMpc'].description = 'Distance in Mpc corresponding to ledaModz' 
-if 'leda' in rewrite:
-    outcols=['Name']
-    for cname in t.colnames:
-        if "leda" in cname:
-            outcols.append(cname)
-    newt = t[outcols]
-    newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
-    print(newt.meta)
-    newt.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
+# Write the LEDA table (edge_leda.csv) - Now done in mkleda.py
+# t['Name'].description = 'Galaxy Name'
+# t['ledaRA'].unit = 'hourangle'
+# t['ledaRA'].description = 'RA J2000 from LEDA <celpos>'
+# t['ledaDE'].unit = 'deg'
+# t['ledaDE'].description = 'DEC J2000 from LEDA <celpos>' 
+# t['ledaA_Bgal'].unit = 'mag'
+# t['ledaA_Bgal'].description = 'Galactic A_B from LEDA <ag>'
+# t['ledaType'].description = 'Morphological type from LEDA <t>'
+# t['ledaD25'].unit = 'arcmin'
+# t['ledaD25'].description = 'Apparent B diameter from LEDA <logd25> linearized' 
+# t['ledaAxRatio'].description = 'Maj/min axis ratio from LEDA <logr25> linearized' 
+# t['ledaPA'].unit = 'deg'
+# t['ledaPA'].description = 'PA from LEDA <pa>, N to E' 
+# t['ledaIncl'].unit = 'deg'
+# t['ledaIncl'].description = 'Morph inclination from LEDA <incl>' 
+# t['ledaVrad'].unit = 'km / s'
+# t['ledaVrad'].description = 'cz from radio data from LEDA <vrad>' 
+# t['ledaVmaxg'].unit = 'km / s'
+# t['ledaVmaxg'].description = 'HI max v_rot not corr for incl from LEDA <vmaxg>' 
+# t['ledaVrot'].unit = 'km / s'
+# t['ledaVrot'].description = 'HI max v_rot corr for incl from LEDA <vrot>' 
+# t['ledaMorph'].description = 'Hubble type from LEDA <type>' 
+# t['ledaBar'].description = 'B = bar present from LEDA <bar>' 
+# t['ledaRing'].description = 'R = ring present from LEDA <ring>' 
+# t['ledaMultiple'].description = 'M = multiple system from LEDA <multiple>' 
+# t['ledaBt'].unit = 'mag'
+# t['ledaBt'].description = 'Apparent B total magnitude from LEDA <bt>' 
+# t['ledaIt'].unit = 'mag'
+# t['ledaIt'].description = 'Apparent I total magnitude from LEDA <it>' 
+# t['ledaMfir'].unit = 'mag'
+# t['ledaMfir'].description = 'FIR flux as magnitude from LEDA <mfir>' 
+# t['ledaM21'].unit = 'mag'
+# t['ledaM21'].description = 'HI line flux as magnitude from LEDA <m21>' 
+# t['ledaVvir'].unit = 'km / s'
+# t['ledaVvir'].description = 'Virgo infall corr cz from LEDA <vvir>' 
+# t['ledaModz'].unit = 'mag'
+# t['ledaModz'].description = 'Dist modulus from LEDA <modz> based on <vvir>; NGC2880 NGC4211 and UGC05498 substituted with NED scaled to same cosmology' 
+# t['ledaDistMpc'].unit = 'Mpc'
+# t['ledaDistMpc'].description = 'Distance in Mpc corresponding to ledaModz' 
+# if 'leda' in rewrite:
+#     outcols=['Name']
+#     for cname in t.colnames:
+#         if "leda" in cname:
+#             outcols.append(cname)
+#     newt = t[outcols]
+#     newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+#     print(newt.meta)
+#     newt.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
 # Write the NED table:
 if 'ned' in rewrite:
-    nedt = Table.read('nedpos.txt', format='ascii.csv', delimiter='\t')
-    sc = SkyCoord(nedt['RA'],nedt['Dec']) #convert to degrees
+    nedt = Table.read('ned_diam.txt', format='ascii.csv', delimiter='\t')
+    sc = SkyCoord(nedt['RA_J2000'],nedt['Dec_J2000']) #convert to degrees
     nedRA=[]
     nedDE=[]
     for obj in sc:
         nedRA.append(float(obj.to_string(precision=5).split(' ')[0]))
         nedDE.append(float(obj.to_string(precision=5).split(' ')[1]))
     newt=Table()
-    newt['Name'] = nedt['Name']
+    newt['Name'] = nedt['InputName']
+    newt['Name'].description = 'Galaxy Name'
     newt['nedRA'] = nedRA
     newt['nedRA'].unit = 'deg'
     newt['nedRA'].description = 'J2000 RA from NED'
@@ -111,6 +113,14 @@ if 'ned' in rewrite:
     newt['nedVopt']=nedt['cz']
     newt['nedVopt'].unit='km / s'
     newt['nedVopt'].description='cz from NED'
+    newt['nedz']=nedt['Redshift']
+    newt['nedz'].description='z from NED'
+    newt['nedMajDia']=nedt['maj_diam_am']
+    newt['nedMajDia'].unit='arcmin'
+    newt['nedMajDia'].description='NED Basic Data major axis diameter'
+    newt['nedMinDia']=nedt['min_diam_am']
+    newt['nedMinDia'].unit='arcmin'
+    newt['nedMinDia'].description='NED Basic Data minor axis diameter'
     newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
     print(newt.meta)
     newt.write('edge_ned.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
