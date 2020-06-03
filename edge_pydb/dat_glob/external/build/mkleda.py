@@ -22,27 +22,6 @@ def phot_inc(axratio, ttype):
 t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
 t['name'] = t['name'].astype('|S15')
 
-# Some CALIFA names were unrecognized by LEDA and had to be manually substituted
-if list == 'edge':
-    renames = {
-               'NGC4211A' : 'NGC4211NED02',
-               'NGC6027E' : 'NGC6027',
-               'PGC029708' : 'UGC05498NED01',
-               'UGC04299' : 'IC2247'
-              }
-if list == 'alma':
-    renames = {
-               'PGC000312' : 'IC1528',
-               'PGC072803' : 'NGC7783NED01',
-               'PGC002029' : 'UGC00335NED02',
-               'PGC066150' : 'UGC11680NED02',
-               'NGC7237' : 'UGC11958',
-               'PGC070084' : 'VV488NED02'
-              }
-t.add_index('name')
-for key in renames.keys():
-    t.loc[key]['name']=renames[key]
-
 # Rename the LEDA columns
 colnames = {
             'name' : 'Name',
@@ -68,6 +47,28 @@ colnames = {
 for key in colnames.keys():
     t.rename_column(key, colnames[key])
 
+# Some CALIFA names were unrecognized by LEDA and had to be manually substituted
+if list == 'edge':
+    renames = {
+               'NGC4211A' : 'NGC4211NED02',
+               'NGC6027E' : 'NGC6027',
+               'PGC029708' : 'UGC05498NED01',
+               'UGC04299' : 'IC2247'
+              }
+if list == 'alma':
+    renames = {
+               'PGC000312' : 'IC1528',
+               'PGC072803' : 'NGC7783NED01',
+               'PGC002029' : 'UGC00335NED02',
+               'PGC066150' : 'UGC11680NED02',
+               'NGC7237' : 'UGC11958',
+               'PGC070084' : 'VV488NED02'
+              }
+t.add_index('Name')
+for key in renames.keys():
+    t.loc[key]['Name']=renames[key]
+
+
 # Calculated columns
 t['ledaD25'] = 0.1*10**t['logd25']
 t['ledaD25'].unit = 'arcmin'
@@ -77,6 +78,11 @@ t['ledaD25'].format='.2f'
 t['ledaAxrat'] = 10**(-t['logr25'])
 t['ledaAxrat'].description = 'Minor to major axis ratio from LEDA /logr25/ linearized' 
 t['ledaAxrat'].format='.4f'
+
+# Override the bad axis ratio for NGC 3687 in LEDA (Dmitry Makarov, priv comm, 29may2020).
+# Use values from SDSS-III DR12 (2015ApJS..219...12A)
+t.loc['NGC3687']['ledaAxrat'] = 10**(0.815-0.916)
+t.loc['NGC3687']['ledaPA'] = 167.1
 
 t['ledaAxIncl'] = phot_inc(t['ledaAxrat'],t['ledaType'])
 t['ledaAxIncl'].unit = 'deg'
