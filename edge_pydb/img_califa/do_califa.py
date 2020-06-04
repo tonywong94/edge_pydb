@@ -16,8 +16,7 @@ from edge_pydb.conversion import stmass_pc2, sfr_ha, ZOH_M13, bpt_type
 from edge_pydb.fitsextract import fitsextract, getlabels
 
 # Get the orientation parameters from LEDA
-ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaIncl'])
-#ort = EdgeTable('edge_rfpars.csv', cols=['Name', 'rfPA', 'rfInc', 'rfKinRA', 'rfKinDecl'])
+ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
 ort.add_index('Name')
 
 # Get the distance from the CALIFA table
@@ -50,7 +49,7 @@ for prod in prodtype:
             gal, prod, nsel))
 
         # Generate output header using CO astrometry
-        cohd = fits.getheader(codir+gal+'.co.smo7_dil.emom0max.fits.gz')
+        cohd = fits.getheader(codir+gal+'.co.smo7_dil.snrpk.fits.gz')
         cahd = fits.getheader(cadir+'x'+base, ignore_missing_end=True)
         outhd = cahd.copy()
         for key in ['NAXIS1', 'NAXIS2', 'CTYPE1', 'CTYPE2', 'CRVAL1', 'CRVAL2', 
@@ -70,7 +69,7 @@ for prod in prodtype:
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, col_lbl=rglabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
 			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
-            inc=ort.loc[gal]['ledaIncl'], ortlabel='LEDA', first=True)
+            inc=ort.loc[gal]['ledaAxIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab0), name='Name', 
                        description='Galaxy Name')
         tab0.add_column(gname, index=0)
@@ -86,7 +85,7 @@ for prod in prodtype:
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, col_lbl=smlabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
 			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
-            inc=ort.loc[gal]['ledaIncl'], ortlabel='LEDA', first=True)
+            inc=ort.loc[gal]['ledaAxIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab1), name='Name', 
                        description='Galaxy Name')
         tab1.add_column(gname, index=0)

@@ -11,11 +11,10 @@ from edge_pydb import EdgeTable
 from edge_pydb.fitsextract import fitsextract
 
 # Get the orientation parameters from LEDA
-ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaIncl'])
-#ort = EdgeTable('edge_rfpars.csv', cols=['Name', 'rfPA', 'rfInc', 'rfKinRA', 'rfKinDecl'])
+ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
 ort.add_index('Name')
 
-filelist = sorted(glob.glob('fitsdata/*.co.smo7msk.K.fits.gz'))
+filelist = sorted(glob.glob('fitsdata/*.co.smo7msk.K.fits'))
 tablelist=[]
 
 for file in filelist:
@@ -27,13 +26,13 @@ for file in filelist:
                         ra_gc=15*ort.loc[gal]['ledaRA'],
                         dec_gc=ort.loc[gal]['ledaDE'],
                         pa=ort.loc[gal]['ledaPA'],
-                        inc=ort.loc[gal]['ledaIncl'],
+                        inc=ort.loc[gal]['ledaAxIncl'],
                         ortlabel='LEDA', first=True)
     gname = Column([np.string_(gal)]*len(tab0), name='Name', description='Galaxy Name')
     tab0.add_column(gname, index=0)
     print(tab0[20:50])
     # Read the other images: noise, dilated mask cube, smooth mask cube
-    files  = ['smo7_str.ecube', 'smo7_dil.mask', 'smo7_smo.mask']
+    files  = ['smo7_dil.ecube', 'smo7_dil.mask', 'smo7_smo.mask']
     labels = ['co_rms', 'co_dilmsk', 'co_smomsk']
     unit   = ['K', '', '']
     for j, file in enumerate(files):
