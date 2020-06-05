@@ -1,5 +1,86 @@
+fitsdata/NGC4047.co.smo7_str.mom0.fits.gz
+Adopted inclination is 41.3 deg
+Reading fitsdata/NGC4047.co.smo7_str.mom0.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang mom0_12 
+                  deg       deg     arcsec   deg   K km / s
+------- --- --- -------- --------- ------- ------- --------
+NGC4047   1  61 0.026481 -0.000836  63.788  -9.398      nan
+NGC4047   1  64 0.026482 -0.000003  64.046 -12.948      nan
+NGC4047   1  67 0.026482  0.000830  64.547 -16.456      nan
+NGC4047   1  70 0.026482  0.001664  65.286 -19.897      nan
+NGC4047   1  73 0.026483  0.002497  66.255 -23.249      nan
+NGC4047   1  76 0.026483  0.003330  67.443 -26.494      nan
+NGC4047   1  79 0.026484  0.004164  68.840 -29.617      nan
+NGC4047   1  82 0.026484  0.004997  70.433 -32.608      nan
+NGC4047   1  85 0.026485  0.005830  72.210 -35.458      nan
+NGC4047   1  88 0.026485  0.006664  74.156 -38.166      nan
+    ... ... ...      ...       ...     ...     ...      ...
+NGC4047   1 121 0.026490  0.015830 103.491 -59.422      nan
+NGC4047   1 124 0.026490  0.016664 106.644 -60.735      nan
+NGC4047   1 127 0.026491  0.017497 109.851 -61.973      nan
+NGC4047   4   1 0.025212 -0.017503  98.442  44.461      nan
+NGC4047   4   4 0.025212 -0.016669  95.351  42.990      nan
+NGC4047   4   7 0.025213 -0.015836  92.327  41.422      nan
+NGC4047   4  10 0.025213 -0.015003  89.377  39.749      nan
+NGC4047   4  13 0.025213 -0.014169  86.508  37.963      nan
+NGC4047   4  16 0.025214 -0.013336  83.729  36.056      nan
+NGC4047   4  19 0.025214 -0.012503  81.048  34.021      nan
+Length = 30 rows
+Reading fitsdata/NGC4047.co.smo7_str.emom0.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.co.smo7_str.mom0.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.co.smo7_str.emom0.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+  Name   ix  iy  ra_off  ...   sigmol_fo    e_sigmol_fo  mom0_13  emom0_13
+                  deg    ... solMass / pc2 solMass / pc2 K km / s K km / s
+------- --- --- -------- ... ------------- ------------- -------- --------
+NGC4047   1  61 0.026481 ...           nan           nan      nan      nan
+NGC4047   1  64 0.026482 ...           nan           nan      nan      nan
+NGC4047   1  67 0.026482 ...           nan           nan      nan      nan
+NGC4047   1  70 0.026482 ...           nan           nan      nan      nan
+NGC4047   1  73 0.026483 ...           nan           nan      nan      nan
+NGC4047   1  76 0.026483 ...           nan           nan      nan      nan
+NGC4047   1  79 0.026484 ...           nan           nan      nan      nan
+NGC4047   1  82 0.026484 ...           nan           nan      nan      nan
+NGC4047   1  85 0.026485 ...           nan           nan      nan      nan
+NGC4047   1  88 0.026485 ...           nan           nan      nan      nan
+    ... ... ...      ... ...           ...           ...      ...      ...
+NGC4047   1 121 0.026490 ...           nan           nan      nan      nan
+NGC4047   1 124 0.026490 ...           nan           nan      nan      nan
+NGC4047   1 127 0.026491 ...           nan           nan      nan      nan
+NGC4047   4   1 0.025212 ...           nan           nan      nan      nan
+NGC4047   4   4 0.025212 ...           nan           nan      nan      nan
+NGC4047   4   7 0.025213 ...           nan           nan      nan      nan
+NGC4047   4  10 0.025213 ...           nan           nan      nan      nan
+NGC4047   4  13 0.025213 ...           nan           nan      nan      nan
+NGC4047   4  16 0.025214 ...           nan           nan      nan      nan
+NGC4047   4  19 0.025214 ...           nan           nan      nan      nan
+Length = 30 rows
+fitsdata/NGC4047.co.smo7_dil.snrpk.fits.gz
+Adopted inclination is 41.3 deg
 Reading fitsdata/NGC4047.co.smo7_dil.snrpk.fits.gz
-Adopted inclination in 41.3 deg
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (128, 128)
@@ -73,7 +154,7 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-Reading fitsdata/NGC4047.13co.smo7_dil.snrpk.fits.gz
+Reading fitsdata/NGC4047.co.smo7_dil.snrpk.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (128, 128)
@@ -115,7 +196,9 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-Reading fitsdata/NGC4047.13co.smo7_mk12_dil.emom2.fits.gz
+ReadingWARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
+ fitsdata/NGC4047.13co.smo7_mk12_dil.emom2.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (128, 128)
@@ -147,16 +230,17 @@ NGC4047   4  13 0.025213 -0.014169 ...     nan      nan     nan      nan
 NGC4047   4  16 0.025214 -0.013336 ...     nan      nan     nan      nan
 NGC4047   4  19 0.025214 -0.012503 ...     nan      nan     nan      nan
 Length = 30 rows
-Reading fitsdata/NGC4047.co.smo7_smo.snrpk.fits.gz
-Adopted inclination in 41.3 deg
+fitsdata/NGC4047.co.smo7_smo.mom0.fits.gz
+Adopted inclination is 41.3 deg
+Reading fitsdata/NGC4047.co.smo7_smo.mom0.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang snrpk_12
-                  deg       deg     arcsec   deg           
+  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang mom0_12 
+                  deg       deg     arcsec   deg   K km / s
 ------- --- --- -------- --------- ------- ------- --------
 NGC4047   1  61 0.026481 -0.000836  63.788  -9.398      nan
 NGC4047   1  64 0.026482 -0.000003  64.046 -12.948      nan
@@ -180,13 +264,6 @@ NGC4047   4  13 0.025213 -0.014169  86.508  37.963      nan
 NGC4047   4  16 0.025214 -0.013336  83.729  36.056      nan
 NGC4047   4  19 0.025214 -0.012503  81.048  34.021      nan
 Length = 30 rows
-Reading fitsdata/NGC4047.co.smo7_smo.mom0.fits.gz
-RA ref is 180.71125
-DEC ref is 48.6361944444
-This is an image of shape (128, 128)
-Axis 1: crpix=65.0
-Axis 2: crpix=65.0
-Remainder:  [1, 1, 0]
 Reading fitsdata/NGC4047.co.smo7_smo.emom0.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
@@ -194,12 +271,31 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-Reading fitsdata/NGC4047.13co.smo7_smo.snrpk.fits.gz
+Reading fitsdata/NGC4047.co.smo7_smo.mom1.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
-This is an image of shape (128, 128)WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
-
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.co.smo7_smo.emom1.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.co.smo7_smo.mom2.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.co.smo7_smo.emom2.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
@@ -217,28 +313,56 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  ...  e_sigmol_fo  snrpk_13 mom0_13  emom0_13
-                  deg       deg    ... solMass / pc2          K km / s K km / s
-------- --- --- -------- --------- ... ------------- -------- -------- --------
-NGC4047   1  61 0.026481 -0.000836 ...           nan      nan      nan      nan
-NGC4047   1  64 0.026482 -0.000003 ...           nan      nan      nan      nan
-NGC4047   1  67 0.026482  0.000830 ...           nan      nan      nan      nan
-NGC4047   1  70 0.026482  0.001664 ...           nan      nan      nan      nan
-NGC4047   1  73 0.026483  0.002497 ...           nan      nan      nan      nan
-NGC4047   1  76 0.026483  0.003330 ...           nan      nan      nan      nan
-NGC4047   1  79 0.026484  0.004164 ...           nan      nan      nan      nan
-NGC4047   1  82 0.026484  0.004997 ...           nan      nan      nan      nan
-NGC4047   1  85 0.026485  0.005830 ...           nan      nan      nan      nan
-NGC4047   1  88 0.026485  0.006664 ...           nan      nan      nan      nan
-    ... ... ...      ...       ... ...           ...      ...      ...      ...
-NGC4047   1 121 0.026490  0.015830 ...           nan      nan      nan      nan
-NGC4047   1 124 0.026490  0.016664 ...           nan      nan      nan      nan
-NGC4047   1 127 0.026491  0.017497 ...           nan      nan      nan      nan
-NGC4047   4   1 0.025212 -0.017503 ...           nan      nan      nan      nan
-NGC4047   4   4 0.025212 -0.016669 ...           nan      nan      nan      nan
-NGC4047   4   7 0.025213 -0.015836 ...           nan      nan      nan      nan
-NGC4047   4  10 0.025213 -0.015003 ...           nan      nan      nan      nan
-NGC4047   4  13 0.025213 -0.014169 ...           nan      nan      nan      nan
-NGC4047   4  16 0.025214 -0.013336 ...           nan      nan      nan      nan
-NGC4047   4  19 0.025214 -0.012503 ...           nan      nan      nan      nan
+Reading fitsdata/NGC4047.13co.smo7_mk12_smo.mom1.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.13co.smo7_mk12_smo.emom1.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.13co.smo7_mk12_smo.mom2.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+Reading fitsdata/NGC4047.13co.smo7_mk12_smo.emom2.fits.gz
+RA ref is 180.71125
+DEC ref is 48.6361944444
+This is an image of shape (128, 128)
+Axis 1: crpix=65.0
+Axis 2: crpix=65.0
+Remainder:  [1, 1, 0]
+  Name   ix  iy  ra_off   dec_off  ... mom1_13 emom1_13 mom2_13 emom2_13
+                  deg       deg    ...  km / s  km / s   km / s  km / s 
+------- --- --- -------- --------- ... ------- -------- ------- --------
+NGC4047   1  61 0.026481 -0.000836 ...     nan      nan     nan      nan
+NGC4047   1  64 0.026482 -0.000003 ...     nan      nan     nan      nan
+NGC4047   1  67 0.026482  0.000830 ...     nan      nan     nan      nan
+NGC4047   1  70 0.026482  0.001664 ...     nan      nan     nan      nan
+NGC4047   1  73 0.026483  0.002497 ...     nan      nan     nan      nan
+NGC4047   1  76 0.026483  0.003330 ...     nan      nan     nan      nan
+NGC4047   1  79 0.026484  0.004164 ...     nan      nan     nan      nan
+NGC4047   1  82 0.026484  0.004997 ...     nan      nan     nan      nan
+NGC4047   1  85 0.026485  0.005830 ...     nan      nan     nan      nan
+NGC4047   1  88 0.026485  0.006664 ...     nan      nan     nan      nan
+    ... ... ...      ...       ... ...     ...      ...     ...      ...
+NGC4047   1 121 0.026490  0.015830 ...     nan      nan     nan      nan
+NGC4047   1 124 0.026490  0.016664 ...     nan      nan     nan      nan
+NGC4047   1 127 0.026491  0.017497 ...     nan      nan     nan      nan
+NGC4047   4   1 0.025212 -0.017503 ...     nan      nan     nan      nan
+NGC4047   4   4 0.025212 -0.016669 ...     nan      nan     nan      nan
+NGC4047   4   7 0.025213 -0.015836 ...     nan      nan     nan      nan
+NGC4047   4  10 0.025213 -0.015003 ...     nan      nan     nan      nan
+NGC4047   4  13 0.025213 -0.014169 ...     nan      nan     nan      nan
+NGC4047   4  16 0.025214 -0.013336 ...     nan      nan     nan      nan
+NGC4047   4  19 0.025214 -0.012503 ...     nan      nan     nan      nan
 Length = 30 rows

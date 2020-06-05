@@ -11,64 +11,64 @@ from edge_pydb import EdgeTable
 from edge_pydb.conversion import msd_co
 from edge_pydb.fitsextract import fitsextract
 
-msktyp = ['dil', 'smo']
+msktyp = ['str', 'dil', 'smo']
 lines  = ['12', '13']
 
 # Get the orientation parameters from LEDA
 ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
 ort.add_index('Name')
 
-for i, msk in enumerate(msktyp):
+for imsk, msk in enumerate(msktyp):
     gallist = [os.path.basename(file).split('.')[0] for file in 
-                sorted(glob.glob('fitsdata/*.co.smo7_'+msk+'.snrpk.fits.gz'))] 
+                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))] 
     tablelist=[]
+    if msk == 'str':
+        dotypes = ['mom0', 'emom0']
+        unit    = ['K km/s', 'K km/s']
+    if msk == 'dil':
+        dotypes = ['snrpk', 'mom0', 'emom0', 'mom1', 'emom1', 'mom2', 'emom2']
+        unit    = ['', 'K km/s', 'K km/s', 'km/s', 'km/s', 'km/s', 'km/s']
+    if msk == 'smo':
+        dotypes = ['mom0', 'emom0', 'mom1', 'emom1', 'mom2', 'emom2']
+        unit    = ['K km/s', 'K km/s', 'km/s', 'km/s', 'km/s', 'km/s']
     for gal in gallist:
-        file0 = 'fitsdata/'+gal+'.co.smo7_'+msk+'.snrpk.fits.gz'
-        print('Reading',file0)
+        file0 = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+dotypes[0]+'.fits.gz'
+        print(file0)
+        if not os.path.exists(file0):
+            continue
         adopt_incl = ort.loc[gal]['ledaAxIncl']
-        print('Adopted inclination in {} deg'.format(adopt_incl))
-        galtab = fitsextract(file0, bunit='', col_lbl='snrpk_12',
+        print('Adopted inclination is {} deg'.format(adopt_incl))
+        # Read the first image
+        for iline, line in enumerate(lines):
+            for j, type in enumerate(dotypes):
+                if iline == 0 and j == 0:
+                    print('Reading',file0)
+                    galtab = fitsextract(file0, bunit=unit[0], 
+                            col_lbl=dotypes[0]+'_'+line,
                             keepnan=True, stride=[3,3,1],
                             ra_gc=15*ort.loc[gal]['ledaRA'],
                             dec_gc=ort.loc[gal]['ledaDE'],
                             pa=ort.loc[gal]['ledaPA'],
                             inc=adopt_incl,
                             ortlabel='LEDA', first=True)
-        gname = Column([np.string_(gal)]*len(galtab), name='Name', description='Galaxy Name')
-        galtab.add_column(gname, index=0)
-        print(galtab[20:50])
-        
-        # Read the other images
-        for line in lines:
-            if line == '13':
-                file0 = 'fitsdata/'+gal+'.13co.smo7_'+msk+'.snrpk.fits.gz'
-                if os.path.exists(file0):
-                    print('Reading',file0)
-                    addtb = fitsextract(file0, bunit='', col_lbl='snrpk_13', 
-                                    keepnan=True, stride=[3,3,1])
-                    jointb = join(galtab, addtb, keys=['ix','iy'])
-                    galtab = jointb            
-            if msk == 'smo':
-                dotypes = ['mom0', 'emom0']
-                unit    = ['K km/s', 'K km/s']
-            else:
-                dotypes = ['mom0', 'emom0', 'mom1', 'emom1', 'mom2', 'emom2']
-                unit    = ['K km/s', 'K km/s', 'km/s', 'km/s', 'km/s', 'km/s']
-            for j, type in enumerate(dotypes):
-                if line == '12':
-                    getfile = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+type+'.fits.gz'
+                    gname = Column([np.string_(gal)]*len(galtab), name='Name', description='Galaxy Name')
+                    galtab.add_column(gname, index=0)
+                    print(galtab[20:50])
                 else:
-                    getfile = 'fitsdata/'+gal+'.13co.smo7_mk12_'+msk+'.'+type+'.fits.gz'
-                if os.path.exists(getfile):
-                    print('Reading',getfile)
-                    addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type+'_'+line, 
-                                    keepnan=True, stride=[3,3,1])
-                    jointb = join(galtab, addtb, keys=['ix','iy'])
-                    galtab = jointb
-                else:
-                    newcol = Column(data=[np.nan]*len(galtab), name=type+'_'+line, 
-                                    unit=unit[j], dtype='f4')
-                    galtab.add_column(newcol)
+                    if line == '12' or msk == 'str' or type == 'snrpk':
+                        getfile = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+type+'.fits.gz'
+                    else:
+                        getfile = 'fitsdata/'+gal+'.13co.smo7_mk12_'+msk+'.'+type+'.fits.gz'
+                    if os.path.exists(getfile):
+                        print('Reading',getfile)
+                        addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type+'_'+line, 
+                                        keepnan=True, stride=[3,3,1])
+                        jointb = join(galtab, addtb, keys=['ix','iy'])
+                        galtab = jointb
+                    else:
+                        newcol = Column(data=[np.nan]*len(galtab), name=type+'_'+line, 
+                                        unit=unit[j], dtype='f4')
+                        galtab.add_column(newcol)
             # Add the H2 column density, with and without deprojection
             if line == '12':
                 sigmol = msd_co(galtab['mom0_12'], name='sigmol')
@@ -81,7 +81,8 @@ for i, msk in enumerate(msktyp):
     if len(tablelist) > 0:
         t_merge = vstack(tablelist)
         for line in lines:
-            t_merge['snrpk_'+line].description = line+'CO peak signal to noise ratio'
+            if 'snrpk' in dotypes:
+                t_merge['snrpk_'+line].description = line+'CO peak signal to noise ratio'
             t_merge['mom0_'+line].description = line+'CO integrated intensity using {} mask'.format(msk)
             t_merge['emom0_'+line].description = line+'CO error in mom0 assuming {} mask'.format(msk)
             if msk == 'dil':
@@ -101,7 +102,7 @@ for i, msk in enumerate(msktyp):
         outname = 'edge'
     else:
         outname = gal
-    if i == 0:
+    if imsk == 0:
         t_merge.write(outname+'.comom_smo7.hdf5', path=msk, overwrite=True, 
                 serialize_meta=True, compression=True)
     else:

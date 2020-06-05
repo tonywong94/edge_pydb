@@ -19,3 +19,4 @@ test/
 build.sh
 *.json
 *.pdf
+edge_pydb/img_cocube/fitsdata
