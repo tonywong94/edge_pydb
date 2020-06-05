@@ -59,12 +59,15 @@ for prod in prodtype:
         for key in cdkeys:
             if key in outhd.keys():
                 del outhd[key]
+            if key in cahd.keys():
+                del cahd[key]
 
         # First process the native resolution file since it has the astrometry
         hdu = fits.open(cadir+'x'+base, ignore_missing_end=True)[0]
         hdu.data[hdu.data==0] = np.nan
-        newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
-        #fits.writeto(base.replace('fits','rgd.fits'), newim, outhd, overwrite=True)
+        hdu.header = cahd
+        newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
+        #fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
         rglabels = [s+'_rg' for s in labels]
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, col_lbl=rglabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
@@ -79,7 +82,7 @@ for prod in prodtype:
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
         hdu.data[hdu.data==0] = np.nan
         hdu.header = cahd
-        newim,foot = reproject_interp(hdu, outhd, independent_celestial_slices=True)
+        newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
         #fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         smlabels = [s+'_sm' for s in labels]
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 

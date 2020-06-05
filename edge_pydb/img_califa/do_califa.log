@@ -78,10 +78,7 @@ Remainder:  [1, 1, 0]
 There are 1849 rows in native table
 ['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_sm', 'Hbet_idx_sm', 'Mgb_idx_sm', 'Fe5270_idx_sm', 'Fe5335_idx_sm', 'D4000_idx_sm', 'Hdmod_idx_sm', 'Hgam_idx_sm', 'SN_idx_sm', 'e_Hdel_idx_sm', 'e_Hbet_idx_sm', 'e_Mgb_idx_sm', 'e_Fe5270_idx_sm', 'e_Fe5335_idx_sm', 'e_D4000_idx_sm', 'e_Hdmod_idx_sm', 'e_Hgam_idx_sm', 'e_SN_idx_sm']WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
 WARNING: Unexpected extra padding at the end of the file.  This padding may not be preserved when saving changes. [astropy.io.fits.header]
-WARNING: AstropyDeprecationWarning: "independent_celestial_slices" was deprecated in version 0.6 and will be removed in a future version.  [__main__]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
 WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
-WARNING: AstropyDeprecationWarning: "independent_celestial_slices" was deprecated in version 0.6 and will be removed in a future version.  [__main__]
 /opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in less
   result = getattr(super(), op)(other)
 /Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:37: RuntimeWarning: invalid value encountered in log10
