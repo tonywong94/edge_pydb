@@ -3,7 +3,10 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
-
+from astropy.modeling.functional_models import Gaussian2D
+from uncertainties import unumpy
+from scipy import ndimage
+from scipy.stats import multivariate_normal as ndNormal
 
 # Calculate galactocentric polar coordinates 
 # (radius in arcsec, azangle in degrees from receding majaxis)
@@ -98,6 +101,29 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 #     except:
 #         return np.nan, np.nan
 
+# def bpt_prob(criterions, x_u, y_u, grid_size=None):
+#     '''
+#     @Parameters
+#     criterions: a list of functions in BPT diagram
+#     x_u, y_u: data point with uncertainty
+#     grid_size: the size of the square grid where normal dist constructed
+    
+#     @output
+#     probability of data points in regions
+#     '''
+#     x = unumpy.nominal_values(x_u)
+#     y = unumpy.nominal_values(y_u)
+#     x_std = unumpy.std_devs(x_u)
+#     y_std = unumpy.std_devs(y_u)
+#     if not grid_size:
+#         grid_size = 5
+#     x_arr, y_arr = np.meshgrid(np.linspace(x - x_std, x + x_std, grid_size),
+#                  np.linspace(y - y_std, y + y_std, grid_size))
+#     pos = np.dstack((x_arr, y_arr))
+#     grid = np.zeros((grid_size, grid_size))
+#     y_crit = [crit(x_arr[0]) for crit in criterions]
+#     for i in range(len(criterions)):
+        
 
 # BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
 # Input is a flux_elines table.
