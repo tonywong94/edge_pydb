@@ -225,3 +225,4 @@ def getPath(file):
     '''get the hdf5 path'''
     h5f = _h5py.File(fetch(file), 'r')
     return [key for key in h5f.keys() if "__table_column_meta__" not in key]
+    
