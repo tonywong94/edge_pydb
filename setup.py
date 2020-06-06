@@ -33,5 +33,6 @@ setuptools.setup(
     ],
     license='MIT',
     include_package_data=True,
+    exclude_package_data={"": ['*/build/*']},
     install_requires=requirements,
 )
