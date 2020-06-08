@@ -1,5 +1,5 @@
-filename: NGC4047.pipe3d.hdf5
- path: ELINES_rg
+NGC4047.pipe3d.hdf5
+path: ELINES_rg
 <Table length=1849>
       name       dtype          unit        format               description                n_bad
 --------------- ------- ------------------- ------ ---------------------------------------- -----
@@ -33,8 +33,7 @@ e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 em
       sigsfr_rg float32 solMass / (Gyr pc2)                BD corrected SFR surface density  1365
   AHa_sigsfr_rg float32                 mag                           Ha extinction from BD  1365
 
-filename: NGC4047.pipe3d.hdf5
- path: ELINES_sm
+path: ELINES_sm
 <Table length=1849>
       name       dtype          unit        format               description                n_bad
 --------------- ------- ------------------- ------ ---------------------------------------- -----
@@ -68,8 +67,7 @@ e_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                        [OIII]4959 em
       sigsfr_sm float32 solMass / (Gyr pc2)                BD corrected SFR surface density  1291
   AHa_sigsfr_sm float32                 mag                           Ha extinction from BD  1291
 
-filename: NGC4047.pipe3d.hdf5
- path: SFH_rg
+path: SFH_rg
 <Table length=1849>
           name            dtype    unit   format                 description                  n_bad
 ------------------------ ------- -------- ------ -------------------------------------------- -----
@@ -159,8 +157,7 @@ filename: NGC4047.pipe3d.hdf5
 e_lumfrac_age_12.5893_rg float32 fraction        Error in the Lum. Fract. for age 12.5893 SSP  1584
 e_lumfrac_age_14.1254_rg float32 fraction        Error in the Lum. Fract. for age 14.1254 SSP  1495
 
-filename: NGC4047.pipe3d.hdf5
- path: SFH_sm
+path: SFH_sm
 <Table length=1849>
           name            dtype    unit   format                 description                  n_bad
 ------------------------ ------- -------- ------ -------------------------------------------- -----
@@ -250,8 +247,7 @@ filename: NGC4047.pipe3d.hdf5
 e_lumfrac_age_12.5893_sm float32 fraction        Error in the Lum. Fract. for age 12.5893 SSP  1537
 e_lumfrac_age_14.1254_sm float32 fraction        Error in the Lum. Fract. for age 14.1254 SSP  1442
 
-filename: NGC4047.pipe3d.hdf5
- path: SSP_rg
+path: SSP_rg
 <Table length=1849>
        name        dtype              unit             format                          description                           n_bad
 ----------------- ------- ---------------------------- ------ -------------------------------------------------------------- -----
@@ -285,8 +281,7 @@ mass_Avcor_ssp_rg float32       dex(solMass / arcsec2)                          
        sigstar_rg float32                solMass / pc2                                          stellar mass surface density  1371
  sigstar_Avcor_rg float32                solMass / pc2                                          stellar mass surface density  1371
 
-filename: NGC4047.pipe3d.hdf5
- path: SSP_sm
+path: SSP_sm
 <Table length=1849>
        name        dtype              unit             format                          description                           n_bad
 ----------------- ------- ---------------------------- ------ -------------------------------------------------------------- -----
@@ -320,8 +315,7 @@ mass_Avcor_ssp_sm float32       dex(solMass / arcsec2)                          
        sigstar_sm float32                solMass / pc2                                          stellar mass surface density  1339
  sigstar_Avcor_sm float32                solMass / pc2                                          stellar mass surface density  1339
 
-filename: NGC4047.pipe3d.hdf5
- path: flux_elines_rg
+path: flux_elines_rg
 <Table length=1849>
         name          dtype          unit        format                     description                     n_bad
 -------------------- ------- ------------------- ------ --------------------------------------------------- -----
@@ -418,8 +412,7 @@ e_disp_[OIII]4959_rg float32            Angstrom                                
             e_ZOH_rg float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1530
               BPT_rg float32                                          BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1431
 
-filename: NGC4047.pipe3d.hdf5
- path: flux_elines_sm
+path: flux_elines_sm
 <Table length=1849>
         name          dtype          unit        format                     description                     n_bad
 -------------------- ------- ------------------- ------ --------------------------------------------------- -----
@@ -516,8 +509,7 @@ e_disp_[OIII]4959_sm float32            Angstrom                                
             e_ZOH_sm float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1479
               BPT_sm float32                                          BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1378
 
-filename: NGC4047.pipe3d.hdf5
- path: indices_rg
+path: indices_rg
 <Table length=1849>
       name       dtype    unit   format            description             n_bad
 --------------- ------- -------- ------ ---------------------------------- -----
@@ -547,8 +539,7 @@ e_Fe5335_idx_rg float32 Angstrom                                            1365
   e_Hgam_idx_rg float32 Angstrom                                            1365
     e_SN_idx_rg float32 Angstrom                                            1365
 
-filename: NGC4047.pipe3d.hdf5
- path: indices_sm
+path: indices_sm
 <Table length=1849>
       name       dtype    unit   format            description             n_bad
 --------------- ------- -------- ------ ---------------------------------- -----
@@ -579,8 +570,8 @@ e_Fe5335_idx_sm float32 Angstrom                                            1291
     e_SN_idx_sm float32 Angstrom                                            1291
 
 
-filename: NGC4047.cocube_smo7.hdf5
- path: data
+NGC4047.cocube_smo7.hdf5
+path: data
 <Table length=81356>
    name    dtype   unit  format              description               n_bad
 --------- ------- ------ ------ -------------------------------------- -----
@@ -599,8 +590,8 @@ co_dilmsk float32                          mask value for dilated mask     0
 co_smomsk float32                         mask value for smoothed mask     0
 
 
-filename: NGC4047.comom_smo7.hdf5
- path: dil
+NGC4047.comom_smo7.hdf5
+path: dil
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
@@ -630,8 +621,7 @@ e_sigmol_fo float32 solMass / pc2                            error in sigmol dep
     mom2_13 float32        km / s                       13CO intensity wgtd vel disp using dil mask  1732
    emom2_13 float32        km / s                              13CO error in mom2 assuming dil mask  1732
 
-filename: NGC4047.comom_smo7.hdf5
- path: smo
+path: smo
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
@@ -659,8 +649,7 @@ e_sigmol_fo float32 solMass / pc2                            error in sigmol dep
     mom2_13 float32        km / s                                                                    1737
    emom2_13 float32        km / s                                                                    1737
 
-filename: NGC4047.comom_smo7.hdf5
- path: str
+path: str
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
