@@ -7,7 +7,8 @@ from datetime import datetime
 #import numpy.ma as ma
 
 # Which tables to rewrite with this execution of the script
-rewrite=['ned','wise','nsa','califa','rdist']
+#rewrite=['ned','wise','nsa','califa','rdist']
+rewrite=['ned']
 
 # Alberto's master table, last updated April 14, 2017
 t = Table.read('DETableFinal.csv', format='ascii.csv')
@@ -40,7 +41,8 @@ if 'califa' in rewrite:
 
 # ---------------------------------------------------------------------------------
 
-# Write the LEDA table (edge_leda.csv) - now done in mkleda.py
+# Write the LEDA table (edge_leda.csv) - Now done in mkleda.py
+# t['Name'].description = 'Galaxy Name'
 # t['ledaRA'].unit = 'hourangle'
 # t['ledaRA'].description = 'RA J2000 from LEDA <celpos>'
 # t['ledaDE'].unit = 'deg'
@@ -85,20 +87,23 @@ if 'califa' in rewrite:
 #         if "leda" in cname:
 #             outcols.append(cname)
 #     newt = t[outcols]
+#     newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+#     print(newt.meta)
 #     newt.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
 # Write the NED table:
 if 'ned' in rewrite:
-    nedt = Table.read('nedpos.txt', format='ascii.csv', delimiter='\t')
-    sc = SkyCoord(nedt['RA'],nedt['Dec']) #convert to degrees
+    nedt = Table.read('ned_diam.txt', format='ascii.csv', delimiter='\t')
+    sc = SkyCoord(nedt['RA_J2000'],nedt['Dec_J2000']) #convert to degrees
     nedRA=[]
     nedDE=[]
     for obj in sc:
         nedRA.append(float(obj.to_string(precision=5).split(' ')[0]))
         nedDE.append(float(obj.to_string(precision=5).split(' ')[1]))
     newt=Table()
-    newt['Name'] = nedt['Name']
+    newt['Name'] = nedt['InputName']
+    newt['Name'].description = 'Galaxy Name'
     newt['nedRA'] = nedRA
     newt['nedRA'].unit = 'deg'
     newt['nedRA'].description = 'J2000 RA from NED'
@@ -108,6 +113,14 @@ if 'ned' in rewrite:
     newt['nedVopt']=nedt['cz']
     newt['nedVopt'].unit='km / s'
     newt['nedVopt'].description='cz from NED'
+    newt['nedz']=nedt['Redshift']
+    newt['nedz'].description='z from NED'
+    newt['nedMajDia']=nedt['maj_diam_am']
+    newt['nedMajDia'].unit='arcmin'
+    newt['nedMajDia'].description='NED Basic Data major axis diameter'
+    newt['nedMinDia']=nedt['min_diam_am']
+    newt['nedMinDia'].unit='arcmin'
+    newt['nedMinDia'].description='NED Basic Data minor axis diameter'
     newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
     print(newt.meta)
     newt.write('edge_ned.csv', format='ascii.ecsv', delimiter=',', overwrite=True)

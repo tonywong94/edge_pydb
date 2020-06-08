@@ -105,22 +105,28 @@ def load_config(src, readonly=False):
     _fp.close()
 
 
-def listfiles(contain='', printing=False):
+def listfiles(contain='', values=False, printing=False):
     '''
     List the current available files in the package data directory
-    list all the file contain the specified substring
-    list all the files otherwise
+    If values=True, give full directory paths
+    If contain='hdf', list only file names with the 'hdf' substring
 
     Parameters:
         contain: the target substring to find in the file name to list, if not provided, then will print all files
     '''
     files = []
-    for key in _config.keys():
-        if contain in key:
-            if printing:
-                print(key)
-                # print the description here
-            files.append(key)
+    if values:
+        for val in _config.values():
+            if contain in val:
+                if printing:
+                    print(val)
+                files.append(val)
+    else:
+        for key in _config.keys():
+            if contain in key:
+                if printing:
+                    print(key)
+                files.append(key)
     return files
 
 

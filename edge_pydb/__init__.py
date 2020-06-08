@@ -19,7 +19,7 @@ class EdgeTable(_Table):
             else:
                 # no path specified with hdf5 file
                 # f = _h5py.File(util.fetch(file), 'r')
-                print('Columns in',file,':\n', util.getPath(file))
+                print('Paths in',file,':\n', util.getPath(file))
 #         else:
 #             print("Choose from the following files to read:")
 #             util.listfiles(printing=True)
