@@ -1,7 +1,7 @@
 # edge_pydb
 Python-based database for CARMA EDGE.  This package requires Python 3.
 
-The EDGE database has several components:
+The EDGE database has several components (see index_hdf.txt and index_csv.md for details):
 
 * Zero-dimensional tables (one value per galaxy), found in `dat_glob`.
 
@@ -23,7 +23,7 @@ in the directory containing `setup.py`.
 
 The `--user` flag ensures the package is not installed in your system-wide Python directories, which you probably don't have write access to.  The package tries to save and update a configuration file `_config.json`, so installation in your user area is recommended.
 
-If you have access to the protected archive (not on Github), you should also obtain the `team_files.py` script from Tony which will download and install the additional tables into the appropriate locations.  You can run this script in a shell or iPython environment (but should avoid doing so in the same directory as `setup.py`).  Currently the Github repository only includes HDF5 files for one galaxy, for testing purposes.
+If you have access to the protected archive (not on Github), you should also obtain the `team_files.py` script from Tony which will download and install the additional tables into the appropriate locations.  You can run this script in a shell or iPython environment (but should avoid doing so in the same directory as `setup.py`).  Currently the Github repository only includes HDF5 files for one galaxy, for demonstration and testing purposes.
 
 A `demo_notebk` folder provides examples of accessing database values from a Jupyter notebook.
 
@@ -41,12 +41,12 @@ A `demo_notebk` folder provides examples of accessing database values from a Jup
 
 `ctrpos = EdgeTable('edge_coflux_smo7.csv', cols=['Name', 'coRactr_smo7', 'coDectr_smo7'])`
 
-- loads the specified columns only from the CSV file
+- loads the three specified columns only from the CSV file
 
 `leda  = EdgeTable('edge_leda.csv', cols=['Name', 'ledaD25', 'ledaPA', 'ledaIncl'])`  
 `ctrpos.join(leda)`
 
-- will merge a sub-table from `edge_leda.csv` into `ctrpos`
+- will merge a sub-table from `edge_leda.csv` into `ctrpos`.  We must select the `Name` column for the join to work.
 
 `comom = EdgeTable('NGC4047.comom_smo7.hdf5', path='smo')`
 
