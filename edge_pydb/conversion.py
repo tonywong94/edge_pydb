@@ -4,7 +4,7 @@ from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.modeling.functional_models import Gaussian2D
-# from uncertainties import unumpy
+#from uncertainties import unumpy
 # from scipy import ndimage
 # from scipy.stats import multivariate_normal as ndNormal
 

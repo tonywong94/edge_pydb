@@ -120,12 +120,14 @@ Global fit parameters from Bbarolo on natv CO data
 
 
 
+date: '2020-06-07'
+
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | Name |   | string |   | Galaxy Name |
 | coRactr_natv | deg | float64 | .4f | Reference R.A. of natv CARMA cube |
 | coDectr_natv | deg | float64 | .4f | Reference Dec. of natv CARMA cube |
-| coCtrint_natv | K km / s | float64 | .3f | Smoothed mask CO intensity at reference pixel |
+| coCtrint_natv | K km / s | float64 | .3f | Unmasked CO intensity at reference pixel |
 | coDvhel | km / s | float64 | .3f | Add this to go from LSR to Barycentric frame |
 | coBmaj_natv | arcsec | float64 | .3f | Beam major axis of natv co cube |
 | coBmin_natv | arcsec | float64 | .3f | Beam minor axis of natv co cube |
@@ -187,12 +189,15 @@ date: '2020-06-01'
 
 
 
+date: '2020-06-07'
+
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | Name |   | string |   | Galaxy Name |
 | coRactr_e20 | deg | float64 | .4f | Reference R.A. of e20 CARMA cube |
 | coDectr_e20 | deg | float64 | .4f | Reference Dec. of e20 CARMA cube |
 | coCtrint_e20 | K km / s | float64 | .3f | Unmasked CO intensity at reference pixel |
+| coDvhel | km / s | float64 | .3f | Add this to go from LSR to Barycentric frame |
 | coBmaj_e20 | arcsec | float64 | .3f | Beam major axis of e20 co cube |
 | coBmin_e20 | arcsec | float64 | .3f | Beam minor axis of e20 co cube |
 | coBpa_e20 | deg | float64 | .3f | Beam pos ang (deg E of N) of e20 co cube |
@@ -230,14 +235,14 @@ date: '2020-06-01'
 
 
 
-date: '2020-06-05'
+date: '2020-06-07'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | Name |   | string |   | Galaxy Name |
 | coRactr_smo7 | deg | float64 | .4f | Reference R.A. of smo7 CARMA cube |
 | coDectr_smo7 | deg | float64 | .4f | Reference Dec. of smo7 CARMA cube |
-| coCtrint_smo7 | K km / s | float64 | .3f | Smoothed mask CO intensity at reference pixel |
+| coCtrint_smo7 | K km / s | float64 | .3f | Unmasked CO intensity at reference pixel |
 | coNomask_smo7 | Jy km / s | float64 | .3f | co flux from unmasked smo7 cube |
 | coeNomask_smo7 | Jy km / s | float64 | .3f | co flux uncertainty from unmasked smo7 cube |
 | coNomaskDv_smo7 | km / s | float64 | .3f | co velocity width for unmasked smo7 cube |
