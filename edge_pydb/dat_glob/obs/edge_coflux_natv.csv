@@ -4,7 +4,7 @@
 # - {name: Name, datatype: string, description: Galaxy Name}
 # - {name: coRactr_natv, unit: deg, datatype: float64, format: .4f, description: Reference R.A. of natv CARMA cube}
 # - {name: coDectr_natv, unit: deg, datatype: float64, format: .4f, description: Reference Dec. of natv CARMA cube}
-# - {name: coCtrint_natv, unit: K km / s, datatype: float64, format: .3f, description: Smoothed mask CO intensity at reference pixel}
+# - {name: coCtrint_natv, unit: K km / s, datatype: float64, format: .3f, description: Unmasked CO intensity at reference pixel}
 # - {name: coDvhel, unit: km / s, datatype: float64, format: .3f, description: Add this to go from LSR to Barycentric frame}
 # - {name: coBmaj_natv, unit: arcsec, datatype: float64, format: .3f, description: Beam major axis of natv co cube}
 # - {name: coBmin_natv, unit: arcsec, datatype: float64, format: .3f, description: Beam minor axis of natv co cube}
@@ -44,7 +44,7 @@
 # - {name: cottSNR5pix_natv, datatype: float64, format: .3f, description: Number of XY pixels with 13co peak Tb > 5 sigma}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2020-06-05'}
+# - {date: '2020-06-07'}
 # schema: astropy-2.0
 Name,coRactr_natv,coDectr_natv,coCtrint_natv,coDvhel,coBmaj_natv,coBmin_natv,coBpa_natv,coNomask_natv,coeNomask_natv,coNomaskDv_natv,coDilated_natv,coeDilated_natv,coSmooth_natv,coeSmooth_natv,coSmoothDv_natv,coMask2d_natv,coeMask2d_natv,coSNRmax_natv,coSNR4pix_natv,coSNR5pix_natv,cottBmaj_natv,cottBmin_natv,cottBpa_natv,cottNomask_natv,cotteNomask_natv,cottNomaskDv_natv,cottDilated_natv,cotteDilated_natv,cottSmooth_natv,cotteSmooth_natv,cottSmoothDv_natv,cottMask2d_natv,cotteMask2d_natv,cottSNRmax_natv,cottSNR4pix_natv,cottSNR5pix_natv
 ARP220,233.7383,23.5037,818.519,-16.613,4.480,3.870,71.800,350.730,32.760,1600.000,458.050,2.780,465.400,4.650,900.000,459.270,10.160,104.751,254.000,157.000,4.580,3.920,82.000,-9.000,19.250,1600.000,16.740,0.780,23.340,1.520,780.000,16.040,3.860,6.298,43.000,8.000
