@@ -43,7 +43,7 @@
 # - {name: cottSNR5pix_smo7, datatype: float64, format: .3f, description: Number of XY pixels with 13co peak Tb > 5 sigma}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2020-06-07'}
+# - {date: '2020-06-09'}
 # schema: astropy-2.0
 Name,coRactr_smo7,coDectr_smo7,coCtrint_smo7,coNomask_smo7,coeNomask_smo7,coNomaskDv_smo7,coDilated_smo7,coeDilated_smo7,coSmooth_smo7,coeSmooth_smo7,coSmoothDv_smo7,coMask2d_smo7,coeMask2d_smo7,coSNRmax_smo7,coSNR4pix_smo7,coSNR5pix_smo7,cottNomask_smo7,cotteNomask_smo7,cottNomaskDv_smo7,cottDilated_smo7,cotteDilated_smo7,cottSmooth_smo7,cotteSmooth_smo7,cottSmoothDv_smo7,cottMask2d_smo7,cotteMask2d_smo7,cottMk12_di_smo7,cotteMk12_di_smo7,cottMk12_sm_smo7,cotteMk12_sm_smo7,cottSNRmax_smo7,cottSNR4pix_smo7,cottSNR5pix_smo7
 ARP220,233.7383,23.5037,516.212,457.400,33.780,1600.000,448.810,2.840,488.720,5.870,840.000,520.930,13.640,95.831,458.000,292.000,-29.460,20.290,1600.000,15.630,0.840,17.830,1.380,620.000,15.880,3.570,14.020,1.670,15.310,3.430,5.855,63.000,14.000
