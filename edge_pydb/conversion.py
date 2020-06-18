@@ -4,9 +4,7 @@ from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.modeling.functional_models import Gaussian2D
-#from uncertainties import unumpy
-# from scipy import ndimage
-# from scipy.stats import multivariate_normal as ndNormal
+
 
 # Calculate galactocentric polar coordinates 
 # (radius in arcsec, azangle in degrees from receding majaxis)
@@ -14,7 +12,7 @@ from astropy.modeling.functional_models import Gaussian2D
 def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
     ctr = SkyCoord(ra_gc, dec_gc, unit="deg")
     pos = SkyCoord(ra, dec, unit="deg")
-    # Polar vector in sky plane
+    # Polar vector in sky plane 
     t_sky = ctr.position_angle(pos).degree
     r_sky = ctr.separation(pos).arcsecond
     #print(t_sky,r_sky)
@@ -101,45 +99,96 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 #     except:
 #         return np.nan, np.nan
 
-# def bpt_prob(criterions, x_u, y_u, grid_size=None):
-#     '''
-#     @Parameters
-#     criterions: a list of functions in BPT diagram
-#     x_u, y_u: data point with uncertainty
-#     grid_size: the size of the square grid where normal dist constructed
+
+# TODO not a formal position to import 
+from astropy.modeling.functional_models import Gaussian2D
+from scipy import ndimage
+from scipy.stats import multivariate_normal as ndNormal
+
+
+def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
+    '''
+    @Parameters
+    criterions: a list of functions in BPT diagram
+    x_u, y_u: data point with uncertainty
+    grid_size: the size of the square grid where normal dist constructed
     
-#     @output
-#     probability of data points in regions
-#     '''
-#     x = unumpy.nominal_values(x_u)
-#     y = unumpy.nominal_values(y_u)
-#     x_std = unumpy.std_devs(x_u)
-#     y_std = unumpy.std_devs(y_u)
-#     if not grid_size:
-#         grid_size = 5
-#     x_arr, y_arr = np.meshgrid(np.linspace(x - x_std, x + x_std, grid_size),
-#                  np.linspace(y - y_std, y + y_std, grid_size))
-#     pos = np.dstack((x_arr, y_arr))
-#     grid = np.zeros((grid_size, grid_size))
-#     y_crit = [crit(x_arr[0]) for crit in criterions]
-#     for i in range(len(criterions)):
+    @output
+    probability of data points in regions
+    '''
+    try:
+        from uncertainties import unumpy, umath
+    except:
+        print("uncertainties package is required for this function")
+    x = unumpy.nominal_values(n2ha_u)
+    y = unumpy.nominal_values(o3hb_u)
+    x_std = unumpy.std_devs(n2ha_u)
+    y_std = unumpy.std_devs(o3hb_u)
+    if not grid_size:
+        grid_size = 5
+    x_arr, y_arr = np.meshgrid(np.linspace(x - x_std, x + x_std, grid_size),
+                 np.linspace(y - y_std, y + y_std, grid_size))
+    pos = np.dstack((x_arr, y_arr))
+    kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47) # Eq. 5 of 2001ApJ...556..121K
+    kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05) # Eq. 1 of 2003MNRAS.346.1055K
+    cidfer10 = lambda nii: 0.48 + 1.01*nii          # Eq. 3 of 2010MNRAS.403.1036C
+    kew = kewley01(x_arr[0])
+    kau = kauffm03(x_arr[0])
+    cid = cidfer10(x_arr[0])
+    grid = np.zeros((grid_size, grid_size))   
+    # HII star forming
+    sf = np.logical_and(_arr[:, 0] < kau, x_arr[0] < -0.1)
+    grid[:, sf] = -1 
+    # Composite
+    inter = np.logical_and.reduce([y_arr[:, 0] > kau, y_arr[:, 0] < kew, x_arr[0] < 0.3, ~sf])
+    grid[:, inter] = 0 
+    # LINER
+    liner = np.logical_and.reduce([~sf, ~inter, y_arr[:, 0] > -1, y_arr[:, 0] < cid ])
+    grid[:, liner] = 1 
+    # Seyfert
+    seyfert = np.logical_and.reduce([~sf, ~inter, ~liner, y_arr[:, 0] > -1])
+    grid[:, seyfert] = 2
+    
+#     cid_region = np.where(x_arr[0, :]>  -0.19935)[0]
+#     print(cid[cid_region])
+#     print(cid_region)
+#     print(y_arr[cid_region])
+#     grid[x_arr[0][cid_region], y_arr[cid_region, 0] > cid[cid_region]] = 4
+#     grid[x_arr[0][cid_region], y_arr[cid_region, 0] < cid[cid_region] and y_arr[cid_region, 0] > kew[cid_region]] = 5
+    gauss2d = ndNormal(mean=(x, y), cov=(x_std, y_std))
+    pdf = gauss2d.pdf(pos)
+    normal_prob = np.zeros((grid_size, grid_size))
+    delta_x = x_arr[0][1] - x_arr[0][0]
+    delta_y = y_arr[1][0] - y_arr[0][0]
+    total = 0
+    for i in range(grid_size):
+        for j in range(grid_size):
+            normal_prob[i, j] = pdf[i, j] * delta_x * delta_y
+            total += normal_prob[i, j]
+            # Normalization constant
+    return ndimage.sum(normal_prob* 1/total, grid, index=bpt_type)
+    
         
 
 # BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
 # Input is a flux_elines table.
-def bpt_type(fluxtab, ext='', name='BPT'):
+def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
 
     flux_nii  = fluxtab['flux_[NII]6583'+ext]
     flux_oiii = fluxtab['flux_[OIII]5007'+ext]
     flux_ha   = fluxtab['flux_Halpha'+ext]
     flux_hb   = fluxtab['flux_Hbeta'+ext]
     ew_ha     = fluxtab['EW_Halpha'+ext]
+    eN2 = fluxtab['e_flux_[NII]6583'+ext]
+    eO3 = fluxtab['e_flux_[OIII]5007'+ext] 
+    eHa = fluxtab['e_flux_Halpha'+ext]
+    eHb = fluxtab['e_flux_Hbeta'+ext]
 
     good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
     n2ha = np.full(len(flux_nii), np.nan)
     n2ha[good] = np.log10(flux_nii[good])  - np.log10(flux_ha[good])
     o3hb = np.full(len(flux_oiii), np.nan)
-    o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])    
+    o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])   
 
     kewley01 = lambda nii: 1.19 + 0.61/(nii - 0.47) # Eq. 5 of 2001ApJ...556..121K
     kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05) # Eq. 1 of 2003MNRAS.346.1055K
@@ -147,7 +196,7 @@ def bpt_type(fluxtab, ext='', name='BPT'):
 
     BPT = np.full(len(n2ha), np.nan)
     # Star forming: below Kauffmann line and EW > 6
-    sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
+    sf = (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
     BPT[sf] = -1
     # Intermediate: below Kewley line and not star-forming
     inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
@@ -159,6 +208,31 @@ def bpt_type(fluxtab, ext='', name='BPT'):
     seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
     BPT[seyfert] = 2
 
+    BPT_prob = np.full(len(n2ha), np.nan)
+    if prob:
+        try:
+            from uncertainties import unumpy, umath
+        except:
+            print("uncertainties package is required for this function")
+       
+        Ha_u = unumpy.uarray(np.array(flux_ha), np.array(eHa))
+        Hb_u = unumpy.uarray(np.array(flux_hb), np.array(eHb))
+        N2_u = unumpy.uarray(np.array(flux_nii), np.array(eN2))
+        O3_u = unumpy.uarray(np.array(flux_oiii), np.array(eO3))
+        t1 = [umath.log10(N2_u[good][i]) - umath.log10(Ha_u[good][i]) for i in range(len(Ha_u[good]))]
+        t2 = [umath.log10(O3_u[good][i]) - umath.log10(Hb_u[good][i]) for i in range(len(Hb_u[good]))]
+        n2ha_u = unumpy.uarray(np.full(len(Ha_u), np.nan), np.full(len(Ha_u), np.nan))
+        o3hb_u = unumpy.uarray(np.full(len(Hb_u), np.nan), np.full(len(Hb_u), np.nan))
+        n2ha_u[good] = unumpy.uarray(unumpy.nominal_values(t1), unumpy.std_devs(t1))
+        o3hb_u[good] = unumpy.uarray(unumpy.nominal_values(t2), unumpy.std_devs(t2)) 
+        for i in np.where(sf)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], -1, grid_size)
+        for i in np.where(inter)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 0, grid_size)
+        for i in np.where(liner)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 1, grid_size)
+        for i in np.where(seyfert)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 2, grid_size)
 #     BPT = np.zeros(len(n2ha))
 #     for i in range(len(n2ha)):
 #         if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
@@ -173,7 +247,9 @@ def bpt_type(fluxtab, ext='', name='BPT'):
 #         else:
 #             BPT[i] = np.nan
     return Column(BPT, name=name, dtype='f4', description=
-                 'BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
+                 'BPT type (-1=SF 0=inter 1=LINER 2=Sy)'), \
+            Column(BPT_prob, name='prob', dtype='f4', description=
+                 'BPT probability')
 
 
 # Metallicity derived from Marino+13 calibration.
