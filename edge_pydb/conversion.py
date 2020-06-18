@@ -137,7 +137,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     cid = cidfer10(x_arr[0])
     grid = np.zeros((grid_size, grid_size))   
     # HII star forming
-    sf = np.logical_and(_arr[:, 0] < kau, x_arr[0] < -0.1)
+    sf = np.logical_and(x_arr[:, 0] < kau, x_arr[0] < -0.1)
     grid[:, sf] = -1 
     # Composite
     inter = np.logical_and.reduce([y_arr[:, 0] > kau, y_arr[:, 0] < kew, x_arr[0] < 0.3, ~sf])
