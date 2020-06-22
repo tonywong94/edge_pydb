@@ -135,10 +135,10 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         wcsout = wfix.wcs_pix2world(wcsin,0)
         col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
                         unit='deg', format='.6f', 
-                        description='ra offset from {} center'.format(ortlabel))
+                        description='ra offset from ref pixel')
         col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
                         unit='deg', format='.6f', 
-                        description='dec offset from {} center'.format(ortlabel))
+                        description='dec offset from ref pixel')
         if ra_gc is None:
             ra_gc = w.wcs.crval[0]
         if dec_gc is None:
