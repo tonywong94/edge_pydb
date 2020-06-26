@@ -12,15 +12,14 @@ os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
 tout = 180
 masks = ['dilmsk', 'bbmsk']
-fits = ['fitvd', 'fixvd']
-sets = ['natv', 'smo5', 'smo7']
+fits  = ['fitvd', 'fixvd']
+sets  = ['natv', 'smo7']
 runs = []
 for set in sets:
     for fit in fits:
         for mask in masks:
             runs.append(set+'_'+fit+'_'+mask)
 print(runs)
-#runs = ['nrad8', 'nrad8_vdisp8', 'nrad8_smolist', 'nrad8_vdisp8_smolist']
 
 for run in runs:
     with open(run+'_fail1.txt') as f:
@@ -31,6 +30,12 @@ for run in runs:
     for gal in namelist:
         print(gal)
         pfile = 'param_'+gal+'.par'
+        # Relax the PA constraints for 2nd run
+        with open(pfile, 'rt') as pf:
+            params = pf.read()
+            params = params.replace('\nDELTAPA', '\n//DELTAPA')
+        with open(pfile, 'wt') as pf:
+            pf.write(params)
         if os.path.isdir('output/'+gal[:8]):
             shutil.rmtree('output/'+gal[:8])
         os.makedirs('output/'+gal[:8])
@@ -40,9 +45,9 @@ for run in runs:
                             timeout=tout, stdout=outfile, stderr=outfile)
             except subprocess.TimeoutExpired:
                 print('Timeout after {} seconds'.format(tout))
-        plot_paths=['/plot_pv_local.pdf','/plot_parameters.pdf','/plot_maps_local.pdf','/plot_chanmaps_local.pdf']
+        plot_paths=['_pv_local.pdf','_parameters.pdf','_maps_local.pdf','_chanmaps_local.pdf']
         for plot_path in plot_paths:
-            if not os.path.isfile('output/'+gal[:8]+plot_path):
+            if not os.path.isfile('output/'+gal[:8]+'/'+gal[:8]+plot_path):
                 noPlot.append(gal)
                 print(gal+' in '+ run + ' is missing plots')
                 break
@@ -50,5 +55,5 @@ for run in runs:
     for obj in noPlot:
         noPlot_txt.write(obj+'\n')
     noPlot_txt.close()
-    print (run+' Done')
+    print (run+' Done\n')
  

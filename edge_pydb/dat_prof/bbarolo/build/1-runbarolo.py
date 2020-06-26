@@ -12,16 +12,15 @@ import shutil
 os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
 tout = 180
-masks = ['dilmsk', 'bbmsk']
-fits = ['fitvd', 'fixvd']
-sets = ['natv', 'smo5', 'smo7']
+masks = ['bbmsk', 'dilmsk']
+fits  = ['fitvd', 'fixvd']
+sets  = ['natv', 'smo7']
 runs = []
 for set in sets:
     for fit in fits:
         for mask in masks:
             runs.append(set+'_'+fit+'_'+mask)
 print(runs)
-#runs = ['nrad8', 'nrad8_vdisp8', 'nrad8_smolist', 'nrad8_vdisp8_smolist']
 
 for run in runs:
     noPlot_txt = open(run+'_fail1.txt','w')
@@ -40,9 +39,9 @@ for run in runs:
                             timeout=tout, stdout=outfile, stderr=outfile)
             except subprocess.TimeoutExpired:
                 print('Timeout after {} seconds'.format(tout))
-        plot_paths=['/plot_pv_local.pdf','/plot_parameters.pdf','/plot_maps_local.pdf','/plot_chanmaps_local.pdf']
+        plot_paths=['_pv_local.pdf','_parameters.pdf','_maps_local.pdf','_chanmaps_local.pdf']
         for plot_path in plot_paths:
-            if not os.path.isfile('output/'+gal[:8]+plot_path):
+            if not os.path.isfile('output/'+gal[:8]+'/'+gal[:8]+plot_path):
                 noPlot.append(gal)
                 print(gal+' in '+ run + ' is missing plots')
                 break

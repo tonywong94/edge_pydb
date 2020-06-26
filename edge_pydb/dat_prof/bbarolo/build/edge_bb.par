@@ -26,7 +26,7 @@ YPOS        %.3f
 // inclination and position angles [measured
 // anti-clockwise from north] (in degrees),
 // height scale of the disk (in arcsec).
-VROT        200         
+VROT        %.0f         
 VRAD        0           
 VDISP       8          
 INC         %.3f          
@@ -35,6 +35,7 @@ Z0          %.3f
          
 // Free parameters for the minimization.
 FREE        %s
+DELTAPA     5
 
 // OPTIONAL: Function to be minimized (default is 2):
 // = 1: chi-squared.
