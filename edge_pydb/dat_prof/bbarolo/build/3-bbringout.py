@@ -5,13 +5,14 @@
 import os
 from astropy.table import Table,Column,vstack,hstack,join
 import numpy as np
+from datetime import datetime
 
-bbdir = '/Volumes/Data/tonywong/sharenb/bbarolo/'
+bbdir = '/Users/tonywong/Scratch2/EDGE/bbarolo/'
 
 masks = ['dilmsk', 'bbmsk']
-fits = ['fitvd', 'fixvd']
-sets = ['natv', 'smo5', 'smo7']
-runs = []
+fits  = ['fitvd', 'fixvd']
+sets  = ['natv', 'smo7']
+runs  = []
 for set in sets:
     for fit in fits:
         for mask in masks:
@@ -60,7 +61,7 @@ gallist = [gal for gal in namelist if not gal.startswith("#")]
 
 for run in runs:
 
-    for ringlog in ['ringlog1','ringlog2']:
+    for ringlog in ['rings_final1','rings_final2']:
         print('Beginning run',run,'for',ringlog)
         tablelist_run=[]
 
@@ -110,7 +111,7 @@ for run in runs:
                 if bblabel not in freepars:
                     galtable.add_column(newcol)
                 else:
-                    if ringlog == 'ringlog2':
+                    if ringlog == 'rings_final2':
                         if bblabel not in ['VROT', 'VDISP']:
                             newcol[:] = -1
                         else:  # These are always fit ring by ring
@@ -172,7 +173,9 @@ for run in runs:
             t_run_bbprof[col].unit = 'arcsec'
         for col in pixparam:
             t_run_bbprof[col].unit = 'pixel'
-        if ringlog == 'ringlog1':
+        if ringlog == 'rings_final1':
+            t_run_bbprof.meta['comments'] = ('Bbarolo first round results for run '+run)
+            t_run_bbprof.meta['date'] = datetime.today().strftime('%Y-%m-%d')
             t_run_bbprof.write('bb_'+run+'_freepa.csv',overwrite=True,delimiter=',',
                                format='ascii.ecsv')
 
@@ -211,4 +214,6 @@ for run in runs:
 
     # Merge the tables
     t_join = join(t_run_bbprof, t_run_densprof, join_type='left')
+    t_join.meta['comments'] = ('Bbarolo second round results for run '+run)
+    t_join.meta['date'] = datetime.today().strftime('%Y-%m-%d')
     t_join.write('bb_'+run+'.csv', overwrite=True, delimiter=',', format='ascii.ecsv')

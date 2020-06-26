@@ -6,6 +6,7 @@ from astropy.io.fits import getheader
 from astropy.wcs import WCS
 import os.path
 import glob
+from edge_pydb import EdgeTable
 
 def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carmaedge', db=None):
     # Prepare output directory
@@ -24,19 +25,19 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         gallist_fitctr = []
 
     # Input template
-    with open('templates/'+template) as p:
+    with open(template) as p:
         paramlist = p.read()
 
     for gal in gallist:
         if run.startswith('smo5'):
-            fitsin = edgedir+'comb_de_10/smo5/'+gal+'.co.smo5normsub.fits.gz'
-            maskin = 'FILE('+edgedir+'comb_de_10/smo5/mom/'+gal+'.co.de10_smo5_dil.mask.fits.gz)'
+            fitsin = edgedir+'/comb_de_10/smo5/'+gal+'.co.smo5norm.fits.gz'
+            maskin = 'FILE('+edgedir+'/comb_de_10/smo5/mom/'+gal+'.co.de10_smo5_dil.mask.fits.gz)'
         elif run.startswith('smo7'):
-            fitsin = edgedir+'comb_de_10/smo7/'+gal+'.co.smo7normsub.fits.gz'
-            maskin = 'FILE('+edgedir+'comb_de_10/smo7/mom/'+gal+'.co.de10_smo7_dil.mask.fits.gz)'
+            fitsin = edgedir+'/comb_de_10/smo7/'+gal+'.co.smo7norm.fits.gz'
+            maskin = 'FILE('+edgedir+'/comb_de_10/smo7/mom/'+gal+'.co.de10_smo7_dil.mask.fits.gz)'
         else:
-            fitsin = edgedir+'comb_de_10/cmnorm_sub/'+gal+'.co.cmnormsub.fits.gz'
-            maskin = 'FILE('+edgedir+'comb_de_10/reprojmask/'+gal+'.co.de10_dil.masksub.fits.gz)'
+            fitsin = edgedir+'/comb_de_10/native/'+gal+'.co.cmnorm.fits'
+            maskin = 'FILE('+edgedir+'/comb_de_10/native/mom/'+gal+'.co.de10_dil.mask.fits.gz)'
         if not os.path.exists(fitsin):
             print('Galaxy {} not found'.format(gal))
             continue
@@ -49,12 +50,18 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         else:
             free = 'VROT VDISP VSYS PA'
         hdr = getheader(fitsin)
-        hdr['specsys'] = 'LSRK'
-        hdr['ctype3']  = 'VRAD'
-        hdr['velref']  = 257
         w = WCS(hdr)
         # --- Set default parameters for VROT and VDISP
-        vrot = 200.
+        if gal in ['NGC5784']:
+            vrot = 600.
+        elif gal in ['NGC2639']:
+            vrot = 400.
+        elif gal in ['NGC0496','NGC4210','NGC5480']:
+            vrot = 150
+        elif gal in ['NGC4961','NGC5016','NGC5520','NGC6155','UGC04461','UGC09542']:
+            vrot = 100
+        else:
+            vrot = 200.
         vdisp = 8.
         if len(np.where(db['Name'] == gal)[0])==0:
             print('Skipping {} because it is not in db'.format(gal))
@@ -62,8 +69,12 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         i = np.where(db['Name'] == gal)[0][0]
         vsys = db['coVsys'][i]
         # --- Get center position from NED, convert to pixel units
-        ractr = db['nedRA'][i]
-        dcctr = db['nedDE'][i]
+        if gal in ['ARP220','NGC0496','NGC0523','NGC6155','UGC03973','UGC10043','UGC10123']:
+            ractr = db['nedRA'][i]
+            dcctr = db['nedDE'][i]
+        else:
+            ractr = db['ledaRA'][i]
+            dcctr = db['ledaDE'][i]
         xposdg = hdr['crval1']
         yposdg = hdr['crval2']
         xpospx = hdr['crpix1']
@@ -72,7 +83,7 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         pixcrd = np.array([[xpospx, ypospx, 1, 1]])
         refpos = w.wcs_pix2world(pixcrd, 1)
         nedpx  = w.wcs_world2pix([[ractr,dcctr,refpos[0][2],refpos[0][3]]],0)
-        print('  NED  pixel (0-based) is {:.2f} {:.2f}'.format(nedpx[0][0],nedpx[0][1]))
+        print('  LEDA pixel (0-based) is {:.2f} {:.2f}'.format(nedpx[0][0],nedpx[0][1]))
         tstpx  = w.wcs_world2pix([[refpos[0][0],refpos[0][1],refpos[0][2],refpos[0][3]]],0)
         print('  Test: Ref  pixel (0-based) is {:.2f} {:.2f} should be {:.2f} {:.2f}'.
               format(tstpx[0][0],tstpx[0][1],xpospx-1,ypospx-1))
@@ -88,8 +99,8 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
             xpos = fitpx[0][0]
             ypos = fitpx[0][1]
             print('  Using fitted center of {:.2f} {:.2f}'.format(fitpx[0][0],fitpx[0][1]))
-        # --- Get PA and INC from Becca's fits
-        inc = db['rfInc'][i]
+        # --- Get PA and INC from LEDA
+        inc = db['ledaAxIncl'][i]
         if (inc > 88):
             inc=88.0
         pa = (db['rfPA'][i] + 180) % 360
@@ -97,46 +108,51 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         dmpc = db['caDistMpc'][i]
         z0 = 206265*100/(dmpc*1e6)  # 100 pc thickness, fixed
         print('  Assumed INC, PA, Z0: {:.2f} {:.2f} {:.2f}'.format(inc,pa,z0))
-        gal_param = paramlist % (fitsin, vsys, xpos, ypos, inc, pa, z0, free, mask)
+        gal_param = paramlist % (fitsin, vsys, xpos, ypos, vrot, inc, pa, z0, free, mask)
         file = open(run+'/param_'+gal+'.par','w')
         file.write(gal_param)
         file.close()
     print (run+' Done')
     return
 
-edgedir = '/Volumes/Scratch2/tonywong/EDGE/'
-basedir = '../edge_pydb/'
-# CALIFA table: source for distance
-db_ca = Table.read(basedir+'dat_glob/external/edge_califa.csv', format='ascii.ecsv')
+# CALIFA table: source for DISTANCE
+db = EdgeTable('edge_califa.csv', cols=['Name', 'caDistMpc'])
+# NED table: source for CENTER RA & DEC
+ned = EdgeTable('edge_ned.csv', cols=['Name', 'nedRA', 'nedDE'])
+db.join(ned)
+# LEDA table: source for INC, CENTER RA & DEC
+leda = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
+leda['ledaRA'].convert_unit_to('deg')
+leda['ledaRA'].format = '.5f'
+db.join(leda)
 # CO observations table: source for VSYS
-db_co = Table.read(basedir+'dat_glob/obs/edge_coobs_de20.csv', format='ascii.csv')
-# Becca's fits: source for PA, INC
-db_rf = Table.read(basedir+'dat_glob/derived/edge_rfpars.csv', format='ascii.ecsv')
-# NED table: source for XPOS, YPOS
-db_nd = Table.read(basedir+'dat_glob/external/edge_ned.csv', format='ascii.ecsv')
-
-db12 = join(db_ca, db_co, keys='Name')
-db123 = join(db12, db_rf, keys='Name')
-db = join(db123, db_nd, keys='Name')
-print (db.keys())
+coobs = EdgeTable('edge_coobs_DE.csv', cols=['Name', 'coVsys', 'coTpk_10'])
+db.join(coobs)
+# Becca's fits: source for PA
+rfpars = EdgeTable('edge_rfpars.csv', cols=['Name', 'rfKinRA', 'rfKinDecl', 'rfPA', 'rfInc'])
+db.join(rfpars)
+print(db.keys())
 
 # Get the list of galaxies to work on
-listfile = 'detected.txt'
+# listfile = 'detected.txt'
+listfile = 'resolved.txt'
 with open(listfile) as f:
     namelist = f.read().splitlines()
 gallist = [gal for gal in namelist if not gal.startswith("#")]
 print (gallist)
 
 masks = ['dilmsk', 'bbmsk']
-fits = ['fitvd', 'fixvd']
-sets = ['natv', 'smo5', 'smo7']
-runs = []
+fits  = ['fitvd', 'fixvd']
+#sets  = ['natv', 'smo5', 'smo7']
+sets  = ['natv', 'smo7']
+runs  = []
 for set in sets:
     for fit in fits:
         for mask in masks:
             runs.append(set+'_'+fit+'_'+mask)
 print(runs)
 
+edgedir = os.path.normpath(os.getcwd()+'/..')
 for run in runs:
     write_par(gallist, run=run, template='edge_bb.par', edgedir=edgedir, db=db)    
 
