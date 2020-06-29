@@ -1,45 +1,35 @@
 - [edge_bbpars_smo7.csv](#edge_bbpars_smo7csv)
 - [edge_rfpars.csv](#edge_rfparscsv)
 - [edge_hiflux.csv](#edge_hifluxcsv)
+- [edge_jampars.csv](#edge_jamparscsv)
 - [edge_bbpars_natv.csv](#edge_bbpars_natvcsv)
 - [edge_coflux_natv.csv](#edge_coflux_natvcsv)
-- [edge_coobs_DE.csv](#edge_coobs_decsv)
+- [edge_coobs_DE.csv](#edge_coobs_DEcsv)
 - [edge_coflux_e20.csv](#edge_coflux_e20csv)
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
-- [edge_coobs_E.csv](#edge_coobs_ecsv)
-- [edge_coobs_D.csv](#edge_coobs_dcsv)
+- [edge_coobs_E.csv](#edge_coobs_Ecsv)
+- [edge_coobs_D.csv](#edge_coobs_Dcsv)
 - [edge_wise.csv](#edge_wisecsv)
 - [edge_nsa.csv](#edge_nsacsv)
 - [edge_ned.csv](#edge_nedcsv)
 - [edge_rdist.csv](#edge_rdistcsv)
 - [edge_leda.csv](#edge_ledacsv)
 - [edge_califa.csv](#edge_califacsv)
+- [rf_CO_natv.csv](#rf_CO_natvcsv)
+- [rf_HA_smo6.csv](#rf_HA_smo6csv)
+- [rf_CO_smo6.csv](#rf_CO_smo6csv)
+- [rf_HA_natv.csv](#rf_HA_natvcsv)
+- [jam_rotcurves.csv](#jam_rotcurvescsv)
 - [rprof_de20_smo.csv](#rprof_de20_smocsv)
 - [rprof_smo7_smo.csv](#rprof_smo7_smocsv)
 - [bb_smo7_fixvd_dilmsk_freepa.csv](#bb_smo7_fixvd_dilmsk_freepacsv)
-- [bb_smo5_fixvd_bbmsk_freepa.csv](#bb_smo5_fixvd_bbmsk_freepacsv)
 - [bb_smo7_fixvd_dilmsk.csv](#bb_smo7_fixvd_dilmskcsv)
 - [bb_natv_fitvd_dilmsk.csv](#bb_natv_fitvd_dilmskcsv)
 - [bb_natv_fixvd_dilmsk_freepa.csv](#bb_natv_fixvd_dilmsk_freepacsv)
-- [bb_natv_fitvd_bbmsk_freepa.csv](#bb_natv_fitvd_bbmsk_freepacsv)
 - [bb_smo7_fitvd_dilmsk.csv](#bb_smo7_fitvd_dilmskcsv)
 - [bb_natv_fixvd_dilmsk.csv](#bb_natv_fixvd_dilmskcsv)
-- [bb_smo7_fixvd_bbmsk_freepa.csv](#bb_smo7_fixvd_bbmsk_freepacsv)
-- [bb_smo5_fitvd_bbmsk.csv](#bb_smo5_fitvd_bbmskcsv)
 - [bb_natv_fitvd_dilmsk_freepa.csv](#bb_natv_fitvd_dilmsk_freepacsv)
 - [bb_smo7_fitvd_dilmsk_freepa.csv](#bb_smo7_fitvd_dilmsk_freepacsv)
-- [bb_smo5_fixvd_bbmsk.csv](#bb_smo5_fixvd_bbmskcsv)
-- [bb_smo5_fixvd_dilmsk.csv](#bb_smo5_fixvd_dilmskcsv)
-- [bb_natv_fitvd_bbmsk.csv](#bb_natv_fitvd_bbmskcsv)
-- [bb_smo7_fitvd_bbmsk.csv](#bb_smo7_fitvd_bbmskcsv)
-- [bb_smo7_fitvd_bbmsk_freepa.csv](#bb_smo7_fitvd_bbmsk_freepacsv)
-- [bb_natv_fixvd_bbmsk_freepa.csv](#bb_natv_fixvd_bbmsk_freepacsv)
-- [bb_natv_fixvd_bbmsk.csv](#bb_natv_fixvd_bbmskcsv)
-- [bb_smo7_fixvd_bbmsk.csv](#bb_smo7_fixvd_bbmskcsv)
-- [bb_smo5_fitvd_dilmsk_freepa.csv](#bb_smo5_fitvd_dilmsk_freepacsv)
-- [bb_smo5_fixvd_dilmsk_freepa.csv](#bb_smo5_fixvd_dilmsk_freepacsv)
-- [bb_smo5_fitvd_dilmsk.csv](#bb_smo5_fitvd_dilmskcsv)
-- [bb_smo5_fitvd_bbmsk_freepa.csv](#bb_smo5_fitvd_bbmsk_freepacsv)
 
 
 ## [edge_bbpars_smo7.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_bbpars_smo7.csv)
@@ -56,7 +46,7 @@ Global fit parameters from Bbarolo on smo7 CO data
 | bbKinPA | arcsec | float64 | .2f | Position angle E from N determined by Bbarolo |
 | bbMask |   | string |   | Identifier for cube mask |
 
-## edge_rfpars.csv
+## [edge_rfpars.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_rfpars.csv)
 
 
 
@@ -102,6 +92,25 @@ date: '2019-10-13'
 | SigVmax | km / s | float32 |   | signal end from get_signal_range |
 | BadFlag |   | bool |   | True for poor signal |
 
+## [edge_jampars.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_jampars.csv)
+
+Galaxy Parameters from Table 1 of 2018MNRAS.477..254L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| jaType |   | string |   | Morphological Type |
+| jaDistMpc | Mpc | float64 |   | Distance in Mpc |
+| jaIncl | deg | float64 |   | Inclination from outer isophotes |
+| jaMstar | dex(solMass) | float64 |   | Total Stellar mass |
+| jaMorphPA | deg | float64 |   | PA from outer isophotes |
+| jaKinPA | deg | float64 |   | PA from fitting CO kinematics |
+| jaReff | arcsec | float64 |   | Effective radius |
+| jaVstar | km / s | float64 |   | Stellar velocity dispersion at Reff |
+| jaVsys | km / s | float64 |   | Systemic velocity referenced to optical convention cz |
+
 ## [edge_bbpars_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_bbpars_natv.csv)
 
 Global fit parameters from Bbarolo on natv CO data
@@ -118,9 +127,9 @@ Global fit parameters from Bbarolo on natv CO data
 
 ## [edge_coflux_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_natv.csv)
 
+Integrated CO fluxes from de20 cubes
 
-
-date: '2020-06-07'
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -189,7 +198,7 @@ date: '2020-06-01'
 
 
 
-date: '2020-06-07'
+date: '2020-06-09'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -233,9 +242,9 @@ date: '2020-06-07'
 
 ## [edge_coflux_smo7.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_smo7.csv)
 
+Integrated CO fluxes from smo7 cubes
 
-
-date: '2020-06-07'
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -481,6 +490,89 @@ date: '2019-08-31'
 | caFlgReg12 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V1200 |
 | caFlgImg12 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V1200 |
 
+## [rf_CO_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_CO_natv.csv)
+
+CO_natv Rotation Curves from 2018ApJ...860...92L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| radius | arcsec | float64 |   |   |
+| Vrot | km / s | float64 |   | Rotation curve |
+| e_Vrot | km / s | float64 |   | Error in rotation curve |
+| Vrad |   | float64 |   | Expansion velocity |
+| e_Vrad | km / s | float64 |   | Error in expansion velocity |
+| dVsys | km / s | float64 |   | Systemic velocity offset |
+| e_dVsys | km / s | float64 |   | Error in systemic velocity offset |
+
+## [rf_HA_smo6.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_HA_smo6.csv)
+
+HA_smo6 Rotation Curves from 2018ApJ...860...92L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| radius | arcsec | float64 |   |   |
+| Vrot | km / s | float64 |   | Rotation curve |
+| e_Vrot | km / s | float64 |   | Error in rotation curve |
+| Vrad |   | float64 |   | Expansion velocity |
+| e_Vrad | km / s | float64 |   | Error in expansion velocity |
+| dVsys | km / s | float64 |   | Systemic velocity offset |
+| e_dVsys | km / s | float64 |   | Error in systemic velocity offset |
+
+## [rf_CO_smo6.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_CO_smo6.csv)
+
+CO_smo6 Rotation Curves from 2018ApJ...860...92L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| radius | arcsec | float64 |   |   |
+| Vrot | km / s | float64 |   | Rotation curve |
+| e_Vrot | km / s | float64 |   | Error in rotation curve |
+| Vrad |   | float64 |   | Expansion velocity |
+| e_Vrad | km / s | float64 |   | Error in expansion velocity |
+| dVsys | km / s | float64 |   | Systemic velocity offset |
+| e_dVsys | km / s | float64 |   | Error in systemic velocity offset |
+
+## [rf_HA_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_HA_natv.csv)
+
+HA_natv Rotation Curves from 2018ApJ...860...92L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| radius | arcsec | float64 |   |   |
+| Vrot | km / s | float64 |   | Rotation curve |
+| e_Vrot | km / s | float64 |   | Error in rotation curve |
+| Vrad |   | float64 |   | Expansion velocity |
+| e_Vrad | km / s | float64 |   | Error in expansion velocity |
+| dVsys | km / s | float64 |   | Systemic velocity offset |
+| e_dVsys | km / s | float64 |   | Error in systemic velocity offset |
+
+## [jam_rotcurves.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_leung/jam_rotcurves.csv)
+
+CO Rotation Curves from 2018MNRAS.477..254L
+
+date: '2020-06-22'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| radius | arcsec | float64 |   |   |
+| Vrot | km / s | float64 |   | Rotation curve |
+| e_Vrot | km / s | float64 |   | Error in rotation curve |
+| Vrot_bsc | km / s | float64 |   | Beam smearing corrected rotation curve |
+| e_Vrot_bsc | km / s | float64 |   | Error in corrected rotation curve |
+
 ## [rprof_de20_smo.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/radprof/rprof_de20_smo.csv)
 
 
@@ -521,44 +613,13 @@ date: '2019-08-31'
 
 ## [bb_smo7_fixvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fixvd_dilmsk_freepa.csv)
 
+Bbarolo first round results for run smo7_fixvd_dilmsk
 
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_smo5_fixvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fixvd_bbmsk_freepa.csv)
-
-
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -587,11 +648,13 @@ date: '2019-08-31'
 
 ## [bb_smo7_fixvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fixvd_dilmsk.csv)
 
-''
+Bbarolo second round results for run smo7_fixvd_dilmsk
+
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -619,11 +682,13 @@ date: '2019-08-31'
 
 ## [bb_natv_fitvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fitvd_dilmsk.csv)
 
-''
+Bbarolo second round results for run natv_fitvd_dilmsk
+
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -653,51 +718,18 @@ date: '2019-08-31'
 
 ## [bb_natv_fixvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fixvd_dilmsk_freepa.csv)
 
+Bbarolo first round results for run natv_fixvd_dilmsk
 
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
 | bbVrot_e2 | km / s | float64 |   |   |
 | bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_natv_fitvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fitvd_bbmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
 | bbXpos | pix | float64 |   |   |
 | bbYpos | pix | float64 |   |   |
 | bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
@@ -721,11 +753,13 @@ date: '2019-08-31'
 
 ## [bb_smo7_fitvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fitvd_dilmsk.csv)
 
-''
+Bbarolo second round results for run smo7_fitvd_dilmsk
+
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -755,83 +789,18 @@ date: '2019-08-31'
 
 ## [bb_natv_fixvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fixvd_dilmsk.csv)
 
-''
+Bbarolo second round results for run natv_fixvd_dilmsk
+
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
 | bbVrot_e2 | km / s | float64 |   |   |
 | bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo7_fixvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fixvd_bbmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_smo5_fitvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fitvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
 | bbXpos | pix | float64 |   |   |
 | bbYpos | pix | float64 |   |   |
 | bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
@@ -854,11 +823,13 @@ date: '2019-08-31'
 
 ## [bb_natv_fitvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fitvd_dilmsk_freepa.csv)
 
+Bbarolo first round results for run natv_fitvd_dilmsk
 
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -889,11 +860,13 @@ date: '2019-08-31'
 
 ## [bb_smo7_fitvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fitvd_dilmsk_freepa.csv)
 
+Bbarolo first round results for run smo7_fitvd_dilmsk
 
+date: '2020-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
+| Name |   | string |   | Galaxy Name |
 | bbRad | arcsec | float64 |   | Galactocentric radius of ring |
 | bbVrot | km / s | float64 |   |   |
 | bbVrot_e1 | km / s | float64 |   |   |
@@ -921,405 +894,8 @@ date: '2019-08-31'
 | bbFtype |   | int64 |   |   |
 | bbWfunc |   | int64 |   |   |
 | bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_smo5_fixvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fixvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo5_fixvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fixvd_dilmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_natv_fitvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fitvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo7_fitvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fitvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo7_fitvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fitvd_bbmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_natv_fixvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fixvd_bbmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_natv_fixvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_natv_fixvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo7_fixvd_bbmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo7_fixvd_bbmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo5_fitvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fitvd_dilmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_smo5_fixvd_dilmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fixvd_dilmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-
-## [bb_smo5_fitvd_dilmsk.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fitvd_dilmsk.csv)
-
-''
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbPA | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
-| bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
-| bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
-
-## [bb_smo5_fitvd_bbmsk_freepa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/bbarolo/bb_smo5_fitvd_bbmsk_freepa.csv)
-
-
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| bbName |   | string |   | Galaxy Name |
-| bbRad | arcsec | float64 |   | Galactocentric radius of ring |
-| bbVrot | km / s | float64 |   |   |
-| bbVrot_e1 | km / s | float64 |   |   |
-| bbVrot_e2 | km / s | float64 |   |   |
-| bbVdisp | km / s | float64 |   |   |
-| bbVdisp_e1 | km / s | float64 |   |   |
-| bbVdisp_e2 | km / s | float64 |   |   |
-| bbXpos | pix | float64 |   |   |
-| bbYpos | pix | float64 |   |   |
-| bbVmean | km / s | float64 |   | 'Systemic velocity in radio defn, LSR frame' |
-| bbVmean_e1 | km / s | float64 |   |   |
-| bbVmean_e2 | km / s | float64 |   |   |
-| bbPA | deg | float64 |   |   |
-| bbPA_e1 | deg | float64 |   |   |
-| bbPA_e2 | deg | float64 |   |   |
-| bbInc | deg | float64 |   |   |
-| bbZ0 | arcsec | float64 |   | Scale height of disk in arcsec |
-| bbVrotfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVdispfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbXposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbYposfit | pix | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbVsysfit | km / s | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbPAfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbIncfit | deg | int64 |   | 0=fixed to input value; 1=fitted per ring; -1=fixed to mean value of previous fit |
-| bbFtype |   | int64 |   |   |
-| bbWfunc |   | int64 |   |   |
-| bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
+| bbXpos_e1 | pix | float64 |   |   |
+| bbXpos_e2 | pix | float64 |   |   |
+| bbYpos_e1 | pix | float64 |   |   |
+| bbYpos_e2 | pix | float64 |   |   |
 

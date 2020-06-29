@@ -1,4 +1,3 @@
-NGC4047.pipe3d.hdf5
 filename: NGC4047.pipe3d.hdf5
 path: ELINES_rg
 <Table length=1849>
@@ -580,7 +579,6 @@ e_Fe5335_idx_sm float32 Angstrom                                            1291
     e_SN_idx_sm float32 Angstrom                                            1291
 
 
-NGC4047.cocube_smo7.hdf5
 filename: NGC4047.cocube_smo7.hdf5
 path: data
 <Table length=81356>
@@ -601,7 +599,6 @@ co_dilmsk float32                          mask value for dilated mask     0
 co_smomsk float32                         mask value for smoothed mask     0
 
 
-NGC4047.comom_smo7.hdf5
 filename: NGC4047.comom_smo7.hdf5
 path: dil
 <Table length=1849>
