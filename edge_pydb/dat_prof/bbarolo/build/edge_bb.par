@@ -9,7 +9,7 @@ FITSFILE    %s
 3DFIT       true
        
 // Number of radii to be modeled.
-NRADII      8
+NRADII      %.0f
          
 // Separation between radii in arcsec.
 RADSEP      3

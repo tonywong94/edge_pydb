@@ -11,7 +11,7 @@ import shutil
 os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
 tout = 180
-masks = ['dilmsk', 'bbmsk']
+masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
 sets  = ['natv', 'smo7']
 runs = []

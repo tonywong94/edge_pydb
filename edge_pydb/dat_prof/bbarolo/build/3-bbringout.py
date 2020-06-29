@@ -7,9 +7,9 @@ from astropy.table import Table,Column,vstack,hstack,join
 import numpy as np
 from datetime import datetime
 
-bbdir = '/Users/tonywong/Scratch2/EDGE/bbarolo/'
+bbdir = './'
 
-masks = ['dilmsk', 'bbmsk']
+masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
 sets  = ['natv', 'smo7']
 runs  = []
@@ -66,7 +66,6 @@ for run in runs:
         tablelist_run=[]
 
         for gal in gallist:
-            #tablelist_rings=[]
             # --- Try to read the table
             if not os.path.isfile(bbdir+run+'/output/'+gal[:8]+'/'+ringlog+'.txt'):
                 # gal[:8] is because the rest of the characters are truncated.
@@ -87,7 +86,7 @@ for run in runs:
             nrows = len(galtable)
             
             # --- Add the Galaxy Name
-            gname = Column([gal]*nrows, name='bbName', description='Galaxy Name')
+            gname = Column([gal]*nrows, name='Name', description='Galaxy Name')
             galtable.add_column(gname, index=0)
 
             # --- Add info on which parameters fitted
@@ -132,23 +131,14 @@ for run in runs:
 
             # --- Set flag to 1 if any plot is missing
             badflag = Column([0]*nrows, name='bbFlag')
-            plot_paths=['/plot_pv_local.pdf','/plot_parameters.pdf','/plot_maps_local.pdf','/plot_chanmaps_local.pdf']
+            plot_paths=['_pv_local.pdf','_parameters.pdf','_maps_local.pdf','_chanmaps_local.pdf']
             for plot_path in plot_paths:
-                if not os.path.isfile(bbdir+run+'/output/'+gal[:8]+plot_path): 
+                if not os.path.isfile(bbdir+run+'/output/'+gal[:8]+'/'+gal[:8]+plot_path): 
                     badflag[:] = 1
                     break
             galtable.add_column(badflag)
             tablelist_run.append(galtable)
 
-        # -- Combine tables for a given galaxy
-        # some gals only have ringlog1, or no ringlog at all since it is missing from that run
-#         if len(tablelist_rings)==0:
-#             continue
-#         elif len(tablelist_rings)==1:
-#             t_gal=tablelist_rings[0]
-#         else:
-#             t_gal=vstack(tablelist_rings)
-#         tablelist_run.append(t_gal)
 
         # -- Combine tables for all galaxies
         t_run_bbprof = vstack(tablelist_run)
@@ -198,7 +188,7 @@ for run in runs:
                 gal_densprof.rename_column(label, denselbl[label])
                 ordlist.append(denselbl[label])
         densprof_table = gal_densprof[ordlist]
-        gname = Column([gal]*len(gal_densprof), name='bbName', description='Galaxy Name')
+        gname = Column([gal]*len(gal_densprof), name='Name', description='Galaxy Name')
         densprof_table.add_column(gname, index=0)
         densprof_run.append(densprof_table)
         
