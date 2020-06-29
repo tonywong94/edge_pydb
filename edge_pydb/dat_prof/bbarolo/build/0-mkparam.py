@@ -51,12 +51,27 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
             free = 'VROT VDISP VSYS PA'
         hdr = getheader(fitsin)
         w = WCS(hdr)
+        # --- Number of rings
+        if gal in ['NGC5908','NGC6060','NGC6361']:
+            nrad = 12
+        elif gal in ['UGC04132']:
+            nrad = 11
+        elif gal in ['IC0944','IC2487','NGC2410','NGC5980','NGC6478','UGC05111']:
+            nrad = 10
+        elif gal in ['NGC3994','NGC4149','NGC5953','UGC09067']:
+            nrad = 7
+        elif gal in ['NGC5657','NGC7819']:
+            nrad = 6
+        elif gal in ['NGC0447','NGC4676A','UGC05108']:
+            nrad = 5
+        else:
+            nrad = 8
         # --- Set default parameters for VROT and VDISP
         if gal in ['NGC5784']:
             vrot = 600.
         elif gal in ['NGC2639']:
             vrot = 400.
-        elif gal in ['NGC0496','NGC4210','NGC5480']:
+        elif gal in ['NGC0496','NGC0551','NGC4210','NGC5480']:
             vrot = 150
         elif gal in ['NGC4961','NGC5016','NGC5520','NGC6155','UGC04461','UGC09542']:
             vrot = 100
@@ -108,7 +123,7 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         dmpc = db['caDistMpc'][i]
         z0 = 206265*100/(dmpc*1e6)  # 100 pc thickness, fixed
         print('  Assumed INC, PA, Z0: {:.2f} {:.2f} {:.2f}'.format(inc,pa,z0))
-        gal_param = paramlist % (fitsin, vsys, xpos, ypos, vrot, inc, pa, z0, free, mask)
+        gal_param = paramlist % (fitsin, nrad, vsys, xpos, ypos, vrot, inc, pa, z0, free, mask)
         file = open(run+'/param_'+gal+'.par','w')
         file.write(gal_param)
         file.close()
@@ -141,7 +156,8 @@ with open(listfile) as f:
 gallist = [gal for gal in namelist if not gal.startswith("#")]
 print (gallist)
 
-masks = ['dilmsk', 'bbmsk']
+#masks = ['dilmsk', 'bbmsk']
+masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
 #sets  = ['natv', 'smo5', 'smo7']
 sets  = ['natv', 'smo7']
