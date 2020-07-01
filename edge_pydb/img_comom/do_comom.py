@@ -11,6 +11,8 @@ from edge_pydb import EdgeTable
 from edge_pydb.conversion import msd_co
 from edge_pydb.fitsextract import fitsextract
 
+seq = 'smo7'
+#seq = 'de20'
 msktyp = ['str', 'dil', 'smo']
 lines  = ['12', '13']
 
@@ -20,7 +22,7 @@ ort.add_index('Name')
 
 for imsk, msk in enumerate(msktyp):
     gallist = [os.path.basename(file).split('.')[0] for file in 
-                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))] 
+                sorted(glob.glob('fitsdata/*.co.'+seq+'_dil.snrpk.fits.gz'))] 
     tablelist=[]
     if msk == 'str':
         dotypes = ['mom0', 'emom0']
@@ -32,7 +34,7 @@ for imsk, msk in enumerate(msktyp):
         dotypes = ['mom0', 'emom0', 'mom1', 'emom1', 'mom2', 'emom2']
         unit    = ['K km/s', 'K km/s', 'km/s', 'km/s', 'km/s', 'km/s']
     for gal in gallist:
-        file0 = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+dotypes[0]+'.fits.gz'
+        file0 = 'fitsdata/'+gal+'.co.'+seq+'_'+msk+'.'+dotypes[0]+'.fits.gz'
         print(file0)
         if not os.path.exists(file0):
             continue
@@ -56,9 +58,9 @@ for imsk, msk in enumerate(msktyp):
                     print(galtab[20:50])
                 else:
                     if line == '12' or msk == 'str' or type == 'snrpk':
-                        getfile = 'fitsdata/'+gal+'.co.smo7_'+msk+'.'+type+'.fits.gz'
+                        getfile = 'fitsdata/'+gal+'.co.'+seq+'_'+msk+'.'+type+'.fits.gz'
                     else:
-                        getfile = 'fitsdata/'+gal+'.13co.smo7_mk12_'+msk+'.'+type+'.fits.gz'
+                        getfile = 'fitsdata/'+gal+'.13co.'+seq+'_mk12_'+msk+'.'+type+'.fits.gz'
                     if os.path.exists(getfile):
                         print('Reading',getfile)
                         addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type+'_'+line, 
@@ -103,8 +105,8 @@ for imsk, msk in enumerate(msktyp):
     else:
         outname = gal
     if imsk == 0:
-        t_merge.write(outname+'.comom_smo7.hdf5', path=msk, overwrite=True, 
+        t_merge.write(outname+'.comom_'+seq+'.hdf5', path=msk, overwrite=True, 
                 serialize_meta=True, compression=True)
     else:
-        t_merge.write(outname+'.comom_smo7.hdf5', path=msk, append=True, 
+        t_merge.write(outname+'.comom_'+seq+'.hdf5', path=msk, append=True, 
                 serialize_meta=True, compression=True)

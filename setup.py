@@ -10,7 +10,7 @@ with open("requirements.txt", 'r') as req:
 #version_num = input("Input the new version number: ")
 setuptools.setup(
     name="edge_pydb",
-    version="1.1.4",  #version=version_num,
+    version="1.1.5",  #version=version_num,
     author="Tony Wong",
     author_email="tonywong94@gmail.com",
     description="Python based database for CARMA EDGE",
