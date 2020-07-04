@@ -20,3 +20,4 @@ build.sh
 *.pdf
 edge_pydb/img_cocube/fitsdata
 .DS_Store
+edge_pydb/img_comom/fitsdata

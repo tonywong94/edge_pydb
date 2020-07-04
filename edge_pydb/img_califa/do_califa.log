@@ -81,22 +81,16 @@ WARNING: Unexpected extra padding at the end of the file.  This padding may not 
 WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
 /opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in less
   result = getattr(super(), op)(other)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:37: RuntimeWarning: invalid value encountered in log10
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:41: RuntimeWarning: invalid value encountered in log10
   A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * np.log10((flux_ha/flux_hb)/2.86)
 /opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in greater
   result = getattr(super(), op)(other)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:124: RuntimeWarning: invalid value encountered in greater
-  sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:124: RuntimeWarning: invalid value encountered in less
-  sf = (n2ha > -1.5) & (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:127: RuntimeWarning: invalid value encountered in less
-  inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:130: RuntimeWarning: invalid value encountered in greater
-  liner = (~sf) & (~inter) & (o3hb > -1) & (o3hb < cidfer10(n2ha))
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:130: RuntimeWarning: invalid value encountered in less
-  liner = (~sf) & (~inter) & (o3hb > -1) & (o3hb < cidfer10(n2ha))
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:133: RuntimeWarning: invalid value encountered in greater
-  seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:204: RuntimeWarning: invalid value encountered in less
+  sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:207: RuntimeWarning: invalid value encountered in less
+  inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:210: RuntimeWarning: invalid value encountered in less
+  liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
 
 There are 1849 rows in smoothed table
 
