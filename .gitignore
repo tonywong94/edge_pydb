@@ -1,23 +1,13 @@
 .ipynb_checkpoints/
-*.co.smo7_dil.flux.out
-*.co.smo7_smo.flux.out
-*co.smo7*fits.gz
-*cube.fits.gz
 edge*.hdf5
+*edge.log
 __pycache__/
-dbfiles
-dist
-SQL-test.ipynb
-build/lib
-
-# created by distribution
 dist/
-*/__pycache__/
 *.egg-info
 test/
 build.sh
 *.json
 *.pdf
 edge_pydb/img_cocube/fitsdata
-.DS_Store
 edge_pydb/img_comom/fitsdata
+edge_pydb/img_califa/fitsdata

@@ -6,8 +6,8 @@ path: ELINES_rg
            Name bytes10                                                         Galaxy Name     0
              ix   int32                                  0-based pixel index in x direction     0
              iy   int32                                  0-based pixel index in y direction     0
-         ra_off float32                 deg    .6f               ra offset from LEDA center     0
-        dec_off float32                 deg    .6f              dec offset from LEDA center     0
+         ra_off float32                 deg    .6f                 ra offset from ref pixel     0
+        dec_off float32                 deg    .6f                dec offset from ref pixel     0
         rad_arc float32              arcsec    .3f                     radius based on LEDA     0
         azi_ang float32                 deg    .3f                      azang based on LEDA     0
        Havel_rg float32              km / s                                 Halpha velocity  1365
@@ -41,8 +41,8 @@ path: ELINES_sm
            Name bytes10                                                         Galaxy Name     0
              ix   int32                                  0-based pixel index in x direction     0
              iy   int32                                  0-based pixel index in y direction     0
-         ra_off float32                 deg    .6f               ra offset from LEDA center     0
-        dec_off float32                 deg    .6f              dec offset from LEDA center     0
+         ra_off float32                 deg    .6f                 ra offset from ref pixel     0
+        dec_off float32                 deg    .6f                dec offset from ref pixel     0
         rad_arc float32              arcsec    .3f                     radius based on LEDA     0
         azi_ang float32                 deg    .3f                      azang based on LEDA     0
        Havel_sm float32              km / s                                 Halpha velocity  1291
@@ -76,8 +76,8 @@ path: SFH_rg
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
-                  ra_off float32      deg    .6f                   ra offset from LEDA center     0
-                 dec_off float32      deg    .6f                  dec offset from LEDA center     0
+                  ra_off float32      deg    .6f                     ra offset from ref pixel     0
+                 dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
                  azi_ang float32      deg    .3f                          azang based on LEDA     0
    lumfrac_age_0.0010_rg float32 fraction              Luminosity Fraction for age 0.0010 SSP  1714
@@ -167,8 +167,8 @@ path: SFH_sm
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
-                  ra_off float32      deg    .6f                   ra offset from LEDA center     0
-                 dec_off float32      deg    .6f                  dec offset from LEDA center     0
+                  ra_off float32      deg    .6f                     ra offset from ref pixel     0
+                 dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
                  azi_ang float32      deg    .3f                          azang based on LEDA     0
    lumfrac_age_0.0010_sm float32 fraction              Luminosity Fraction for age 0.0010 SSP  1691
@@ -258,8 +258,8 @@ path: SSP_rg
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
-           ra_off float32                          deg    .6f                                     ra offset from LEDA center     0
-          dec_off float32                          deg    .6f                                    dec offset from LEDA center     0
+           ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
+          dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
           azi_ang float32                          deg    .3f                                            azang based on LEDA     0
      Vcont_ssp_rg float32 1e-16 erg / (Angstrom cm2 s)                                                     pseudo V-band map  1363
@@ -293,8 +293,8 @@ path: SSP_sm
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
-           ra_off float32                          deg    .6f                                     ra offset from LEDA center     0
-          dec_off float32                          deg    .6f                                    dec offset from LEDA center     0
+           ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
+          dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
           azi_ang float32                          deg    .3f                                            azang based on LEDA     0
      Vcont_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)                                                     pseudo V-band map  1225
@@ -328,8 +328,8 @@ path: flux_elines_rg
                 Name bytes10                                                                    Galaxy Name     0
                   ix   int32                                             0-based pixel index in x direction     0
                   iy   int32                                             0-based pixel index in y direction     0
-              ra_off float32                 deg    .6f                          ra offset from LEDA center     0
-             dec_off float32                 deg    .6f                         dec offset from LEDA center     0
+              ra_off float32                 deg    .6f                            ra offset from ref pixel     0
+             dec_off float32                 deg    .6f                           dec offset from ref pixel     0
              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
              azi_ang float32                 deg    .3f                                 azang based on LEDA     0
    flux_[OII]3727_rg float32 1e-16 erg / (cm2 s)                                                             1365
@@ -416,7 +416,7 @@ e_disp_[OIII]4959_rg float32            Angstrom                                
   AHa_flux_sigsfr_rg float32                 mag                                      Ha extinction from BD  1381
               ZOH_rg float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1530
             e_ZOH_rg float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1530
-              BPT_rg float32                                          BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1431
+              BPT_rg float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1431
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_sm
@@ -426,8 +426,8 @@ path: flux_elines_sm
                 Name bytes10                                                                    Galaxy Name     0
                   ix   int32                                             0-based pixel index in x direction     0
                   iy   int32                                             0-based pixel index in y direction     0
-              ra_off float32                 deg    .6f                          ra offset from LEDA center     0
-             dec_off float32                 deg    .6f                         dec offset from LEDA center     0
+              ra_off float32                 deg    .6f                            ra offset from ref pixel     0
+             dec_off float32                 deg    .6f                           dec offset from ref pixel     0
              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
              azi_ang float32                 deg    .3f                                 azang based on LEDA     0
    flux_[OII]3727_sm float32 1e-16 erg / (cm2 s)                                                             1291
@@ -514,7 +514,7 @@ e_disp_[OIII]4959_sm float32            Angstrom                                
   AHa_flux_sigsfr_sm float32                 mag                                      Ha extinction from BD  1314
               ZOH_sm float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1479
             e_ZOH_sm float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1479
-              BPT_sm float32                                          BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1378
+              BPT_sm float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1378
 
 filename: NGC4047.pipe3d.hdf5
 path: indices_rg
@@ -524,8 +524,8 @@ path: indices_rg
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
-         ra_off float32      deg    .6f         ra offset from LEDA center     0
-        dec_off float32      deg    .6f        dec offset from LEDA center     0
+         ra_off float32      deg    .6f           ra offset from ref pixel     0
+        dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
         azi_ang float32      deg    .3f                azang based on LEDA     0
     Hdel_idx_rg float32 Angstrom                                            1365
@@ -555,8 +555,8 @@ path: indices_sm
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
-         ra_off float32      deg    .6f         ra offset from LEDA center     0
-        dec_off float32      deg    .6f        dec offset from LEDA center     0
+         ra_off float32      deg    .6f           ra offset from ref pixel     0
+        dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
         azi_ang float32      deg    .3f                azang based on LEDA     0
     Hdel_idx_sm float32 Angstrom                                            1291
@@ -588,8 +588,8 @@ path: data
        ix   int32                   0-based pixel index in x direction     0
        iy   int32                   0-based pixel index in y direction     0
        iz   int32                   0-based pixel index in z direction     0
-   ra_off float32    deg    .6f             ra offset from LEDA center     0
-  dec_off float32    deg    .6f            dec offset from LEDA center     0
+   ra_off float32    deg    .6f               ra offset from ref pixel     0
+  dec_off float32    deg    .6f              dec offset from ref pixel     0
   rad_arc float32 arcsec    .3f                   radius based on LEDA     0
   azi_ang float32    deg    .3f                    azang based on LEDA     0
       vel float32 km / s        velocity in LSRK frame using radio def     0
@@ -607,8 +607,8 @@ path: dil
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_off float32           deg    .6f                                 ra offset from LEDA center     0
-    dec_off float32           deg    .6f                                dec offset from LEDA center     0
+     ra_off float32           deg    .6f                                   ra offset from ref pixel     0
+    dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
    snrpk_12 float32                                                 12CO peak signal to noise ratio   705
@@ -638,8 +638,8 @@ path: smo
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_off float32           deg    .6f                                 ra offset from LEDA center     0
-    dec_off float32           deg    .6f                                dec offset from LEDA center     0
+     ra_off float32           deg    .6f                                   ra offset from ref pixel     0
+    dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
     mom0_12 float32      K km / s                          12CO integrated intensity using smo mask  1563
@@ -667,8 +667,8 @@ path: str
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_off float32           deg    .6f                                 ra offset from LEDA center     0
-    dec_off float32           deg    .6f                                dec offset from LEDA center     0
+     ra_off float32           deg    .6f                                   ra offset from ref pixel     0
+    dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
     mom0_12 float32      K km / s                          12CO integrated intensity using str mask   705
