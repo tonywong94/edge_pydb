@@ -3,7 +3,10 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
-from astropy.modeling.functional_models import Gaussian2D
+#from astropy.modeling.functional_models import Gaussian2D
+from scipy.optimize import fsolve
+from scipy import ndimage
+from scipy.stats import multivariate_normal as ndNormal
 
 
 # Calculate galactocentric polar coordinates 
@@ -101,9 +104,11 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 
 
 # TODO not a formal position to import 
-from astropy.modeling.functional_models import Gaussian2D
-from scipy import ndimage
-from scipy.stats import multivariate_normal as ndNormal
+#from astropy.modeling.functional_models import Gaussian2D
+
+
+def findIntersec(fun1, fun2, x0):
+    return fsolve(lambda x:fun1(x)-fun2(x), x0)
 
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
@@ -137,7 +142,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     cid = cidfer10(x_arr[0])
     grid = np.zeros((grid_size, grid_size))   
     # HII star forming
-    sf = np.logical_and(x_arr[:, 0] < kau, x_arr[0] < -0.1)
+    sf = np.logical_and(y_arr[:, 0] < kau, x_arr[0] < -0.1)
     grid[:, sf] = -1 
     # Composite
     inter = np.logical_and.reduce([y_arr[:, 0] > kau, y_arr[:, 0] < kew, x_arr[0] < 0.3, ~sf])
@@ -166,10 +171,9 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
             normal_prob[i, j] = pdf[i, j] * delta_x * delta_y
             total += normal_prob[i, j]
             # Normalization constant
-    return ndimage.sum(normal_prob* 1/total, grid, index=bpt_type)
+    return ndimage.sum(normal_prob * 1/total, grid, index=bpt_type)
     
         
-
 # BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
 # Input is a flux_elines table.
 def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
@@ -179,10 +183,6 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     flux_ha   = fluxtab['flux_Halpha'+ext]
     flux_hb   = fluxtab['flux_Hbeta'+ext]
     ew_ha     = fluxtab['EW_Halpha'+ext]
-    eN2 = fluxtab['e_flux_[NII]6583'+ext]
-    eO3 = fluxtab['e_flux_[OIII]5007'+ext] 
-    eHa = fluxtab['e_flux_Halpha'+ext]
-    eHb = fluxtab['e_flux_Hbeta'+ext]
 
     good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
     n2ha = np.full(len(flux_nii), np.nan)
@@ -194,27 +194,39 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     kauffm03 = lambda nii: 1.30 + 0.61/(nii - 0.05) # Eq. 1 of 2003MNRAS.346.1055K
     cidfer10 = lambda nii: 0.48 + 1.01*nii          # Eq. 3 of 2010MNRAS.403.1036C
 
+    kewley_start = findIntersec(kewley01, kauffm03, -1)[0]  # -1.2805
+    cidfer_start = findIntersec(kewley01, cidfer10, 0)[0]   # -0.1993
+    kewley_end = findIntersec(kewley01, lambda x: -4, 0)[0] #  0.352466
+    kauffm_end = findIntersec(kauffm03, lambda x: -4, 0)[0] # -0.06509
+
     BPT = np.full(len(n2ha), np.nan)
     # Star forming: below Kauffmann line and EW > 6
-    sf = (n2ha < -0.1) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
+    sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
     BPT[sf] = -1
     # Intermediate: below Kewley line and not star-forming
-    inter = (~sf) & (n2ha < 0.3) & (o3hb < kewley01(n2ha))
+    inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
     BPT[inter] = 0
     # LINER: above Kewley line and below Cid Fernandes line
-    liner = (~sf) & (~inter) & (o3hb > -1) & (o3hb < cidfer10(n2ha))
+    liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
     BPT[liner] = 1
     # Seyfert: above Kewley line and above Cid Fernandes line
-    seyfert = (~sf) & (~inter) & (~liner) & (o3hb > -1)
+    seyfert = (~sf) & (~inter) & (~liner) & good
     BPT[seyfert] = 2
+    bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
+                description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
 
-    BPT_prob = np.full(len(n2ha), np.nan)
     if prob:
         try:
             from uncertainties import unumpy, umath
         except:
-            print("uncertainties package is required for this function")
+            print("uncertainties package is required for prob calculation")
        
+        BPT_prob = np.full(len(n2ha), np.nan)
+        eN2 = fluxtab['e_flux_[NII]6583'+ext]
+        eO3 = fluxtab['e_flux_[OIII]5007'+ext] 
+        eHa = fluxtab['e_flux_Halpha'+ext]
+        eHb = fluxtab['e_flux_Hbeta'+ext]
+
         Ha_u = unumpy.uarray(np.array(flux_ha), np.array(eHa))
         Hb_u = unumpy.uarray(np.array(flux_hb), np.array(eHb))
         N2_u = unumpy.uarray(np.array(flux_nii), np.array(eN2))
@@ -233,23 +245,10 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 1, grid_size)
         for i in np.where(seyfert)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 2, grid_size)
-#     BPT = np.zeros(len(n2ha))
-#     for i in range(len(n2ha)):
-#         if (n2ha[i] > -1.5 and n2ha[i] < -0.1 and 
-#                 o3hb[i] < kauffm03(n2ha[i]) and abs(ew_ha[i]) > 6.0):
-#             BPT[i] = -1  # Starforming, below Kauffmann line
-#         elif n2ha[i] < 0.3 and o3hb[i] < kewley01(n2ha[i]):
-#             BPT[i] = 0   # Intermediate, between Kewley & Kauffmann
-#         elif o3hb[i] > -1  and o3hb[i] < cidfer10(n2ha[i]):
-#             BPT[i] = 1   # LINER
-#         elif o3hb[i] > -1:
-#             BPT[i] = 2   # Seyfert
-#         else:
-#             BPT[i] = np.nan
-    return Column(BPT, name=name, dtype='f4', description=
-                 'BPT type (-1=SF 0=inter 1=LINER 2=Sy)'), \
-            Column(BPT_prob, name='prob', dtype='f4', description=
-                 'BPT probability')
+        prob_col = Column(BPT_prob, name='prob', dtype='f4', description='BPT probability')
+        return bpt_col, prob_col
+    else:
+        return bpt_col
 
 
 # Metallicity derived from Marino+13 calibration.

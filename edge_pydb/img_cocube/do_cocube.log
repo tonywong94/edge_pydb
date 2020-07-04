@@ -1,9 +1,9 @@
-WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
 WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
 Reading fitsdata/NGC4047.co.smo7msk.K.fits
 RA ref is 180.71125
 DEC ref is 48.6361944444
-This is a data cube of shape (1, 44, 128, 128)
+This is a data cube of shape (44, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Axis 3: crpix=1.0
