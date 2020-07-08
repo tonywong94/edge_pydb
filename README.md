@@ -59,6 +59,7 @@ For additional database files not in this Github repository, it’s better to ke
 - in an iPython shell
 
 `import edge_pydb.util as edgeutil`
+
 `edgeutil.listfiles()`
 
 - should show only the public data.  Now suppose the additional data files are in a folder called `pybase`.
