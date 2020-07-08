@@ -51,3 +51,18 @@ A `demo_notebk` folder provides examples of accessing database values from a Jup
 `comom = EdgeTable('NGC4047.comom_smo7.hdf5', path='smo')`
 
 - loads an HDF5 file.  The path must be given, otherwise a listing of available paths is provided.
+
+## Team Usage
+
+For additional database files not in this Github repository, it’s better to keep these in a separate, more visible directory in your file system, and not inside your Python libraries (site-packages area).  Here is the suggested way to do this:
+
+- in an iPython shell
+
+`import edge_pydb.util as edgeutil`
+`edgeutil.listfiles()`
+
+- should show only the public data.  Now suppose the additional data files are in a folder called `pybase`.
+
+`edgeutil.add_from_dir('/path/to/pybase/', copy=False)`
+
+- will add these to your environment.  This only needs to be done once after package installation.
