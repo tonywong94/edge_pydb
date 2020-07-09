@@ -226,7 +226,7 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         eO3 = fluxtab['e_flux_[OIII]5007'+ext] 
         eHa = fluxtab['e_flux_Halpha'+ext]
         eHb = fluxtab['e_flux_Hbeta'+ext]
-
+        print("Calculating the probability")
         Ha_u = unumpy.uarray(np.array(flux_ha), np.array(eHa))
         Hb_u = unumpy.uarray(np.array(flux_hb), np.array(eHb))
         N2_u = unumpy.uarray(np.array(flux_nii), np.array(eN2))
@@ -237,12 +237,16 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         o3hb_u = unumpy.uarray(np.full(len(Hb_u), np.nan), np.full(len(Hb_u), np.nan))
         n2ha_u[good] = unumpy.uarray(unumpy.nominal_values(t1), unumpy.std_devs(t1))
         o3hb_u[good] = unumpy.uarray(unumpy.nominal_values(t2), unumpy.std_devs(t2)) 
+        print("Working on SFR")
         for i in np.where(sf)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], -1, grid_size)
+        print("Working on intermediate region, composite")
         for i in np.where(inter)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 0, grid_size)
+        print("Working on liner")
         for i in np.where(liner)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 1, grid_size)
+        print("Working on Seyfert")
         for i in np.where(seyfert)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], 2, grid_size)
         prob_col = Column(BPT_prob, name='prob', dtype='f4', description='BPT probability')
