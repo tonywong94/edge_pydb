@@ -43,7 +43,7 @@ class EdgeTable(_Table):
             self.table = _Table.read(util.fetch(file), path=path)
         self.__dict__.update(self.table.__dict__)
         
-    def join(self, table, join_type='inner', keys='Name'):
+    def join(self, table, join_type='inner', keys=['Name', 'ix', 'iy']):
         # if table:
         #     self.table = _join(self.table, table.table)
         #     # update the data
