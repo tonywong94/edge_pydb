@@ -1,4 +1,4 @@
-from edge_pydb import conversion, fitsextract, xy2hist, util
+from edge_pydb import conversion, fitsextract, plotting, util
 from astropy.table import Table as _Table
 from astropy.table import join as _join
 import h5py as _h5py

@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib.patches import Circle
+from matplotlib.collections import PatchCollection
 
 # Prepare a 2D histogram from a scatterplot
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
@@ -18,3 +20,24 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     if log:
         z = np.log10(z)
     return x, y, z, hh, locx, locy
+
+# Prepare a patch collection for a dotplot
+def dotpatch(x, y, colors, size=1, vmin=None, vmax=None, cmap='jet'):
+
+    patches = []
+    for x1, y1 in zip(x,y):
+        circle = Circle((x1, y1), size)
+        patches.append(circle)
+
+    p = PatchCollection(patches, cmap=cmap)
+    p.set_array(np.array(colors))
+    if vmax is None:
+        vmax = np.nanmax(colors)
+    if vmin is None:
+        vmin = np.nanmin(colors)
+
+    p.set_clim([vmin, vmax])
+    xymin = np.min([x.min(),y.min()])
+    xymax = np.max([x.max(),y.max()])
+
+    return p, xymin, xymax
