@@ -77,7 +77,7 @@ Remainder:  [1, 1, 0]
 ['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_rg', 'Hbet_idx_rg', 'Mgb_idx_rg', 'Fe5270_idx_rg', 'Fe5335_idx_rg', 'D4000_idx_rg', 'Hdmod_idx_rg', 'Hgam_idx_rg', 'SN_idx_rg', 'e_Hdel_idx_rg', 'e_Hbet_idx_rg', 'e_Mgb_idx_rg', 'e_Fe5270_idx_rg', 'e_Fe5335_idx_rg', 'e_D4000_idx_rg', 'e_Hdmod_idx_rg', 'e_Hgam_idx_rg', 'e_SN_idx_rg']
 There are 1849 rows in native table
 ['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_sm', 'Hbet_idx_sm', 'Mgb_idx_sm', 'Fe5270_idx_sm', 'Fe5335_idx_sm', 'D4000_idx_sm', 'Hdmod_idx_sm', 'Hgam_idx_sm', 'SN_idx_sm', 'e_Hdel_idx_sm', 'e_Hbet_idx_sm', 'e_Mgb_idx_sm', 'e_Fe5270_idx_sm', 'e_Fe5335_idx_sm', 'e_D4000_idx_sm', 'e_Hdmod_idx_sm', 'e_Hgam_idx_sm', 'e_SN_idx_sm']WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: Unexpected extra padding at the end of the file.  This padding may not be preserved when saving changes. [astropy.io.fits.header]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
 WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
 /opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in less
   result = getattr(super(), op)(other)
