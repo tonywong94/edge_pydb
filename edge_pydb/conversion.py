@@ -103,8 +103,6 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 #         return np.nan, np.nan
 
 
-# TODO not a formal position to import 
-#from astropy.modeling.functional_models import Gaussian2D
 
 
 def findIntersec(fun1, fun2, x0):
@@ -113,12 +111,14 @@ def findIntersec(fun1, fun2, x0):
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     '''
-    @Parameters
-    criterions: a list of functions in BPT diagram
-    x_u, y_u: data point with uncertainty
-    grid_size: the size of the square grid where normal dist constructed
+    Parameters
+    ----------
+    n2ha_u, o3hb_u : data point with uncertainty
+    bpt_type : which bpt_type we are considering 
+    grid_size : the size of the square grid where normal dist constructed
     
-    @output
+    Returns
+    -------
     probability of data points in regions
     '''
     try:
@@ -166,13 +166,32 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     delta_x = x_arr[0][1] - x_arr[0][0]
     delta_y = y_arr[1][0] - y_arr[0][0]
     total = 0
-    for i in range(grid_size):
-        for j in range(grid_size):
-            normal_prob[i, j] = pdf[i, j] * delta_x * delta_y
-            total += normal_prob[i, j]
-            # Normalization constant
+    normal_prob *= delta_x * delta_y
+    total = np.sum(normal_prob)
+     # Normalization constant
     return ndimage.sum(normal_prob * 1/total, grid, index=bpt_type)
-    
+
+def plot_uncertainty_ellipse(xval_u, yval_u, indices, save_to=''):
+    '''
+    parameters
+    xval_u, yval_u : list of coordinates with uncertainty 
+    indices : indices of the list of coordinates to plot with
+    save_to: file to save the plot to, optional
+    '''
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Ellipse
+    plt.figure(figsize=(8,8))
+    ax = plt.gca()
+    for i in indices:
+        ax.add_patch(Ellipse(xy=(xval_u[i].n, yval_u[i].n),
+                            width=xval_u[i].s, height=yval_u[i].s,
+                            edgecolor='red', fc='white'))
+    plt.plot(x1, kewley01(x1), 'k-.', label="Kewley")
+    plt.plot(x2, kauffm03(x2), 'k--', label="Kauffmann")
+    plt.plot(x3, cidfer10(x3), 'k-', label="Cidfer")
+    if save_to:
+        plt.savefig(save_to)
+    plt.show()
         
 # BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
 # Input is a flux_elines table.
