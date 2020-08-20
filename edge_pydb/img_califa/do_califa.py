@@ -64,10 +64,11 @@ for prod in prodtype:
 
         # First process the native resolution file since it has the astrometry
         hdu = fits.open(cadir+'x'+base, ignore_missing_end=True)[0]
-        hdu.data[hdu.data==0] = np.nan
-        hdu.header = cahd
+        # No longer needed after blanking pre-processing
+        # hdu.data[hdu.data==0] = np.nan
+        # hdu.header = cahd
         newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
-        #fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
+        # fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
         rglabels = [s+'_rg' for s in labels]
         tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, col_lbl=rglabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
@@ -80,10 +81,11 @@ for prod in prodtype:
 
         # Then process the smoothed file
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
-        hdu.data[hdu.data==0] = np.nan
-        hdu.header = cahd
+        # No longer needed after blanking pre-processing
+        # hdu.data[hdu.data==0] = np.nan
+        # hdu.header = cahd
         newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
-        #fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
+        # fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         smlabels = [s+'_sm' for s in labels]
         tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
             bunit=units, col_lbl=smlabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],

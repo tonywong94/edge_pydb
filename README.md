@@ -56,11 +56,11 @@ A `demo_notebk` folder provides examples of accessing database values from a Jup
 
 For additional database files not in this Github repository, it’s better to keep these in a separate, more visible directory in your file system, and not inside your Python libraries (site-packages area).  Here is the suggested way to do this:
 
-- in an iPython shell
+- Leave the git directory in which this README is located.  Open an iPython shell and type:
 
 `import edge_pydb.util as edgeutil`
 
-`edgeutil.listfiles()`
+`edgeutil.listfiles(values=True)`
 
 - should show only the public data.  Now suppose the additional data files are in a folder called `pybase`.
 
