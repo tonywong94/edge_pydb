@@ -43,25 +43,12 @@ class EdgeTable(_Table):
             self.table = _Table.read(util.fetch(file), path=path)
         self.__dict__.update(self.table.__dict__)
         
-    def join(self, table, join_type='inner', keys='Name'):
-        # if table:
-        #     self.table = _join(self.table, table.table)
-        #     # update the data
-        #     self.__dict__.update(self.table.__dict__)
-        #     return
-        # if 'csv' in file:
-        #     target = _Table.read(util.fetch(file), format='ascii.ecsv')
-        # elif 'hdf5' in file:
-        #     if not path:
-        #         # using the same path as the source file
-        #         path = self.path
-        #     if file.endswith('csv'):
-        #         target = _Table.read(util.fetch(file), path=path)
-        #     elif path:
-        #         target = _Table.read(util.fetch(file), path=path)
-        # else:
-        #     # raise the error
-        #     target = None
+    def join(self, table, join_type='inner', keys=['Name']):
+        # check for ix or iy in both tables 
+        if 'ix' in self.colnames and 'ix' in table.colnames:
+            keys.append('ix')
+            if 'iy' in self.colnames and 'iy' in table.colnames:
+                keys.append('iy')
         if isinstance(table, _Table):
             self.table = _join(self.table, table, join_type=join_type, keys=keys)
         elif isinstance(table, self.__class__):
