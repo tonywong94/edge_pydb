@@ -1,11 +1,11 @@
 # edge_pydb
 Python-based database for CARMA EDGE.  This package requires Python 3.
 
-The EDGE database has several components (see index_hdf.txt and index_csv.md for details):
+The EDGE database has several components (see index_csv.md and index_hdf.txt for details):
 
-* Zero-dimensional tables (one value per galaxy), found in `dat_glob`.
+* Zero-dimensional CSV tables (one value per galaxy), found in `dat_glob`.
 
-* One-dimensional tables (e.g. radial profiles or spectra), found in `dat_prof` and `dat_spec`.
+* One-dimensional CSV tables (e.g. radial profiles or spectra), found in `dat_prof` and `dat_spec`.
 
 * Downsampled 2D or 3D images, saved as HDF5 binary tables in the `img_` directories.
 
