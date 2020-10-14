@@ -32,11 +32,62 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
 
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
-def sfr_ha(flux_ha, flux_hb, name='sig_sfr'):
+def sfr_ha(flux_ha, flux_hb, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'):
+    '''
+    Note that both e_flux_ha and e_flux_hb have to be not None
+    in order to propagate the error
+    '''
     # NEW: Returns A_Ha column as well.
     # Extinction curve from Cardelli+(1989).
     K_Ha = 2.53
     K_Hb = 3.61
+    if e_flux_ha is not None and e_flux_hb is not None:
+        try:
+            from uncertainties import unumpy, umath
+        except (ImportError, ModuleNotFoundError) as error:
+            # ? should we require the uncertainties package in the requirement.txt? 
+            print(error.__class__.__name__ + ": " + str(error))
+            print("Could not import uncertainties package, \
+                please try to install it or remove the error in the input.")
+            return None
+        except Exception as exception: 
+            print(exception.__class__.__name__ + ": " + str(exception))
+            return None
+        u_flux_ha = unumpy.uarray(flux_ha, e_flux_ha)
+        u_flux_hb = unumpy.uarray(flux_hb, e_flux_hb)
+        A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * unumpy.log10((u_flux_ha/u_flux_hb)/2.86)
+        u_flux_ha_cor = u_flux_ha * 10**(0.4*A_Ha)
+        A_Ha[A_Ha < 0] = 0.
+        sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
+        sb_ha  = u_flux_ha_cor * sterad.scale 
+        lsd_ha = 4*np.pi * sb_ha
+        lumcon = 5.5e-42 * (u.solMass/u.yr) / (u.erg/u.s)
+        sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
+        def uarray_to_list(target):
+            '''
+            break array of uncertainties values into 2 list, 
+            retval[0] -> nominal values
+            retval[1] -> standard deviation
+            if no value for std, then return None
+            '''
+            result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) or isinstance(x, int)) else (x, None),\
+                     target)
+            return list(map(list, zip(*list(result))))
+        # * sig_sfr is a astropy Quantity, and A_Ha is still a Column
+        sig_sfr_out = uarray_to_list(sig_sfr.value)
+        A_Ha_out = uarray_to_list(A_Ha.data)
+        if isinstance(flux_ha, Column) and isinstance(flux_hb, Column):
+            return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
+                description='BD corrected SFR surface density'), \
+                Column(A_Ha_out[0], name='AHa_'+name, dtype='f4', unit='mag', 
+                description='Ha extinction from BD'), \
+                Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
+                description='error of BD corrected SFR surface density'), \
+                Column(A_Ha_out[1], name='e_AHa_'+name, dtype='f4', unit='mag', 
+                description='error of Ha extinction from BD')
+        else:
+            return sig_sfr_out[0], A_Ha_out[0], sig_sfr_out[1], A_Ha_out[1]
+
     # Eq(1) from Catalan-Torrecilla+(2015). 
     A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * np.log10((flux_ha/flux_hb)/2.86)
     # Do not apply negative extinction.
