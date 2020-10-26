@@ -131,8 +131,10 @@ for prod in prodtype:
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_sm')
             avstar0 = stmass_pc2(tab0['mass_Avcor_ssp_rg'], 
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_rg')
+            avstar0.description += ' dust corrected'
             avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], 
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_sm')
+            avstar1.description += ' dust corrected'
             tab0.add_column(star0)
             tab1.add_column(star1)
             tab0.add_column(avstar0)
