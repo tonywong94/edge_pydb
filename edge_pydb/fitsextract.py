@@ -304,7 +304,7 @@ def getlabels(product):
                'e_Av_ssp',    'vel_ssp',  'e_vel_ssp', 'vdisp_ssp', 
                'e_vdisp_ssp', 'ML_ssp',   'mass_ssp',  'mass_Avcor_ssp']
         units = ['10^-16 erg cm^-2 s^-1 AA^-1', 'none', 'none', '10^-16 erg cm^-2 s^-1 AA^-1', 
-                 '10^-16 erg cm^-2 s^-1', 'dex(yr)', 'dex(yr)', 'fraction', 
+                 '10^-16 erg cm^-2 s^-1 AA^-1', 'dex(yr)', 'dex(yr)', 'fraction', 
                  'dex', 'dex', 'fraction', 'mag', 
                  'mag', 'km/s', 'km/s', 'km/s', 
                  'km/s', 'solMass/solLum', 'dex(solMass/arcsec^2)', 'dex(solMass/arcsec^2)']
