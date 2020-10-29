@@ -79,7 +79,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'
         flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
         # input line flux is actually flux per arcsec^2
         sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
-        sb_ha  = flux_ha_cor * sterad   # flux per steradian
+        sb_ha  = flux_ha_cor * sterad.scale   # flux per steradian
         lsd_ha = 4*np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
         return sig_sfr, A_Ha
@@ -195,8 +195,8 @@ def bpt_region(n2ha, o3hb, ew_ha, good=True, other=None):
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     '''
     Calculate the probability of a single point in the **bpt_type** region of the BPT plot.
-    This is done by first constructing a grid with **grid_size** resolution. Then, the grid is colored
-    arounding to three 
+    This is done by first constructing a grid with **grid_size** resolution. Then, the grid is marked by 
+    three dividing lines (Kewley, Kauffmann, Cid Fernandes)
 
     Parameters
     ----------
