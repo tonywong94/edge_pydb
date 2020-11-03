@@ -58,33 +58,41 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error
     '''
-    # Extinction curve from Cardelli+(1989).
-    K_Ha = 2.53
-    K_Hb = 3.61
+    # input line flux is actually flux per arcsec^2
     sterad = (u.sr/u.arcsec**2).decompose() # 206265^2
      # Eq(4) from Catalan-Torrecilla+(2015).
     lumcon = 5.5e-42 * (u.solMass/u.yr) / (u.erg/u.s)
     if flux_hb is None:
         # only flux_ha exists, just do a scaling
-        sb_ha  = flux_ha * sterad   # flux per steradian
+        sb_ha  = flux_ha * sterad  # flux per steradian
         lsd_ha = 4 * np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
-        return sig_sfr
+        if e_flux_ha is not None:
+            e_sig_sfr = e_flux_ha / flux_ha * sig_sfr
+            return sig_sfr, e_sig_sfr
+        else:
+            return sig_sfr
 
     def apply_extinction(flux_ha, flux_hb, log10):
+        # Extinction curve from Cardelli+(1989).
+        K_Ha = 2.53
+        K_Hb = 3.61
         # Eq(1) from Catalan-Torrecilla+(2015). 
         A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha/flux_hb)/2.86)
         # Do not apply negative extinction.
         A_Ha[A_Ha < 0] = 0.
         flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
-        # input line flux is actually flux per arcsec^2
-        sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
+        # TODO make it as a separate function and do the convert
         sb_ha  = flux_ha_cor * sterad.scale   # flux per steradian
         lsd_ha = 4*np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
         return sig_sfr, A_Ha
 
-    if e_flux_ha is not None and e_flux_hb is not None:
+    if e_flux_ha is not None:
+        if e_flux_hb is None:
+            e_flux_hb = np.zeros_like(flux_hb)
+        u_flux_ha = unumpy.uarray(flux_ha, e_flux_ha)
+        u_flux_hb = unumpy.uarray(flux_hb, e_flux_hb)
         sig_sfr, A_Ha = apply_extinction(u_flux_ha, u_flux_hb, unumpy.log10)
         # * sig_sfr is a astropy Quantity, and A_Ha is still a Column
         sig_sfr_out = uarray_to_list(sig_sfr.value)
@@ -100,15 +108,15 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'
                 description='error of Ha extinction from BD')
         else:
             return sig_sfr_out[0], A_Ha_out[0], sig_sfr_out[1], A_Ha_out[1]
-
-    sig_sfr, A_Ha = apply_extinction(flux_ha, flux_hb, np.log10)
-    if column:
-        return Column(sig_sfr, name=name, dtype='f4',
-            description='BD corrected SFR surface density'), \ 
-            Column(A_Ha, name='AHa_'+name, dtype='f4', unit='mag', 
-            description='Ha extinction from BD')
     else:
-        return sig_sfr, A_Ha
+        sig_sfr, A_Ha = apply_extinction(flux_ha, flux_hb, np.log10)
+        if column:
+            return Column(sig_sfr, name=name, dtype='f4',
+                description='BD corrected SFR surface density'), \
+                Column(A_Ha, name='AHa_'+name, dtype='f4', unit='mag', 
+                description='Ha extinction from BD')
+        else:
+            return sig_sfr, A_Ha
     
 
 # Convert CO intensity to H2(+He) surface density
@@ -131,7 +139,6 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
         dist = dist * u.Mpc
     sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
-
     def convert_stmass(stmass_in):
         stmass_in[~np.isfinite(stmass_in)] = np.nan
         stmass_pc2 = 10**stmass_in * u.solMass / pxarea
@@ -140,11 +147,11 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 
     if isinstance(stmass_as2, Column):
         stmass_ary = np.array(stmass_as2)
-        stmass_pc2 = compute_stmass(stmass_ary)
+        stmass_pc2 = convert_stmass(stmass_ary)
         return Column(stmass_pc2, name=name, dtype='f4',
                       description='stellar mass surface density')
     else:
-        stmass_pc2 = compute_stmass(stmass_as2)
+        stmass_pc2 = convert_stmass(stmass_as2)
         return stmass_pc2
 
 
@@ -164,19 +171,24 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 def findIntersec(fun1, fun2, x0):
     return fsolve(lambda x:fun1(x)-fun2(x), x0)
 
+
 def kewley01(nii):
     # Eq. 5 of 2001ApJ...556..121K
     return 1.19 + 0.61/(nii - 0.47) 
-    
+
+
 def kauffm03(nii):
     # Eq. 1 of 2003MNRAS.346.1055K
     return 1.30 + 0.61/(nii - 0.05)
+
 
 def cidfer10(nii):
     # Eq. 3 of 2010MNRAS.403.1036C
     return 0.48 + 1.01*nii    
 
-def bpt_region(n2ha, o3hb, ew_ha, good=True, other=None):
+
+def bpt_region(n2ha, o3hb, ew_ha=7.0, good=True, other=None):
+    # just to make sure ew > 6 to take all the data if ew_ha is not available
     # ? might be a good idea to store these values, as they are constants
     kewley_start = findIntersec(kewley01, kauffm03, -1)[0]  # -1.2805
     cidfer_start = findIntersec(kewley01, cidfer10, 0)[0]   # -0.1993
@@ -191,6 +203,7 @@ def bpt_region(n2ha, o3hb, ew_ha, good=True, other=None):
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
     return sf, inter, liner, seyfert      
+
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     '''
@@ -217,11 +230,8 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     x_arr, y_arr = np.meshgrid(np.linspace(x - x_std, x + x_std, grid_size),
                  np.linspace(y - y_std, y + y_std, grid_size))
     pos = np.dstack((x_arr, y_arr))
-    kew = kewley01(x_arr[0])
-    kau = kauffm03(x_arr[0])
-    cid = cidfer10(x_arr[0])
     grid = np.zeros((grid_size, grid_size))   
-    sf, inter, liner, seyfert = bpt_region(y_arr[:, 0], x_arr[0], )
+    sf, inter, liner, seyfert = bpt_region(y_arr[:, 0], x_arr[0] )
     grid[:, sf] = -1 
     grid[:, inter] = 0 
     grid[:, liner] = 1 
@@ -280,8 +290,8 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         Hb_u = unumpy.uarray(np.array(flux_hb), np.array(eHb))
         N2_u = unumpy.uarray(np.array(flux_nii), np.array(eN2))
         O3_u = unumpy.uarray(np.array(flux_oiii), np.array(eO3))
-        t1 = [umath.log10(N2_u[good][i]) - umath.log10(Ha_u[good][i]) for i in range(len(Ha_u[good]))]
-        t2 = [umath.log10(O3_u[good][i]) - umath.log10(Hb_u[good][i]) for i in range(len(Hb_u[good]))]
+        t1 = [unumpy.log10(N2_u[good][i]) - unumpy.log10(Ha_u[good][i]) for i in range(len(Ha_u[good]))]
+        t2 = [unumpy.log10(O3_u[good][i]) - unumpy.log10(Hb_u[good][i]) for i in range(len(Hb_u[good]))]
         n2ha_u = unumpy.uarray(np.full(len(Ha_u), np.nan), np.full(len(Ha_u), np.nan))
         o3hb_u = unumpy.uarray(np.full(len(Hb_u), np.nan), np.full(len(Hb_u), np.nan))
         n2ha_u[good] = unumpy.uarray(unumpy.nominal_values(t1), unumpy.std_devs(t1))
