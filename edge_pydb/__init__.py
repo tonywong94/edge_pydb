@@ -45,15 +45,19 @@ class EdgeTable(_Table):
         
     def join(self, table, join_type='inner', keys=['Name']):
         # check for ix or iy in both tables 
+        join_keys = [i for i in keys]
         if 'ix' in self.colnames and 'ix' in table.colnames:
-            keys.append('ix')
+            join_keys.append('ix')
             if 'iy' in self.colnames and 'iy' in table.colnames:
-                keys.append('iy')
-        if isinstance(table, _Table):
-            self.table = _join(self.table, table, join_type=join_type, keys=keys)
-        elif isinstance(table, self.__class__):
-            self.table = _join(self.table, table.table, join_type=join_type, keys=keys)
+                join_keys.append('iy')
+        if isinstance(table, self.__class__):
+            self.table = _join(self.table, table.table, join_type=join_type, keys=join_keys)
             self.joined.append((table.srcfile, join_type))
+        elif isinstance(table, _Table):
+            self.table = _join(self.table, table, join_type=join_type, keys=join_keys)
+        else:
+            raise Exception('cannot merge the two tables, \
+                the second table data type is neither EdgeTable nor astropy table.')
         # update the data
         self.__dict__.update(self.table.__dict__)
 
