@@ -78,19 +78,21 @@ Remainder:  [1, 1, 0]
 There are 1849 rows in native table
 ['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_sm', 'Hbet_idx_sm', 'Mgb_idx_sm', 'Fe5270_idx_sm', 'Fe5335_idx_sm', 'D4000_idx_sm', 'Hdmod_idx_sm', 'Hgam_idx_sm', 'SN_idx_sm', 'e_Hdel_idx_sm', 'e_Hbet_idx_sm', 'e_Mgb_idx_sm', 'e_Fe5270_idx_sm', 'e_Fe5335_idx_sm', 'e_D4000_idx_sm', 'e_Hdmod_idx_sm', 'e_Hgam_idx_sm', 'e_SN_idx_sm']WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
 WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
-/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in less
-  result = getattr(super(), op)(other)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:41: RuntimeWarning: invalid value encountered in log10
-  A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * np.log10((flux_ha/flux_hb)/2.86)
-/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in greater
-  result = getattr(super(), op)(other)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:204: RuntimeWarning: invalid value encountered in less
-  sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:207: RuntimeWarning: invalid value encountered in less
-  inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:210: RuntimeWarning: invalid value encountered in less
-  liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:81: RuntimeWarning: invalid value encountered in log10
+  A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha/flux_hb)/2.86)
 
 There are 1849 rows in smoothed table
 
