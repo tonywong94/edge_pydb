@@ -8,15 +8,40 @@ This is an image of shape (20, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
+  Name   ix  iy ...    e_[NII]6548_rg      e_[SII]6731_rg      e_[SII]6717_rg  
+                ... 1e-16 erg / (cm2 s) 1e-16 erg / (cm2 s) 1e-16 erg / (cm2 s)
+------- --- --- ... ------------------- ------------------- -------------------
+NGC4047   1   1 ...                 nan                 nan                 nan
+NGC4047   1   4 ...                 nan                 nan                 nan
+NGC4047   1   7 ...                 nan                 nan                 nan
+NGC4047   1  10 ...                 nan                 nan                 nan
+NGC4047   1  13 ...                 nan                 nan                 nan
+NGC4047   1  16 ...                 nan                 nan                 nan
+NGC4047   1  19 ...                 nan                 nan                 nan
+NGC4047   1  22 ...                 nan                 nan                 nan
+NGC4047   1  25 ...                 nan                 nan                 nan
+NGC4047   1  28 ...                 nan                 nan                 nan
+    ... ... ... ...                 ...                 ...                 ...
+NGC4047 127 100 ...                 nan                 nan                 nan
+NGC4047 127 103 ...                 nan                 nan                 nan
+NGC4047 127 106 ...                 nan                 nan                 nan
+NGC4047 127 109 ...                 nan                 nan                 nan
+NGC4047 127 112 ...                 nan                 nan                 nan
+NGC4047 127 115 ...                 nan                 nan                 nan
+NGC4047 127 118 ...                 nan                 nan                 nan
+NGC4047 127 121 ...                 nan                 nan                 nan
+NGC4047 127 124 ...                 nan                 nan                 nan
+NGC4047 127 127 ...                 nan                 nan                 nan
+Length = 1849 rows
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (20, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Havel_rg', 'Vdisp_rg', '[OII]3727_rg', '[OIII]5007_rg', '[OIII]4959_rg', 'Hbeta_rg', 'Halpha_rg', '[NII]6583_rg', '[NII]6548_rg', '[SII]6731_rg', '[SII]6717_rg', 'e_[OII]3727_rg', 'e_[OIII]5007_rg', 'e_[OIII]4959_rg', 'e_Hbeta_rg', 'e_Halpha_rg', 'e_[NII]6583_rg', 'e_[NII]6548_rg', 'e_[SII]6731_rg', 'e_[SII]6717_rg', 'sigsfr_rg', 'AHa_sigsfr_rg']
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Havel_rg', 'Vdisp_rg', '[OII]3727_rg', '[OIII]5007_rg', '[OIII]4959_rg', 'Hbeta_rg', 'Halpha_rg', '[NII]6583_rg', '[NII]6548_rg', '[SII]6731_rg', '[SII]6717_rg', 'e_[OII]3727_rg', 'e_[OIII]5007_rg', 'e_[OIII]4959_rg', 'e_Hbeta_rg', 'e_Halpha_rg', 'e_[NII]6583_rg', 'e_[NII]6548_rg', 'e_[SII]6731_rg', 'e_[SII]6717_rg', 'sigsfr_rg', 'e_sigsfr_rg', 'AHa_sigsfr_rg', 'e_AHa_sigsfr_rg']
 There are 1849 rows in native table
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Havel_sm', 'Vdisp_sm', '[OII]3727_sm', '[OIII]5007_sm', '[OIII]4959_sm', 'Hbeta_sm', 'Halpha_sm', '[NII]6583_sm', '[NII]6548_sm', '[SII]6731_sm', '[SII]6717_sm', 'e_[OII]3727_sm', 'e_[OIII]5007_sm', 'e_[OIII]4959_sm', 'e_Hbeta_sm', 'e_Halpha_sm', 'e_[NII]6583_sm', 'e_[NII]6548_sm', 'e_[SII]6731_sm', 'e_[SII]6717_sm', 'sigsfr_sm', 'AHa_sigsfr_sm']
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Havel_sm', 'Vdisp_sm', '[OII]3727_sm', '[OIII]5007_sm', '[OIII]4959_sm', 'Hbeta_sm', 'Halpha_sm', '[NII]6583_sm', '[NII]6548_sm', '[SII]6731_sm', '[SII]6717_sm', 'e_[OII]3727_sm', 'e_[OIII]5007_sm', 'e_[OIII]4959_sm', 'e_Hbeta_sm', 'e_Halpha_sm', 'e_[NII]6583_sm', 'e_[NII]6548_sm', 'e_[SII]6731_sm', 'e_[SII]6717_sm', 'sigsfr_sm', 'e_sigsfr_sm', 'AHa_sigsfr_sm', 'e_AHa_sigsfr_sm']
 There are 1849 rows in smoothed table
 
  ['fitsdata/NGC4047.SFH.cube.fits.gz']
@@ -28,6 +53,31 @@ This is an image of shape (398, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
+  Name   ix  iy ... e_lumfrac_age_12.5893_rg e_lumfrac_age_14.1254_rg
+                ...         fraction                 fraction        
+------- --- --- ... ------------------------ ------------------------
+NGC4047   1   1 ...                      nan                      nan
+NGC4047   1   4 ...                      nan                      nan
+NGC4047   1   7 ...                      nan                      nan
+NGC4047   1  10 ...                      nan                      nan
+NGC4047   1  13 ...                      nan                      nan
+NGC4047   1  16 ...                      nan                      nan
+NGC4047   1  19 ...                      nan                      nan
+NGC4047   1  22 ...                      nan                      nan
+NGC4047   1  25 ...                      nan                      nan
+NGC4047   1  28 ...                      nan                      nan
+    ... ... ... ...                      ...                      ...
+NGC4047 127 100 ...                      nan                      nan
+NGC4047 127 103 ...                      nan                      nan
+NGC4047 127 106 ...                      nan                      nan
+NGC4047 127 109 ...                      nan                      nan
+NGC4047 127 112 ...                      nan                      nan
+NGC4047 127 115 ...                      nan                      nan
+NGC4047 127 118 ...                      nan                      nan
+NGC4047 127 121 ...                      nan                      nan
+NGC4047 127 124 ...                      nan                      nan
+NGC4047 127 127 ...                      nan                      nan
+Length = 1849 rows
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (398, 128, 128)
@@ -48,15 +98,40 @@ This is an image of shape (20, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
+  Name   ix  iy ...      mass_ssp_rg         mass_Avcor_ssp_rg   
+                ... dex(solMass / arcsec2) dex(solMass / arcsec2)
+------- --- --- ... ---------------------- ----------------------
+NGC4047   1   1 ...                    nan                    nan
+NGC4047   1   4 ...                    nan                    nan
+NGC4047   1   7 ...                    nan                    nan
+NGC4047   1  10 ...                    nan                    nan
+NGC4047   1  13 ...                    nan                    nan
+NGC4047   1  16 ...                    nan                    nan
+NGC4047   1  19 ...                    nan                    nan
+NGC4047   1  22 ...                    nan                    nan
+NGC4047   1  25 ...                    nan                    nan
+NGC4047   1  28 ...                    nan                    nan
+    ... ... ... ...                    ...                    ...
+NGC4047 127 100 ...                    nan                    nan
+NGC4047 127 103 ...                    nan                    nan
+NGC4047 127 106 ...                    nan                    nan
+NGC4047 127 109 ...                    nan                    nan
+NGC4047 127 112 ...                    nan                    nan
+NGC4047 127 115 ...                    nan                    nan
+NGC4047 127 118 ...                    nan                    nan
+NGC4047 127 121 ...                    nan                    nan
+NGC4047 127 124 ...                    nan                    nan
+NGC4047 127 127 ...                    nan                    nan
+Length = 1849 rows
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (20, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Vcont_ssp_rg', 'cont_segm_rg', 'cont_dezon_rg', 'medflx_ssp_rg', 'e_medflx_ssp_rg', 'age_lwt_rg', 'age_mwt_rg', 'e_age_lwt_rg', 'ZH_lwt_rg', 'ZH_mwt_rg', 'e_ZH_lwt_rg', 'Av_ssp_rg', 'e_Av_ssp_rg', 'vel_ssp_rg', 'e_vel_ssp_rg', 'vdisp_ssp_rg', 'e_vdisp_ssp_rg', 'ML_ssp_rg', 'mass_ssp_rg', 'mass_Avcor_ssp_rg', 'sigstar_rg', 'sigstar_Avcor_rg']
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Vcont_ssp_rg', 'cont_segm_rg', 'cont_dezon_rg', 'medflx_ssp_rg', 'e_medflx_ssp_rg', 'age_lwt_rg', 'age_mwt_rg', 'e_age_lwt_rg', 'ZH_lwt_rg', 'ZH_mwt_rg', 'e_ZH_lwt_rg', 'Av_ssp_rg', 'e_Av_ssp_rg', 'vel_ssp_rg', 'e_vel_ssp_rg', 'vdisp_ssp_rg', 'e_vdisp_ssp_rg', 'ML_ssp_rg', 'mass_ssp_rg', 'mass_Avcor_ssp_rg', 'sigstar_rg', 'sigstar_Avcor_rg', 'fe_sigstar_rg']
 There are 1849 rows in native table
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Vcont_ssp_sm', 'cont_segm_sm', 'cont_dezon_sm', 'medflx_ssp_sm', 'e_medflx_ssp_sm', 'age_lwt_sm', 'age_mwt_sm', 'e_age_lwt_sm', 'ZH_lwt_sm', 'ZH_mwt_sm', 'e_ZH_lwt_sm', 'Av_ssp_sm', 'e_Av_ssp_sm', 'vel_ssp_sm', 'e_vel_ssp_sm', 'vdisp_ssp_sm', 'e_vdisp_ssp_sm', 'ML_ssp_sm', 'mass_ssp_sm', 'mass_Avcor_ssp_sm', 'sigstar_sm', 'sigstar_Avcor_sm']
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Vcont_ssp_sm', 'cont_segm_sm', 'cont_dezon_sm', 'medflx_ssp_sm', 'e_medflx_ssp_sm', 'age_lwt_sm', 'age_mwt_sm', 'e_age_lwt_sm', 'ZH_lwt_sm', 'ZH_mwt_sm', 'e_ZH_lwt_sm', 'Av_ssp_sm', 'e_Av_ssp_sm', 'vel_ssp_sm', 'e_vel_ssp_sm', 'vdisp_ssp_sm', 'e_vdisp_ssp_sm', 'ML_ssp_sm', 'mass_ssp_sm', 'mass_Avcor_ssp_sm', 'sigstar_sm', 'sigstar_Avcor_sm', 'fe_sigstar_sm']
 There are 1849 rows in smoothed table
 
  ['fitsdata/indices.CS.NGC4047.cube.fits.gz']
@@ -68,6 +143,31 @@ This is an image of shape (18, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
+  Name   ix  iy   ra_off  ... e_Hdmod_idx_rg e_Hgam_idx_rg e_SN_idx_rg
+                   deg    ...    Angstrom       Angstrom     Angstrom 
+------- --- --- --------- ... -------------- ------------- -----------
+NGC4047   1   1  0.026472 ...            nan           nan         nan
+NGC4047   1   4  0.026473 ...            nan           nan         nan
+NGC4047   1   7  0.026473 ...            nan           nan         nan
+NGC4047   1  10  0.026474 ...            nan           nan         nan
+NGC4047   1  13  0.026474 ...            nan           nan         nan
+NGC4047   1  16  0.026475 ...            nan           nan         nan
+NGC4047   1  19  0.026475 ...            nan           nan         nan
+NGC4047   1  22  0.026475 ...            nan           nan         nan
+NGC4047   1  25  0.026476 ...            nan           nan         nan
+NGC4047   1  28  0.026476 ...            nan           nan         nan
+    ... ... ...       ... ...            ...           ...         ...
+NGC4047 127 100 -0.026487 ...            nan           nan         nan
+NGC4047 127 103 -0.026487 ...            nan           nan         nan
+NGC4047 127 106 -0.026488 ...            nan           nan         nan
+NGC4047 127 109 -0.026488 ...            nan           nan         nan
+NGC4047 127 112 -0.026489 ...            nan           nan         nan
+NGC4047 127 115 -0.026489 ...            nan           nan         nan
+NGC4047 127 118 -0.026489 ...            nan           nan         nan
+NGC4047 127 121 -0.026490 ...            nan           nan         nan
+NGC4047 127 124 -0.026490 ...            nan           nan         nan
+NGC4047 127 127 -0.026491 ...            nan           nan         nan
+Length = 1849 rows
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (18, 128, 128)
@@ -76,24 +176,7 @@ Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
 ['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_rg', 'Hbet_idx_rg', 'Mgb_idx_rg', 'Fe5270_idx_rg', 'Fe5335_idx_rg', 'D4000_idx_rg', 'Hdmod_idx_rg', 'Hgam_idx_rg', 'SN_idx_rg', 'e_Hdel_idx_rg', 'e_Hbet_idx_rg', 'e_Mgb_idx_rg', 'e_Fe5270_idx_rg', 'e_Fe5335_idx_rg', 'e_D4000_idx_rg', 'e_Hdmod_idx_rg', 'e_Hgam_idx_rg', 'e_SN_idx_rg']
 There are 1849 rows in native table
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_sm', 'Hbet_idx_sm', 'Mgb_idx_sm', 'Fe5270_idx_sm', 'Fe5335_idx_sm', 'D4000_idx_sm', 'Hdmod_idx_sm', 'Hgam_idx_sm', 'SN_idx_sm', 'e_Hdel_idx_sm', 'e_Hbet_idx_sm', 'e_Mgb_idx_sm', 'e_Fe5270_idx_sm', 'e_Fe5335_idx_sm', 'e_D4000_idx_sm', 'e_Hdmod_idx_sm', 'e_Hgam_idx_sm', 'e_SN_idx_sm']WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:81: RuntimeWarning: invalid value encountered in log10
-  A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha/flux_hb)/2.86)
-
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'Hdel_idx_sm', 'Hbet_idx_sm', 'Mgb_idx_sm', 'Fe5270_idx_sm', 'Fe5335_idx_sm', 'D4000_idx_sm', 'Hdmod_idx_sm', 'Hgam_idx_sm', 'SN_idx_sm', 'e_Hdel_idx_sm', 'e_Hbet_idx_sm', 'e_Mgb_idx_sm', 'e_Fe5270_idx_sm', 'e_Fe5335_idx_sm', 'e_D4000_idx_sm', 'e_Hdmod_idx_sm', 'e_Hgam_idx_sm', 'e_SN_idx_sm']
 There are 1849 rows in smoothed table
 
  ['fitsdata/flux_elines.NGC4047.cube.fits.gz']
@@ -105,13 +188,63 @@ This is an image of shape (408, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
+  Name   ix  iy ... e_EW_[NII]6548_rg e_EW_[SII]6717_rg e_EW_[SII]6731_rg
+                ...      Angstrom          Angstrom          Angstrom    
+------- --- --- ... ----------------- ----------------- -----------------
+NGC4047   1   1 ...               nan               nan               nan
+NGC4047   1   4 ...               nan               nan               nan
+NGC4047   1   7 ...               nan               nan               nan
+NGC4047   1  10 ...               nan               nan               nan
+NGC4047   1  13 ...               nan               nan               nan
+NGC4047   1  16 ...               nan               nan               nan
+NGC4047   1  19 ...               nan               nan               nan
+NGC4047   1  22 ...               nan               nan               nan
+NGC4047   1  25 ...               nan               nan               nan
+NGC4047   1  28 ...               nan               nan               nan
+    ... ... ... ...               ...               ...               ...
+NGC4047 127 100 ...               nan               nan               nan
+NGC4047 127 103 ...               nan               nan               nan
+NGC4047 127 106 ...               nan               nan               nan
+NGC4047 127 109 ...               nan               nan               nan
+NGC4047 127 112 ...               nan               nan               nan
+NGC4047 127 115 ...               nan               nan               nan
+NGC4047 127 118 ...               nan               nan               nan
+NGC4047 127 121 ...               nan               nan               nan
+NGC4047 127 124 ...               nan               nan               nan
+NGC4047 127 127 ...               nan               nan               nan
+Length = 1849 rows
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (408, 128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'flux_[OII]3727_rg', 'flux_[OIII]5007_rg', 'flux_[OIII]4959_rg', 'flux_Hbeta_rg', 'flux_[OI]6300_rg', 'flux_Halpha_rg', 'flux_[NII]6583_rg', 'flux_[NII]6548_rg', 'flux_[SII]6717_rg', 'flux_[SII]6731_rg', 'vel_[OII]3727_rg', 'vel_[OIII]5007_rg', 'vel_[OIII]4959_rg', 'vel_Hbeta_rg', 'vel_[OI]6300_rg', 'vel_Halpha_rg', 'vel_[NII]6583_rg', 'vel_[NII]6548_rg', 'vel_[SII]6717_rg', 'vel_[SII]6731_rg', 'disp_[OII]3727_rg', 'disp_[OIII]5007_rg', 'disp_[OIII]4959_rg', 'disp_Hbeta_rg', 'disp_[OI]6300_rg', 'disp_Halpha_rg', 'disp_[NII]6583_rg', 'disp_[NII]6548_rg', 'disp_[SII]6717_rg', 'disp_[SII]6731_rg', 'EW_[OII]3727_rg', 'EW_[OIII]5007_rg', 'EW_[OIII]4959_rg', 'EW_Hbeta_rg', 'EW_[OI]6300_rg', 'EW_Halpha_rg', 'EW_[NII]6583_rg', 'EW_[NII]6548_rg', 'EW_[SII]6717_rg', 'EW_[SII]6731_rg', 'e_flux_[OII]3727_rg', 'e_flux_[OIII]5007_rg', 'e_flux_[OIII]4959_rg', 'e_flux_Hbeta_rg', 'e_flux_[OI]6300_rg', 'e_flux_Halpha_rg', 'e_flux_[NII]6583_rg', 'e_flux_[NII]6548_rg', 'e_flux_[SII]6717_rg', 'e_flux_[SII]6731_rg', 'e_vel_[OII]3727_rg', 'e_vel_[OIII]5007_rg', 'e_vel_[OIII]4959_rg', 'e_vel_Hbeta_rg', 'e_vel_[OI]6300_rg', 'e_vel_Halpha_rg', 'e_vel_[NII]6583_rg', 'e_vel_[NII]6548_rg', 'e_vel_[SII]6717_rg', 'e_vel_[SII]6731_rg', 'e_disp_[OII]3727_rg', 'e_disp_[OIII]5007_rg', 'e_disp_[OIII]4959_rg', 'e_disp_Hbeta_rg', 'e_disp_[OI]6300_rg', 'e_disp_Halpha_rg', 'e_disp_[NII]6583_rg', 'e_disp_[NII]6548_rg', 'e_disp_[SII]6717_rg', 'e_disp_[SII]6731_rg', 'e_EW_[OII]3727_rg', 'e_EW_[OIII]5007_rg', 'e_EW_[OIII]4959_rg', 'e_EW_Hbeta_rg', 'e_EW_[OI]6300_rg', 'e_EW_Halpha_rg', 'e_EW_[NII]6583_rg', 'e_EW_[NII]6548_rg', 'e_EW_[SII]6717_rg', 'e_EW_[SII]6731_rg', 'flux_sigsfr_rg', 'AHa_flux_sigsfr_rg', 'ZOH_rg', 'e_ZOH_rg', 'BPT_rg']
+Calculating the probability
+Working on SFR
+Working on intermediate region, composite
+Working on liner
+Working on Seyfert
+Calculating the probability
+Working on SFRWARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
+
+Working on intermediate region, composite
+Working on liner
+Working on Seyfert
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'flux_[OII]3727_rg', 'flux_[OIII]5007_rg', 'flux_[OIII]4959_rg', 'flux_Hbeta_rg', 'flux_[OI]6300_rg', 'flux_Halpha_rg', 'flux_[NII]6583_rg', 'flux_[NII]6548_rg', 'flux_[SII]6717_rg', 'flux_[SII]6731_rg', 'vel_[OII]3727_rg', 'vel_[OIII]5007_rg', 'vel_[OIII]4959_rg', 'vel_Hbeta_rg', 'vel_[OI]6300_rg', 'vel_Halpha_rg', 'vel_[NII]6583_rg', 'vel_[NII]6548_rg', 'vel_[SII]6717_rg', 'vel_[SII]6731_rg', 'disp_[OII]3727_rg', 'disp_[OIII]5007_rg', 'disp_[OIII]4959_rg', 'disp_Hbeta_rg', 'disp_[OI]6300_rg', 'disp_Halpha_rg', 'disp_[NII]6583_rg', 'disp_[NII]6548_rg', 'disp_[SII]6717_rg', 'disp_[SII]6731_rg', 'EW_[OII]3727_rg', 'EW_[OIII]5007_rg', 'EW_[OIII]4959_rg', 'EW_Hbeta_rg', 'EW_[OI]6300_rg', 'EW_Halpha_rg', 'EW_[NII]6583_rg', 'EW_[NII]6548_rg', 'EW_[SII]6717_rg', 'EW_[SII]6731_rg', 'e_flux_[OII]3727_rg', 'e_flux_[OIII]5007_rg', 'e_flux_[OIII]4959_rg', 'e_flux_Hbeta_rg', 'e_flux_[OI]6300_rg', 'e_flux_Halpha_rg', 'e_flux_[NII]6583_rg', 'e_flux_[NII]6548_rg', 'e_flux_[SII]6717_rg', 'e_flux_[SII]6731_rg', 'e_vel_[OII]3727_rg', 'e_vel_[OIII]5007_rg', 'e_vel_[OIII]4959_rg', 'e_vel_Hbeta_rg', 'e_vel_[OI]6300_rg', 'e_vel_Halpha_rg', 'e_vel_[NII]6583_rg', 'e_vel_[NII]6548_rg', 'e_vel_[SII]6717_rg', 'e_vel_[SII]6731_rg', 'e_disp_[OII]3727_rg', 'e_disp_[OIII]5007_rg', 'e_disp_[OIII]4959_rg', 'e_disp_Hbeta_rg', 'e_disp_[OI]6300_rg', 'e_disp_Halpha_rg', 'e_disp_[NII]6583_rg', 'e_disp_[NII]6548_rg', 'e_disp_[SII]6717_rg', 'e_disp_[SII]6731_rg', 'e_EW_[OII]3727_rg', 'e_EW_[OIII]5007_rg', 'e_EW_[OIII]4959_rg', 'e_EW_Hbeta_rg', 'e_EW_[OI]6300_rg', 'e_EW_Halpha_rg', 'e_EW_[NII]6583_rg', 'e_EW_[NII]6548_rg', 'e_EW_[SII]6717_rg', 'e_EW_[SII]6731_rg', 'flux_sigsfr_rg', 'e_flux_sigsfr_rg', 'AHa_flux_sigsfr_rg', 'e_AHa_flux_sigsfr_rg', 'ZOH_rg', 'e_ZOH_rg', 'BPT_rg', 'p_BPT_rg']
 There are 1849 rows in native table
-['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'flux_[OII]3727_sm', 'flux_[OIII]5007_sm', 'flux_[OIII]4959_sm', 'flux_Hbeta_sm', 'flux_[OI]6300_sm', 'flux_Halpha_sm', 'flux_[NII]6583_sm', 'flux_[NII]6548_sm', 'flux_[SII]6717_sm', 'flux_[SII]6731_sm', 'vel_[OII]3727_sm', 'vel_[OIII]5007_sm', 'vel_[OIII]4959_sm', 'vel_Hbeta_sm', 'vel_[OI]6300_sm', 'vel_Halpha_sm', 'vel_[NII]6583_sm', 'vel_[NII]6548_sm', 'vel_[SII]6717_sm', 'vel_[SII]6731_sm', 'disp_[OII]3727_sm', 'disp_[OIII]5007_sm', 'disp_[OIII]4959_sm', 'disp_Hbeta_sm', 'disp_[OI]6300_sm', 'disp_Halpha_sm', 'disp_[NII]6583_sm', 'disp_[NII]6548_sm', 'disp_[SII]6717_sm', 'disp_[SII]6731_sm', 'EW_[OII]3727_sm', 'EW_[OIII]5007_sm', 'EW_[OIII]4959_sm', 'EW_Hbeta_sm', 'EW_[OI]6300_sm', 'EW_Halpha_sm', 'EW_[NII]6583_sm', 'EW_[NII]6548_sm', 'EW_[SII]6717_sm', 'EW_[SII]6731_sm', 'e_flux_[OII]3727_sm', 'e_flux_[OIII]5007_sm', 'e_flux_[OIII]4959_sm', 'e_flux_Hbeta_sm', 'e_flux_[OI]6300_sm', 'e_flux_Halpha_sm', 'e_flux_[NII]6583_sm', 'e_flux_[NII]6548_sm', 'e_flux_[SII]6717_sm', 'e_flux_[SII]6731_sm', 'e_vel_[OII]3727_sm', 'e_vel_[OIII]5007_sm', 'e_vel_[OIII]4959_sm', 'e_vel_Hbeta_sm', 'e_vel_[OI]6300_sm', 'e_vel_Halpha_sm', 'e_vel_[NII]6583_sm', 'e_vel_[NII]6548_sm', 'e_vel_[SII]6717_sm', 'e_vel_[SII]6731_sm', 'e_disp_[OII]3727_sm', 'e_disp_[OIII]5007_sm', 'e_disp_[OIII]4959_sm', 'e_disp_Hbeta_sm', 'e_disp_[OI]6300_sm', 'e_disp_Halpha_sm', 'e_disp_[NII]6583_sm', 'e_disp_[NII]6548_sm', 'e_disp_[SII]6717_sm', 'e_disp_[SII]6731_sm', 'e_EW_[OII]3727_sm', 'e_EW_[OIII]5007_sm', 'e_EW_[OIII]4959_sm', 'e_EW_Hbeta_sm', 'e_EW_[OI]6300_sm', 'e_EW_Halpha_sm', 'e_EW_[NII]6583_sm', 'e_EW_[NII]6548_sm', 'e_EW_[SII]6717_sm', 'e_EW_[SII]6731_sm', 'flux_sigsfr_sm', 'AHa_flux_sigsfr_sm', 'ZOH_sm', 'e_ZOH_sm', 'BPT_sm']
+['Name', 'ix', 'iy', 'ra_off', 'dec_off', 'rad_arc', 'azi_ang', 'flux_[OII]3727_sm', 'flux_[OIII]5007_sm', 'flux_[OIII]4959_sm', 'flux_Hbeta_sm', 'flux_[OI]6300_sm', 'flux_Halpha_sm', 'flux_[NII]6583_sm', 'flux_[NII]6548_sm', 'flux_[SII]6717_sm', 'flux_[SII]6731_sm', 'vel_[OII]3727_sm', 'vel_[OIII]5007_sm', 'vel_[OIII]4959_sm', 'vel_Hbeta_sm', 'vel_[OI]6300_sm', 'vel_Halpha_sm', 'vel_[NII]6583_sm', 'vel_[NII]6548_sm', 'vel_[SII]6717_sm', 'vel_[SII]6731_sm', 'disp_[OII]3727_sm', 'disp_[OIII]5007_sm', 'disp_[OIII]4959_sm', 'disp_Hbeta_sm', 'disp_[OI]6300_sm', 'disp_Halpha_sm', 'disp_[NII]6583_sm', 'disp_[NII]6548_sm', 'disp_[SII]6717_sm', 'disp_[SII]6731_sm', 'EW_[OII]3727_sm', 'EW_[OIII]5007_sm', 'EW_[OIII]4959_sm', 'EW_Hbeta_sm', 'EW_[OI]6300_sm', 'EW_Halpha_sm', 'EW_[NII]6583_sm', 'EW_[NII]6548_sm', 'EW_[SII]6717_sm', 'EW_[SII]6731_sm', 'e_flux_[OII]3727_sm', 'e_flux_[OIII]5007_sm', 'e_flux_[OIII]4959_sm', 'e_flux_Hbeta_sm', 'e_flux_[OI]6300_sm', 'e_flux_Halpha_sm', 'e_flux_[NII]6583_sm', 'e_flux_[NII]6548_sm', 'e_flux_[SII]6717_sm', 'e_flux_[SII]6731_sm', 'e_vel_[OII]3727_sm', 'e_vel_[OIII]5007_sm', 'e_vel_[OIII]4959_sm', 'e_vel_Hbeta_sm', 'e_vel_[OI]6300_sm', 'e_vel_Halpha_sm', 'e_vel_[NII]6583_sm', 'e_vel_[NII]6548_sm', 'e_vel_[SII]6717_sm', 'e_vel_[SII]6731_sm', 'e_disp_[OII]3727_sm', 'e_disp_[OIII]5007_sm', 'e_disp_[OIII]4959_sm', 'e_disp_Hbeta_sm', 'e_disp_[OI]6300_sm', 'e_disp_Halpha_sm', 'e_disp_[NII]6583_sm', 'e_disp_[NII]6548_sm', 'e_disp_[SII]6717_sm', 'e_disp_[SII]6731_sm', 'e_EW_[OII]3727_sm', 'e_EW_[OIII]5007_sm', 'e_EW_[OIII]4959_sm', 'e_EW_Hbeta_sm', 'e_EW_[OI]6300_sm', 'e_EW_Halpha_sm', 'e_EW_[NII]6583_sm', 'e_EW_[NII]6548_sm', 'e_EW_[SII]6717_sm', 'e_EW_[SII]6731_sm', 'flux_sigsfr_sm', 'e_flux_sigsfr_sm', 'AHa_flux_sigsfr_sm', 'e_AHa_flux_sigsfr_sm', 'ZOH_sm', 'e_ZOH_sm', 'BPT_sm', 'p_BPT_sm']
 There are 1849 rows in smoothed table
