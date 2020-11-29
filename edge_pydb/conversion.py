@@ -73,12 +73,16 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'
         else:
             return sig_sfr
 
-    def apply_extinction(flux_ha, flux_hb, log10):
+    def apply_extinction(flux_ha, flux_hb, log10, filter_bad=True):
+        good = True
+        if filter_bad:
+            good = (flux_ha > 0) & (flux_hb > 0)
         # Extinction curve from Cardelli+(1989).
         K_Ha = 2.53
         K_Hb = 3.61
         # Eq(1) from Catalan-Torrecilla+(2015). 
-        A_Ha = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha/flux_hb)/2.86)
+        A_Ha = np.zeros_like(flux_ha)
+        A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
         # Do not apply negative extinction.
         A_Ha[A_Ha < 0] = 0.
         flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
