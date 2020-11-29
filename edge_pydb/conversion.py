@@ -82,7 +82,8 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
         K_Ha = 2.53
         K_Hb = 3.61
         # Eq(1) from Catalan-Torrecilla+(2015). 
-        A_Ha = np.zeros_like(flux_ha)
+        # By default A_Ha is NaN when flux_ha is NaN.
+        A_Ha = flux_ha * 0.
         A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
         # Do not apply negative extinction.
         A_Ha[A_Ha < 0] = 0.
@@ -284,7 +285,6 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
 
     if prob:
-       
         BPT_prob = np.full(len(n2ha), np.nan)
         eN2 = fluxtab['e_flux_[NII]6583'+ext]
         eO3 = fluxtab['e_flux_[OIII]5007'+ext] 
@@ -313,7 +313,7 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         print("Working on Seyfert")
         for i in np.where(seyfert)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[seyfert][0], grid_size)
-        prob_col = Column(BPT_prob, name='prob', dtype='f4', description='BPT probability')
+        prob_col = Column(BPT_prob, name='p_'+name, dtype='f4', description='BPT probability')
         return bpt_col, prob_col
     else:
         return bpt_col
