@@ -53,7 +53,8 @@ def uarray_to_list(target):
     return list(map(list, zip(*list(result))))
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
-def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr', column=True):
+def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
+            name='sig_sfr', column=True, filter_bad=True):
     '''
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error
@@ -73,7 +74,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, name='sig_sfr'
         else:
             return sig_sfr
 
-    def apply_extinction(flux_ha, flux_hb, log10, filter_bad=True):
+    def apply_extinction(flux_ha, flux_hb, log10):
         good = True
         if filter_bad:
             good = (flux_ha > 0) & (flux_hb > 0)
