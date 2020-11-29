@@ -55,6 +55,7 @@ class EdgeTable(_Table):
             self.joined.append((table.srcfile, join_type))
         elif isinstance(table, _Table):
             self.table = _join(self.table, table, join_type=join_type, keys=join_keys)
+            self.joined.append((table.srcfile, join_type))
         else:
             raise Exception('cannot merge the two tables, \
                 the second table data type is neither EdgeTable nor astropy table.')
