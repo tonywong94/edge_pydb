@@ -207,7 +207,7 @@ def bpt_region(n2ha, o3hb, ew_ha=7.0, good=True, other=None):
     liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
-    return sf & (abs(ew_ha) > 6.0), inter & (abs(ew_ha) > 6.0), liner & (abs(ew_ha) > 6.0), seyfert & (abs(ew_ha) > 6.0)     
+    return sf & (abs(ew_ha) > 6.0), inter, liner, seyfert     
 
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
