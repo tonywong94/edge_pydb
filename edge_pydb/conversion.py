@@ -207,7 +207,7 @@ def bpt_region(n2ha, o3hb, ew_ha=7.0, good=True, other=None):
     liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
-    return sf & (abs(ew_ha) > 6.0), inter, liner, seyfert     
+    return sf, inter, liner, seyfert     
 
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
@@ -282,7 +282,9 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     BPT[seyfert] = 2
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
-
+    bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
+    bpt_sfcol = Column(bpt_sf, name='SF_region', dtype='?',
+                description='star forming data points')
     if prob:
        
         BPT_prob = np.full(len(n2ha), np.nan)
@@ -314,9 +316,9 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         for i in np.where(seyfert)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[seyfert][0], grid_size)
         prob_col = Column(BPT_prob, name='prob', dtype='f4', description='BPT probability')
-        return bpt_col, prob_col
+        return bpt_col, bpt_sfcol, prob_col 
     else:
-        return bpt_col
+        return bpt_col, bpt_sfcol
 
 
 def plot_uncertainty_ellipse(xval_u, yval_u, indices, x_arr, save_to=''):
