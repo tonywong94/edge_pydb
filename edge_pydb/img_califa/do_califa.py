@@ -15,6 +15,13 @@ from edge_pydb import EdgeTable
 from edge_pydb.conversion import stmass_pc2, sfr_ha, ZOH_M13, bpt_type
 from edge_pydb.fitsextract import fitsextract, getlabels
 
+# allpix = True to dump all pixels
+allpix = False
+if allpix:
+    stride = [1,1,1]
+else:
+    stride = [3,3,1]
+
 # Get the orientation parameters from LEDA
 ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
 ort.add_index('Name')
@@ -24,6 +31,7 @@ dist = EdgeTable('edge_califa.csv', cols=['Name', 'caDistP3d'])
 dist.add_index('Name')
 
 # Read the FITS data
+# The columns to save are defined in fitsextract.py
 codir = '../img_comom/fitsdata/'
 cadir = 'fitsdata/'
 prodtype = ['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines']
@@ -70,9 +78,9 @@ for prod in prodtype:
         newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
         # fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
         rglabels = [s+'_rg' for s in labels]
-        tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
+        tab0 = fitsextract(newim, header=outhd, keepnan=True, stride=stride, 
             bunit=units, col_lbl=rglabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
-			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
+            dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
             inc=ort.loc[gal]['ledaAxIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab0), name='Name', 
                        description='Galaxy Name')
@@ -87,9 +95,9 @@ for prod in prodtype:
         newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
         # fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
         smlabels = [s+'_sm' for s in labels]
-        tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=[3,3,1], 
+        tab1 = fitsextract(newim, header=outhd, keepnan=True, stride=stride, 
             bunit=units, col_lbl=smlabels, zselect=zsel, ra_gc=15*ort.loc[gal]['ledaRA'],
-			dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
+            dec_gc=ort.loc[gal]['ledaDE'], pa=ort.loc[gal]['ledaPA'],
             inc=ort.loc[gal]['ledaAxIncl'], ortlabel='LEDA', first=True)
         gname = Column([np.string_(gal)]*len(tab1), name='Name', 
                        description='Galaxy Name')
@@ -98,31 +106,33 @@ for prod in prodtype:
         
         # Add additional columns
         if prod == 'ELINES':
-            sfr0, sfrext0 = sfr_ha(tab0['Halpha_rg'], tab0['Hbeta_rg'], name='sigsfr_rg')
-            sfr1, sfrext1 = sfr_ha(tab1['Halpha_sm'], tab1['Hbeta_sm'], name='sigsfr_sm')
-            tab0.add_column(sfr0)
-            tab0.add_column(sfrext0)
-            tab1.add_column(sfr1)
-            tab1.add_column(sfrext1)
+            sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['Halpha_rg'], 
+                flux_hb=tab0['Hbeta_rg'], e_flux_ha=tab0['e_Halpha_rg'],
+                e_flux_hb=tab0['e_Hbeta_rg'], name='sigsfr_rg')
+            tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
+            sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['Halpha_sm'],
+                flux_hb=tab1['Hbeta_sm'], e_flux_ha=tab1['e_Halpha_sm'],
+                e_flux_hb=tab1['e_Hbeta_sm'], name='sigsfr_sm')
+            tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
         elif prod == 'flux_elines':
-            sfr0, sfrext0 = sfr_ha(tab0['flux_Halpha_rg'], tab0['flux_Hbeta_rg'], 
-                                   name='flux_sigsfr_rg')
-            sfr1, sfrext1 = sfr_ha(tab1['flux_Halpha_sm'], tab1['flux_Hbeta_sm'], 
-                                   name='flux_sigsfr_sm')
-            tab0.add_column(sfr0)
-            tab0.add_column(sfrext0)
-            tab1.add_column(sfr1)
-            tab1.add_column(sfrext1)
+            sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['flux_Halpha_rg'],
+                flux_hb=tab0['flux_Hbeta_rg'], e_flux_ha=tab0['e_flux_Halpha_rg'],
+                e_flux_hb=tab0['e_flux_Hbeta_rg'], name='flux_sigsfr_rg')
+            tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
+            sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['flux_Halpha_sm'],
+                flux_hb=tab1['flux_Hbeta_sm'], e_flux_ha=tab1['e_flux_Halpha_sm'],
+                e_flux_hb=tab1['e_flux_Hbeta_sm'], name='flux_sigsfr_sm')
+            tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
+            #
             zoh0, zoherr0 = ZOH_M13(tab0, ext='_rg', name='ZOH_rg', err=True)
+            tab0.add_columns([zoh0, zoherr0])
             zoh1, zoherr1 = ZOH_M13(tab1, ext='_sm', name='ZOH_sm', err=True)
-            tab0.add_column(zoh0)
-            tab0.add_column(zoherr0)
-            tab1.add_column(zoh1)
-            tab1.add_column(zoherr1)
-            BPT0 = bpt_type(tab0, ext='_rg', name='BPT_rg')
-            BPT1 = bpt_type(tab1, ext='_sm', name='BPT_sm')
-            tab0.add_column(BPT0)
-            tab1.add_column(BPT1)
+            tab1.add_columns([zoh1, zoherr1])
+            #
+            BPT0, p_BPT0 = bpt_type(tab0, ext='_rg', name='BPT_rg', prob=True)
+            tab0.add_columns([BPT0, p_BPT0])
+            BPT1, p_BPT1 = bpt_type(tab1, ext='_sm', name='BPT_sm', prob=True)
+            tab1.add_columns([BPT1, p_BPT1])
         elif prod == 'SSP':
             # For stellar surface density we need distance
             star0 = stmass_pc2(tab0['mass_ssp_rg'], 
@@ -135,10 +145,14 @@ for prod in prodtype:
             avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], 
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_sm')
             avstar1.description += ' dust corrected'
-            tab0.add_column(star0)
-            tab1.add_column(star1)
-            tab0.add_column(avstar0)
-            tab1.add_column(avstar1)
+            ferr0 = Column(tab0['e_medflx_ssp_rg']/tab0['medflx_ssp_rg'], 
+                name='fe_sigstar_rg', dtype='f4', unit='fraction',
+                description='fractional error in continuum flux')
+            ferr1 = Column(tab1['e_medflx_ssp_sm']/tab1['medflx_ssp_sm'], 
+                name='fe_sigstar_sm', dtype='f4', unit='fraction',
+                description='fractional error in continuum flux')
+            tab0.add_columns([star0, avstar0, ferr0])
+            tab1.add_columns([star1, avstar1, ferr1])
 
     if len(rglist) > 0:
         rg_merge = vstack(rglist)
