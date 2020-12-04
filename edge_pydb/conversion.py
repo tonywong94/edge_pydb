@@ -201,14 +201,14 @@ def bpt_region(n2ha, o3hb, ew_ha=7.0, good=True, other=None):
     kewley_end = findIntersec(kewley01, lambda x: -4, 0)[0] #  0.352466
     kauffm_end = findIntersec(kauffm03, lambda x: -4, 0)[0] # -0.06509
     # Star forming: below Kauffmann line and EW > 6
-    sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha)) & (abs(ew_ha) > 6.0)
+    sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha))
     # Intermediate: below Kewley line and not star-forming
     inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
     # LINER: above Kewley line and below Cid Fernandes line
     liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
-    return sf, inter, liner, seyfert      
+    return sf, inter, liner, seyfert     
 
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
@@ -237,7 +237,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
                  np.linspace(y - y_std, y + y_std, grid_size))
     pos = np.dstack((x_arr, y_arr))
     grid = np.zeros((grid_size, grid_size))   
-    sf, inter, liner, seyfert = bpt_region(y_arr[:, 0], x_arr[0] )
+    sf, inter, liner, seyfert = bpt_region(x_arr[0], y_arr[:, 0])
     grid[:, sf] = -1 
     grid[:, inter] = 0 
     grid[:, liner] = 1 
@@ -283,7 +283,9 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     BPT[seyfert] = 2
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
-
+    bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
+    bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='?',
+                description='star forming data points')
     if prob:
         BPT_prob = np.full(len(n2ha), np.nan)
         eN2 = fluxtab['e_flux_[NII]6583'+ext]
@@ -314,9 +316,9 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         for i in np.where(seyfert)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[seyfert][0], grid_size)
         prob_col = Column(BPT_prob, name='p_'+name, dtype='f4', description='BPT probability')
-        return bpt_col, prob_col
+        return bpt_col, bpt_sfcol, prob_col
     else:
-        return bpt_col
+        return bpt_col, bpt_sfcol
 
 
 def plot_uncertainty_ellipse(xval_u, yval_u, indices, x_arr, save_to=''):
