@@ -3,7 +3,6 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy import units as u
 from astropy.coordinates import SkyCoord
-#from astropy.modeling.functional_models import Gaussian2D
 from scipy.optimize import fsolve
 from scipy import ndimage
 from scipy.stats import multivariate_normal as ndNormal
@@ -43,28 +42,34 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
 
 def uarray_to_list(target):
     '''
-    break array of uncertainties values into 2 list, 
+    break array of uncertainties values into 2 lists, 
     retval[0] -> nominal values
     retval[1] -> standard deviation
     if no value for std, then return None
     '''
-    result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) or isinstance(x, int)) else (x, None),\
-                target)
+    result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) 
+                    or isinstance(x, int)) else (x, None), target)
     return list(map(list, zip(*list(result))))
+
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
 def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
-            name='sig_sfr', column=True, filter_bad=True):
+            name='sig_sfr', column=True, filter_bad=True,
+            imf='kroupa'):
     '''
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error
     '''
     # input line flux is actually flux per arcsec^2
-    sterad = (u.sr/u.arcsec**2).decompose() # 206265^2
-     # Eq(4) from Catalan-Torrecilla+(2015).
-    lumcon = 5.5e-42 * (u.solMass/u.yr) / (u.erg/u.s)
+    sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
+    
+    # Calzetti+(2010ApJ...714.1256C), Kroupa IMF, 1 Gyr old pop
+    lumcon = 5.45e-42 * (u.solMass/u.yr) / (u.erg/u.s)
+    if imf == 'salpeter':
+        lumcon *= 1.51
+
+    # If only flux_ha exists, just do a scaling
     if flux_hb is None:
-        # only flux_ha exists, just do a scaling
         sb_ha  = flux_ha * sterad  # flux per steradian
         lsd_ha = 4 * np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
@@ -81,7 +86,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
         # Extinction curve from Cardelli+(1989).
         K_Ha = 2.53
         K_Hb = 3.61
-        # Eq(1) from Catalan-Torrecilla+(2015). 
+        # Get A_Ha using Eq(1) from Catalan-Torrecilla+(2015). 
         # By default A_Ha is NaN when flux_ha is NaN.
         A_Ha = flux_ha * 0.
         A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
@@ -89,8 +94,8 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
         A_Ha[A_Ha < 0] = 0.
         flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
         # TODO make it as a separate function and do the convert
-        sb_ha  = flux_ha_cor * sterad.scale   # flux per steradian
-        lsd_ha = 4*np.pi * sb_ha
+        sb_ha  = flux_ha_cor * sterad   # flux per steradian
+        lsd_ha = 4 * np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
         return sig_sfr, A_Ha
 
@@ -143,7 +148,7 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
         unit = dist.unit
     except:
         dist = dist * u.Mpc
-    sterad = (u.sr/u.arcsec**2).decompose()   # 206265^2
+    sterad = (u.sr/u.arcsec**2).decompose().scale   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
     def convert_stmass(stmass_in):
         stmass_in[~np.isfinite(stmass_in)] = np.nan
@@ -172,8 +177,6 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
 #         return np.nan, np.nan
 
 
-
-
 def findIntersec(fun1, fun2, x0):
     return fsolve(lambda x:fun1(x)-fun2(x), x0)
 
@@ -193,14 +196,14 @@ def cidfer10(nii):
     return 0.48 + 1.01*nii    
 
 
-def bpt_region(n2ha, o3hb, ew_ha=7.0, good=True, other=None):
+def bpt_region(n2ha, o3hb, good=True):
     # just to make sure ew > 6 to take all the data if ew_ha is not available
     # ? might be a good idea to store these values, as they are constants
     kewley_start = findIntersec(kewley01, kauffm03, -1)[0]  # -1.2805
     cidfer_start = findIntersec(kewley01, cidfer10, 0)[0]   # -0.1993
     kewley_end = findIntersec(kewley01, lambda x: -4, 0)[0] #  0.352466
     kauffm_end = findIntersec(kauffm03, lambda x: -4, 0)[0] # -0.06509
-    # Star forming: below Kauffmann line and EW > 6
+    # Star forming: below Kauffmann line
     sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha))
     # Intermediate: below Kewley line and not star-forming
     inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
@@ -268,13 +271,13 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     flux_hb   = fluxtab['flux_Hbeta'+ext]
     ew_ha     = fluxtab['EW_Halpha'+ext]
 
-    good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) & (~np.isnan(ew_ha))
+    good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) #& (~np.isnan(ew_ha))
     n2ha = np.full(len(flux_nii), np.nan)
     n2ha[good] = np.log10(flux_nii[good])  - np.log10(flux_ha[good])
     o3hb = np.full(len(flux_oiii), np.nan)
     o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])   
 
-    sf, inter, liner, seyfert = bpt_region(n2ha, o3hb, ew_ha, good)
+    sf, inter, liner, seyfert = bpt_region(n2ha, o3hb, good)
 
     BPT = np.full(len(n2ha), np.nan)
     BPT[sf] = -1
@@ -285,7 +288,7 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
     bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
     bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='?',
-                description='star forming data points')
+                description='True if star forming (BPT=-1 and EW_Ha>6)')
     if prob:
         BPT_prob = np.full(len(n2ha), np.nan)
         eN2 = fluxtab['e_flux_[NII]6583'+ext]
@@ -354,15 +357,17 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     O3F = fluxtab['flux_[OIII]5007'+ext]
     HaF = fluxtab['flux_Halpha'+ext]
     HbF = fluxtab['flux_Hbeta'+ext]
+    BPT_sf = fluxtab['SF_BPT'+ext]
+
     if method == 'o3n2':
-        good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
+        good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0) & BPT_sf
     elif method == 'n2':
-        good = (N2F>0) & (HaF>0)
+        good = (N2F>0) & (HaF>0) & BPT_sf
     else:
         raise Exception('Method {} is not recognized'.format(method))
     nelt = len(N2F)
 
-    BPT = bpt_type(fluxtab, ext=ext)
+    #BPT = bpt_type(fluxtab, ext=ext)
 
     if err == False:
         O3N2 = np.full(nelt, np.nan)
@@ -391,34 +396,12 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
 
     desc = '12+log(O/H) using {} method in Marino+13'.format(method)
     if err == False: 
-        ZOH_M13[BPT != -1] = np.nan
+        #ZOH_M13[BPT != -1] = np.nan
         return Column(ZOH_M13, name=name, unit='dex', dtype='f4', description=desc)
     else:            
-        ZOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
+        #ZOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
         return (Column(unp.nominal_values(ZOH_M13), name=name, dtype='f4',
                        unit='dex', description=desc), 
                 Column(unp.std_devs(ZOH_M13), name='e_'+name, dtype='f4',
                        unit='dex', description='error in '+desc))
 
-
-# Metallicity derived from N2 line ratio, Marino+13 calibration.
-# Input is a table containing the appropriate columns.
-# def ZOH_n2(fluxtab, err=False):
-#     nelt = len(fluxtab['flux_[NII]6583'])
-#     uN2F = unp.uarray(fluxtab['flux_[NII]6583'], fluxtab['e_flux_[NII]6583'])
-#     uHaF = unp.uarray(fluxtab['flux_Halpha'], fluxtab['e_flux_Halpha'])
-# 
-#     uN2 = unp.uarray(np.full(nelt, np.nan),np.full(nelt, np.nan))
-#     good = ((unp.nominal_values(uN2F)>0) & (unp.nominal_values(uHaF)>0))
-#     uN2[good] = (unp.log10(uN2F[good]) - unp.log10(uHaF[good]))
-# 
-#     BPT = bpt_type(fluxtab['flux_[NII]6583'], fluxtab['flux_[OIII]5007'], 
-#             fluxtab['flux_Halpha'], fluxtab['flux_Halpha'], fluxtab['EW_Halpha'])
-#             
-#     uOH_N2 = 8.743 + 0.462*uN2  
-#     uOH_N2[BPT != -1] = ufloat(np.nan, np.nan)
-# 
-#     if err: 
-#         return unp.std_devs(uOH_N2)
-#     else:            
-#         return unp.nominal_values(uOH_N2)

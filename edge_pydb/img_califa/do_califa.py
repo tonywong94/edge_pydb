@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Combine the CALIFA data into binary tables.
+# We now use Salpeter IMF for SFR calculation (as of 05-Dec-2020)
 
 from datetime import datetime
 import glob
@@ -108,31 +109,31 @@ for prod in prodtype:
         if prod == 'ELINES':
             sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['Halpha_rg'], 
                 flux_hb=tab0['Hbeta_rg'], e_flux_ha=tab0['e_Halpha_rg'],
-                e_flux_hb=tab0['e_Hbeta_rg'], name='sigsfr_rg')
+                e_flux_hb=tab0['e_Hbeta_rg'], imf='salpeter', name='sigsfr_rg')
             tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
             sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['Halpha_sm'],
                 flux_hb=tab1['Hbeta_sm'], e_flux_ha=tab1['e_Halpha_sm'],
-                e_flux_hb=tab1['e_Hbeta_sm'], name='sigsfr_sm')
+                e_flux_hb=tab1['e_Hbeta_sm'], imf='salpeter', name='sigsfr_sm')
             tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
         elif prod == 'flux_elines':
             sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['flux_Halpha_rg'],
                 flux_hb=tab0['flux_Hbeta_rg'], e_flux_ha=tab0['e_flux_Halpha_rg'],
-                e_flux_hb=tab0['e_flux_Hbeta_rg'], name='flux_sigsfr_rg')
+                e_flux_hb=tab0['e_flux_Hbeta_rg'], imf='salpeter', name='flux_sigsfr_rg')
             tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
             sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['flux_Halpha_sm'],
                 flux_hb=tab1['flux_Hbeta_sm'], e_flux_ha=tab1['e_flux_Halpha_sm'],
-                e_flux_hb=tab1['e_flux_Hbeta_sm'], name='flux_sigsfr_sm')
+                e_flux_hb=tab1['e_flux_Hbeta_sm'], imf='salpeter', name='flux_sigsfr_sm')
             tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
+            #
+            BPT0, BPT0sf, p_BPT0 = bpt_type(tab0, ext='_rg', name='BPT_rg', prob=True)
+            tab0.add_columns([BPT0, p_BPT0, BPT0sf])
+            BPT1, BPT1sf, p_BPT1 = bpt_type(tab1, ext='_sm', name='BPT_sm', prob=True)
+            tab1.add_columns([BPT1, p_BPT1, BPT1sf])
             #
             zoh0, zoherr0 = ZOH_M13(tab0, ext='_rg', name='ZOH_rg', err=True)
             tab0.add_columns([zoh0, zoherr0])
             zoh1, zoherr1 = ZOH_M13(tab1, ext='_sm', name='ZOH_sm', err=True)
             tab1.add_columns([zoh1, zoherr1])
-            #
-            BPT0, p_BPT0 = bpt_type(tab0, ext='_rg', name='BPT_rg', prob=True)
-            tab0.add_columns([BPT0, p_BPT0])
-            BPT1, p_BPT1 = bpt_type(tab1, ext='_sm', name='BPT_sm', prob=True)
-            tab1.add_columns([BPT1, p_BPT1])
         elif prod == 'SSP':
             # For stellar surface density we need distance
             star0 = stmass_pc2(tab0['mass_ssp_rg'], 
