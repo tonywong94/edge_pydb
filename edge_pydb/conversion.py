@@ -142,7 +142,8 @@ def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
     
 
 # Convert units for stellar surface density
-def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
+# dz = dezonification file from Pipe3D
+def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sig_star'):
     # Assume Mpc units if not given
     try:
         unit = dist.unit
@@ -150,19 +151,22 @@ def stmass_pc2(stmass_as2, dist=10*u.Mpc, name='sig_star'):
         dist = dist * u.Mpc
     sterad = (u.sr/u.arcsec**2).decompose().scale   # 206265^2
     pxarea = (dist**2/sterad).to(u.pc**2)
-    def convert_stmass(stmass_in):
+
+    def convert_stmass(stmass_in, dz):
         stmass_in[~np.isfinite(stmass_in)] = np.nan
         stmass_pc2 = 10**stmass_in * u.solMass / pxarea
+        if dz is not None:
+            stmass_pc2 *= np.array(dz)
         stmass_pc2[~np.isfinite(stmass_pc2)] = np.nan
         return stmass_pc2
 
     if isinstance(stmass_as2, Column):
         stmass_ary = np.array(stmass_as2)
-        stmass_pc2 = convert_stmass(stmass_ary)
+        stmass_pc2 = convert_stmass(stmass_ary, dz)
         return Column(stmass_pc2, name=name, dtype='f4',
                       description='stellar mass surface density')
     else:
-        stmass_pc2 = convert_stmass(stmass_as2)
+        stmass_pc2 = convert_stmass(stmass_as2, dz)
         return stmass_pc2
 
 

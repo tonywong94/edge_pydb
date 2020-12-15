@@ -136,14 +136,14 @@ for prod in prodtype:
             tab1.add_columns([zoh1, zoherr1])
         elif prod == 'SSP':
             # For stellar surface density we need distance
-            star0 = stmass_pc2(tab0['mass_ssp_rg'], 
+            star0 = stmass_pc2(tab0['mass_ssp_rg'], dz=tab0['cont_dezon_rg'],
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_rg')
-            star1 = stmass_pc2(tab1['mass_ssp_sm'], 
+            star1 = stmass_pc2(tab1['mass_ssp_sm'], dz=tab1['cont_dezon_sm'],
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_sm')
-            avstar0 = stmass_pc2(tab0['mass_Avcor_ssp_rg'], 
+            avstar0 = stmass_pc2(tab0['mass_Avcor_ssp_rg'], dz=tab0['cont_dezon_rg'],
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_rg')
             avstar0.description += ' dust corrected'
-            avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], 
+            avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], dz=tab1['cont_dezon_sm'],
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_sm')
             avstar1.description += ' dust corrected'
             ferr0 = Column(tab0['e_medflx_ssp_rg']/tab0['medflx_ssp_rg'], 
