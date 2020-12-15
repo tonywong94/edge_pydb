@@ -81,11 +81,11 @@ WARNING: FITSFixedWarning: 'cdfix' made the change 'Success'. [astropy.wcs.wcs]
 WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
 /opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/table/column.py:1020: RuntimeWarning: invalid value encountered in greater
   result = getattr(super(), op)(other)
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:207: RuntimeWarning: invalid value encountered in less
-  sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha))
-/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:209: RuntimeWarning: invalid value encountered in less
-  inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
 /Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:211: RuntimeWarning: invalid value encountered in less
+  sf = (n2ha < kauffm_end) & (o3hb < kauffm03(n2ha))
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:213: RuntimeWarning: invalid value encountered in less
+  inter = (~sf) & (n2ha < kewley_end) & (o3hb < kewley01(n2ha))
+/Users/tonywong/Library/Python/3.6/lib/python/site-packages/edge_pydb/conversion.py:215: RuntimeWarning: invalid value encountered in less
   liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
 
 There are 1849 rows in smoothed table
