@@ -3,10 +3,14 @@ from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
 from edge_pydb.conversion import gc_polr
+from numba import njit, prange, jit
+from numba.typed import List
 
 def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
                 zselect=None, col_lbl='imdat', ra_gc=None, dec_gc=None,
-                pa=0, inc=0, ortlabel='default', bunit=None, first=False):
+                pa=0, inc=0, ortlabel='default', bunit=None, first=False,
+                use_hexgrid=False, sidelen=2.5, starting_angle=0, precision=2, 
+                header_hex=None, hexgrid_output=None):
 
     """
     Sample data from an image into an AstroPy table indexed by coordinates.
@@ -180,37 +184,61 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         col_data = Column(np.ravel(data,order='F'), name=col_lbl, dtype='f4', unit=bunit)
         tab.add_column(col_data)
 
-    # Use stride to select the desired rows from the full table
     idx = ['ix', 'iy', 'iz']
     rem = [0, 0, 0]
     select = [[],[],[]]
-    if keepref:
+    if not use_hexgrid:
+        # Use stride to select the desired rows from the full table
+        if keepref:
+            for i in range(naxis):
+                crpix = wfix.wcs.crpix[i]
+                if crpix < 1 or crpix > hdr['naxis'+str(i+1)] or not crpix.is_integer():
+                    print('Cannot use keepref on axis {}: crpix={}'.format(i+1,crpix))
+                    continue
+                else:
+                    print('Axis {}: crpix={}'.format(i+1,crpix))
+                    rem[i] = int(crpix-1) % stride[i]
+            print('Remainder: ',rem)
         for i in range(naxis):
-            crpix = wfix.wcs.crpix[i]
-            if crpix < 1 or crpix > hdr['naxis'+str(i+1)] or not crpix.is_integer():
-                print('Cannot use keepref on axis {}: crpix={}'.format(i+1,crpix))
-                continue
-            else:
-                print('Axis {}: crpix={}'.format(i+1,crpix))
-                rem[i] = int(crpix-1) % stride[i]
-        print('Remainder: ',rem)
-    for i in range(naxis):
-        select[i]=np.where(tab[idx[i]] % stride[i] == rem[i])[0]
-    xy = np.intersect1d(select[0], select[1])
-    if iscube and not pseudo:
-        xyz = np.intersect1d(xy, select[2])
-        if len(xyz) < len(tab):
-            newtab = tab[xyz]
-            tab = newtab
+            select[i]=np.where(tab[idx[i]] % stride[i] == rem[i])[0]
+        xy = np.intersect1d(select[0], select[1])
+        if iscube and not pseudo:
+            xyz = np.intersect1d(xy, select[2])
+            if len(xyz) < len(tab):
+                newtab = tab[xyz]
+                tab = newtab
+        else:
+            if len(xy) < len(tab):
+                newtab = tab[xy]
+                tab = newtab
     else:
-        if len(xy) < len(tab):
-            newtab = tab[xy]
-            tab = newtab
-
+        if iscube and not pseudo:
+            iz_data = []
+            tab_length = 0
+            zlist = np.where(np.unique(tab['iz']) % stride[2] == rem[2])[0]
+            for iz in zlist:
+                if len(tab[tab['iz'] == iz]) == 0:
+                    continue
+                sample = hex_sampler(tab[tab['iz'] == iz], sidelen, keepref, wfix.wcs.crpix[:2], 
+                                        ra_gc, dec_gc, pa, inc,
+                                        starting_angle, precision, hexgrid_output)
+                iz_data.append(sample)
+                tab_length += len(sample)
+            tab = tab[:tab_length]
+            init = 0
+            for tabs in iz_data:
+                tab[init:(init+len(tabs))] = tabs
+                init += len(tabs)
+        else:
+            sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2], 
+                                    ra_gc, dec_gc, pa, inc,
+                                    starting_angle, precision, hexgrid_output)
+            tab = sample
     # Remove NaN rows if desired
     if not keepnan:
         if not pseudo:
-            newtab = tab[~np.isnan(tab[cname])]
+            # newtab = tab[~np.isnan(tab[cname])]
+            newtab = tab[~np.isnan(tab)]
             tab = newtab
         else:
             df = tab.to_pandas()
@@ -309,3 +337,152 @@ def getlabels(product):
                  'mag', 'km/s', 'km/s', 'km/s', 
                  'km/s', 'solMass/solLum', 'dex(solMass/arcsec^2)', 'dex(solMass/arcsec^2)']
     return zsel, lbl, units, len(zsel)
+
+
+def ylin_hex(pos, hex_sidelen, bound):
+    '''
+    going along y dir
+    '''
+#     print(pos, hex_sidelen, bound)
+    dist = np.sqrt(3) * hex_sidelen
+    y_plus = np.arange(pos[1], bound[1][1], dist)
+    num = np.floor((pos[1] - bound[0][1]) / dist)
+    y_minus = np.arange(pos[1] - num * dist, pos[1], dist)
+    y_coord = np.concatenate([y_minus, y_plus])
+    return np.array(list(zip(np.ones_like(y_coord) * pos[0], y_coord)))
+
+
+def hex_basis(ref, hex_sidelen, bound):
+    dist = np.sqrt(3) * hex_sidelen
+    angle = np.pi/6
+    delta = np.array((dist * np.cos(angle), dist * np.sin(angle)))
+    basis_pos = []
+    ref = np.array((float(ref[0]), float(ref[1])))
+    plus = np.copy(ref)
+#     print(bound[1][0])
+    while plus[0] < bound[1][0] and plus[1] < bound[1][1]:
+        basis_pos.append(np.copy(plus))
+#         print(plus)
+        plus += delta
+    minus = np.copy(ref) - delta
+    while minus[0] > bound[0][0] and minus[1] > bound[0][1]:
+        basis_pos.append(np.copy(minus))
+        minus -= delta
+        
+    return np.array(basis_pos)
+
+
+def hex_grid(ref, sidelen, bound, starting_angle, precision):
+    # hex side length same as the circumcircle Radius, = 2 / \sqrt(3) * incircle radius
+    x_len = bound[1][0] - bound[0][0]
+    y_len = bound[1][1] - bound[0][1]
+    if x_len > y_len:
+        max_len = x_len
+    else:
+        max_len = y_len
+
+    # create a maximum square 
+    rotate_compen = np.array((max_len * (1 + np.cos(starting_angle)), max_len * (1 + np.cos(starting_angle))))
+    max_bound = [bound[0] - rotate_compen, 
+                 bound[0] + rotate_compen]
+
+    x_basis = hex_basis(ref, sidelen, max_bound)
+    grid = None
+    for point in x_basis:
+        tmp = ylin_hex(point, sidelen, max_bound)
+        if grid is None:
+            grid = np.copy(tmp)
+        else:
+            grid = np.concatenate((grid, tmp), axis=0)
+    rotation_mtx = np.array([[np.cos(starting_angle), np.sin(starting_angle)], 
+                             [-np.sin(starting_angle), np.cos(starting_angle)]])
+    grid = np.dot(grid, rotation_mtx)
+    if precision != 0:
+        grid = np.around(grid, precision)
+    cut = (grid[:, 0] > bound[0, 0]) & (grid[:, 1] > bound[0, 1]) \
+     & (grid[:, 0] < bound[1, 0]) & (grid[:, 1] < bound[1, 1])
+    return grid[cut]
+
+@jit
+def interpolate_neighbor(point, bound, step_size=0):
+    '''
+    find the adjacent pixels of the point to interpolate from
+    if the point is directly on one of the pixel, we take that value directly
+    '''
+    if step_size == 0:
+        tmp = List([np.ceil(point), np.floor(point),
+                np.array([np.floor(point[0]), np.ceil(point[1])]),
+                np.array([np.ceil(point[0]), np.floor(point[1])])])
+    else:
+        i = -1 * step_size
+        j = i
+        tmp = List()
+        cen = np.ceil(point)
+        while i != step_size:
+            while j != step_size:
+                tmp.append(np.array([cen[0]+i, cen[1]+j]))
+#                 print(np.array([cen[0]+i, cen[1]+j]))
+                j += 1
+            i += 1
+    flag = False
+    for k in range(len(tmp)): 
+        cord = tmp[k]
+        if bound[0][0] <= cord[0] <= bound[1][0] and bound[0][1] <= cord[1] <= bound[1][1]:
+            if not flag:
+#                 retval.append(cord)
+                retval = np.reshape(cord, (-1, 2))
+                flag = True
+            else:
+                retval = np.concatenate((retval, np.reshape(cord, (-1, 2))))
+    return retval
+
+@njit(parallel=True)
+def interpolate_all_points(tab, datapoint, bound, header):
+    sampled_tab = np.zeros((datapoint.shape[0], len(header)))
+    for j in prange(datapoint.shape[0]):
+        cord = datapoint[j]
+        inter = interpolate_neighbor(cord, bound)
+        w = np.array([np.linalg.norm(point - cord) for point in inter])
+        if np.sum(w) == 0:
+            # at the exact point
+            inter = np.reshape(inter[0], (-1, 2))
+            w = np.array([1.0])
+        row = np.zeros(len(header[2:]))
+        for i in range(inter.shape[0]):
+            cur = tab[(tab['ix'] == inter[i][0]) & (tab['iy']==inter[i][1])]
+            row += w[i]/np.sum(w)*cur.view(np.float32)[2:]
+    #             row += w[i]/np.sum(w)*np.array(tmp)
+        sampled_tab[j, :2] = cord
+        sampled_tab[j, 2:] = row
+    return sampled_tab
+
+# @jit
+def hex_sampler(tab, sidelen, keepref, ref_pix, ra_gc, dec_gc, pa, inc, starting_angle=0, precision=2, hexgrid_output=None):
+    '''
+    a wrapper function to generate the hex grid and then interpolate and output the sampled data in 
+    Astropy Table
+    precision = 0 -> full precision
+    hexgrid_output -> output file to check
+    '''
+    header = tab.colnames
+    # print(header)
+    upper = np.array([float(max(tab[header[0]])), float(max(tab[header[1]]))])
+    lower = np.array([float(min(tab[header[0]])), float(min(tab[header[1]]))])
+    bound = np.array([lower, upper])
+    if keepref:
+        cen = ref_pix
+    else:
+        cen = np.array([80.,80.])
+    # create a hex grid map
+    datapoint= hex_grid(cen, sidelen, bound, starting_angle, precision)
+    if hexgrid_output is not None:
+        np.savetxt(hexgrid_output, datapoint)
+    info = interpolate_all_points(tab.as_array(), datapoint, bound, List(header))
+    units = [tab[col].unit for col in tab.colnames]
+    sampled_tab = Table(info, names=header, units=units)
+    sampled_tab['rad_arc'], sampled_tab['azi_ang'] = gc_polr(
+            sampled_tab['ra_off'] + ra_gc,
+            sampled_tab['dec_off'] + dec_gc,
+            ra_gc, dec_gc, pa, inc
+        )
+    return sampled_tab
