@@ -18,11 +18,12 @@ lines  = ['12', '13']
 
 # Get the orientation parameters from LEDA
 ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
-ort.add_index('Name')
+ort.add_index('Name') 
 
 for imsk, msk in enumerate(msktyp):
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-                sorted(glob.glob('fitsdata/*.co.'+seq+'_dil.snrpk.fits.gz'))] 
+    # gallist = [os.path.basename(file).split('.')[0] for file in 
+    #             sorted(glob.glob('fitsdata/*.co.'+seq+'_dil.snrpk.fits.gz'))] 
+    gallist = ['NGC4047']
     tablelist=[]
     if msk == 'str':
         dotypes = ['mom0', 'emom0']
@@ -52,7 +53,8 @@ for imsk, msk in enumerate(msktyp):
                             dec_gc=ort.loc[gal]['ledaDE'],
                             pa=ort.loc[gal]['ledaPA'],
                             inc=adopt_incl,
-                            ortlabel='LEDA', first=True)
+                            ortlabel='LEDA', first=True,
+                            use_hexgrid=True)
                     gname = Column([np.string_(gal)]*len(galtab), name='Name', description='Galaxy Name')
                     galtab.add_column(gname, index=0)
                     print(galtab[20:50])
@@ -64,7 +66,7 @@ for imsk, msk in enumerate(msktyp):
                     if os.path.exists(getfile):
                         print('Reading',getfile)
                         addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type+'_'+line, 
-                                        keepnan=True, stride=[3,3,1])
+                                        keepnan=True, stride=[3,3,1], use_hexgrid=True)
                         jointb = join(galtab, addtb, keys=['ix','iy'])
                         galtab = jointb
                     else:
