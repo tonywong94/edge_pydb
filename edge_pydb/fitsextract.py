@@ -9,7 +9,7 @@ from numba.typed import List
 def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True, 
                 zselect=None, col_lbl='imdat', ra_gc=None, dec_gc=None,
                 pa=0, inc=0, ortlabel='default', bunit=None, first=False,
-                use_hexgrid=False, sidelen=2.5, starting_angle=0, precision=2, 
+                use_hexgrid=False, sidelen=2, starting_angle=0, precision=2, 
                 header_hex=None, hexgrid_output=None):
 
     """
@@ -212,6 +212,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
                 newtab = tab[xy]
                 tab = newtab
     else:
+        # print(f'reference pix is {wfix.wcs.crpix[:2]}')
         if iscube and not pseudo:
             iz_data = []
             tab_length = 0
@@ -219,8 +220,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             for iz in zlist:
                 if len(tab[tab['iz'] == iz]) == 0:
                     continue
-                sample = hex_sampler(tab[tab['iz'] == iz], sidelen, keepref, wfix.wcs.crpix[:2], 
-                                        ra_gc, dec_gc, pa, inc,
+                sample = hex_sampler(tab[tab['iz'] == iz], sidelen, keepref, wfix.wcs.crpix[:2] - 1., 
+                                        w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
                                         starting_angle, precision, hexgrid_output)
                 iz_data.append(sample)
                 tab_length += len(sample)
@@ -230,8 +231,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
                 tab[init:(init+len(tabs))] = tabs
                 init += len(tabs)
         else:
-            sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2], 
-                                    ra_gc, dec_gc, pa, inc,
+            sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2] - 1., 
+                                    w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
                                     starting_angle, precision, hexgrid_output)
             tab = sample
     # Remove NaN rows if desired
@@ -442,22 +443,44 @@ def interpolate_all_points(tab, datapoint, bound, header):
     for j in prange(datapoint.shape[0]):
         cord = datapoint[j]
         inter = interpolate_neighbor(cord, bound)
-        w = np.array([np.linalg.norm(point - cord) for point in inter])
-        if np.sum(w) == 0:
+        weight_arr = []
+        for point in inter:
+            cur = tab[(tab['ix'] == point[0]) & (tab['iy']==point[1])] 
+            if ~np.isnan(cur.view(np.float32)[-1]):
+                distance = np.linalg.norm(point - cord)
+                if distance == 0:
+                    weight_arr.append(-1)
+                else:
+                    weight_arr.append(1. / distance)
+            else:
+                weight_arr.append(0.)
+        w = np.array(weight_arr)
+        # w = np.array([np.linalg.norm(point - cord) for point in inter])
+        idx = np.where(w == -1)[0]
+        if idx.size > 0:
             # at the exact point
-            inter = np.reshape(inter[0], (-1, 2))
-            w = np.array([1.0])
-        row = np.zeros(len(header[2:]))
-        for i in range(inter.shape[0]):
-            cur = tab[(tab['ix'] == inter[i][0]) & (tab['iy']==inter[i][1])]
-            row += w[i]/np.sum(w)*cur.view(np.float32)[2:]
-    #             row += w[i]/np.sum(w)*np.array(tmp)
+            inter = np.reshape(inter[idx], (-1, 2))
+            w = np.ones(len(inter))
+        if np.sum(w) == 0:
+            row = np.full(len(header[2:]), np.nan)
+        else:
+            row = np.zeros(len(header[2:]))
+            for i in range(inter.shape[0]):
+                if w[i] == 0:
+                    # stop the propagation of some Nan(s)
+                    continue
+                cur = tab[(tab['ix'] == inter[i][0]) & (tab['iy']==inter[i][1])]
+                row += w[i]/np.sum(w)*cur.view(np.float32)[2:]
+   
+        #             row += w[i]/np.sum(w)*np.array(tmp)
         sampled_tab[j, :2] = cord
         sampled_tab[j, 2:] = row
     return sampled_tab
 
 # @jit
-def hex_sampler(tab, sidelen, keepref, ref_pix, ra_gc, dec_gc, pa, inc, starting_angle=0, precision=2, hexgrid_output=None):
+def hex_sampler(tab, sidelen, keepref, ref_pix, ra_ref, dec_ref, 
+                ra_gc, dec_gc, pa, inc,
+                starting_angle=0, precision=2, hexgrid_output=None):
     '''
     a wrapper function to generate the hex grid and then interpolate and output the sampled data in 
     Astropy Table
@@ -480,9 +503,10 @@ def hex_sampler(tab, sidelen, keepref, ref_pix, ra_gc, dec_gc, pa, inc, starting
     info = interpolate_all_points(tab.as_array(), datapoint, bound, List(header))
     units = [tab[col].unit for col in tab.colnames]
     sampled_tab = Table(info, names=header, units=units)
-    sampled_tab['rad_arc'], sampled_tab['azi_ang'] = gc_polr(
-            sampled_tab['ra_off'] + ra_gc,
-            sampled_tab['dec_off'] + dec_gc,
-            ra_gc, dec_gc, pa, inc
-        )
+    if ('rad_arc' in header) and ('azi_ang' in header):
+        sampled_tab['rad_arc'], sampled_tab['azi_ang'] = gc_polr(
+                sampled_tab['ra_off'] + ra_ref,
+                sampled_tab['dec_off'] + dec_ref,
+                ra_gc, dec_gc, pa, inc
+            )
     return sampled_tab
