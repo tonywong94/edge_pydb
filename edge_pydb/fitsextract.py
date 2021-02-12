@@ -1,4 +1,3 @@
-from astropy.coordinates import distances
 import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
