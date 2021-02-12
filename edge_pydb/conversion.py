@@ -55,8 +55,7 @@ def uarray_to_list(target):
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
 def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
-            name='sig_sfr', column=True, filter_bad=True,
-            imf='kroupa'):
+            name='sig_sfr', column=True, imf='kroupa'):
     '''
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error
@@ -78,23 +77,23 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
             e_sig_sfr = e_flux_ha / flux_ha * sig_sfr
             return sig_sfr, e_sig_sfr
         else:
-            return sig_sfr
+            if column:
+                return Column(sig_sfr, name=name, dtype='f4',
+                    description='SFR surface density no extinction')
+            else:
+                return sig_sfr
 
     def apply_extinction(flux_ha, flux_hb, log10):
-        good = True
-        if filter_bad:
-            good = (flux_ha > 0) & (flux_hb > 0)
+        # Do not apply negative extinction.
+        good = (flux_ha > 0) & (flux_hb > 0) & (flux_ha > 2.86*flux_hb)
         # Extinction curve from Cardelli+(1989).
         K_Ha = 2.53
         K_Hb = 3.61
         # Get A_Ha using Eq(1) from Catalan-Torrecilla+(2015). 
-        # By default A_Ha is NaN when flux_ha is NaN.
-        A_Ha = flux_ha * 0.
-        A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * (log10(flux_ha[good]) - log10(flux_hb[good]) - log10(2.86))
-        # Do not apply negative extinction.
-        A_Ha[A_Ha < 0] = 0.
+        A_Ha = np.full_like(flux_ha, np.nan)
+        A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
         flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
-        # TODO make it as a separate function and do the convert
+        # Convert flux to sig_sfr
         sb_ha  = flux_ha_cor * sterad   # flux per steradian
         lsd_ha = 4 * np.pi * sb_ha
         sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
