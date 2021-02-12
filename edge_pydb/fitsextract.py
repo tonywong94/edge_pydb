@@ -1,3 +1,4 @@
+from astropy.coordinates import distances
 import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column, join
@@ -224,6 +225,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
                                         w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
                                         starting_angle, precision, hexgrid_output)
                 iz_data.append(sample)
+                sample['iz'] = iz
                 tab_length += len(sample)
             tab = tab[:tab_length]
             init = 0
