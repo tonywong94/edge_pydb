@@ -31,9 +31,14 @@ except OSError as _err:
     # _config = {}
 
 
-def _walkthrough(dir=_ROOT):
+def _walkthrough(dir=_ROOT, max_depth=-1):
     retval = {}
-    for _root, _dirs, _files in _os.walk(_os.path.abspath(dir)):
+    dir = _os.path.abspath(dir)
+    base_depth = dir.rstrip(_os.path.sep).count(_os.path.sep)
+    for _root, _dirs, _files in _os.walk(dir):
+        cur_depth = _root.count(_os.path.sep)
+        if max_depth >= 0 and cur_depth > max_depth + base_depth:
+            continue 
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 if _file in retval:
@@ -55,8 +60,8 @@ if not _runtime:
 
 
 # update the files
-def updatefiles(dir=_ROOT):
-    tmp = _walkthrough(dir)
+def updatefiles(dir=_ROOT, max_depth=-1):
+    tmp = _walkthrough(dir, max_depth)
     for k, v in tmp.items():
         if k not in _config.keys():
             print("Add file %s" % k)
@@ -199,7 +204,26 @@ def addfile(src, dest='', copy=True, overwrite=False):
         print("WARNING! The location of this file will be saved runtime only")
 
 
-def add_from_dir(src, dest='', copy=True, overwrite=False):
+def add_from_dir(src, dest='', copy=True, overwrite=False, max_depth=-1):
+    '''
+    This function copy files from a src directory to dest directory,
+    if dest is empty, then it creates a directory just under the edge_pydb
+    package directory. The copy always assumes a topdown copy (i.e. from parent
+    directory to child directories)
+
+    Parameters
+    ----------
+    src: source directory to copy from
+    dest: destination directory to copy to
+    copy: if copy is false, files will not be copied, and instead the path of 
+            these files will be recorded in the _config.json
+    overwrite: if file is at the destination, overwrite the file if true, else create 
+            and copy into a subdirectory data/ under the edge_pydb package directory
+    max_depth: specify the depth the copy should perform. 
+            -1 means copy all directories
+            0 means just under the root directory and do not go into subdirectories
+    '''
+    # this function assume a topdown copy
     if _runtime:
         print("WARNING! No sudo permission, take care, will break")
     dirname = _os.path.basename(src)
@@ -208,18 +232,26 @@ def add_from_dir(src, dest='', copy=True, overwrite=False):
         dest = _ROOT + '/' + dirname
 
     if copy:
-        try:
-            _shutil.copytree(src, dest)
-        except FileExistsError:
-            if overwrite:
-                _shutil.rmtree(dest)
+        if max_depth >= 0:
+            src = _os.path.normpath(src)
+            tmp = _walkthrough(src, max_depth)
+            for k, v in tmp.items():
+                # copy2 will not raise FileExist, but overwrite directly
+                _shutil.copy2(v, dest)
+                # print("here ", k, v)
+        else:
+            try:
                 _shutil.copytree(src, dest)
-            else:
-                dest = _ROOT + '/data/' + dirname
-                _shutil.copytree(src, dest)
+            except FileExistsError:
+                if overwrite:
+                    _shutil.rmtree(dest)
+                    _shutil.copytree(src, dest)
+                else:
+                    dest = _ROOT + '/data/' + dirname
+                    _shutil.copytree(src, dest)
         updatefiles(dest)
     else:
-        updatefiles(src)
+        updatefiles(src, max_depth)
 
     if not _runtime:
         with open(_filepath, 'w') as _fp:
