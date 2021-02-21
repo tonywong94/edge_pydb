@@ -11,19 +11,27 @@ from edge_pydb import EdgeTable
 from edge_pydb.conversion import msd_co
 from edge_pydb.fitsextract import fitsextract
 
-seq = 'smo7'
-#seq = 'de20'
+seq = 'smo7'   # 'smo7' or 'de20'
 msktyp = ['str', 'dil', 'smo']
 lines  = ['12', '13']
+
+# hexgrid = True to output in hexgrid
+hexgrid = False
+
+# allpix = True to dump all pixels
+allpix = False
+if allpix:
+    stride = [1,1,1]
+else:
+    stride = [3,3,1]
 
 # Get the orientation parameters from LEDA
 ort = EdgeTable('edge_leda.csv', cols=['Name', 'ledaRA', 'ledaDE', 'ledaPA', 'ledaAxIncl'])
 ort.add_index('Name') 
 
 for imsk, msk in enumerate(msktyp):
-    # gallist = [os.path.basename(file).split('.')[0] for file in 
-    #             sorted(glob.glob('fitsdata/*.co.'+seq+'_dil.snrpk.fits.gz'))] 
-    gallist = ['NGC4047']
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+                sorted(glob.glob('fitsdata/*.co.'+seq+'_dil.snrpk.fits.gz'))] 
     tablelist=[]
     if msk == 'str':
         dotypes = ['mom0', 'emom0']
@@ -48,13 +56,13 @@ for imsk, msk in enumerate(msktyp):
                     print('Reading',file0)
                     galtab = fitsextract(file0, bunit=unit[0], 
                             col_lbl=dotypes[0]+'_'+line,
-                            keepnan=True, stride=[3,3,1],
+                            keepnan=True, stride=stride,
                             ra_gc=15*ort.loc[gal]['ledaRA'],
                             dec_gc=ort.loc[gal]['ledaDE'],
                             pa=ort.loc[gal]['ledaPA'],
                             inc=adopt_incl,
                             ortlabel='LEDA', first=True,
-                            use_hexgrid=True)
+                            use_hexgrid=hexgrid)
                     gname = Column([np.string_(gal)]*len(galtab), name='Name', description='Galaxy Name')
                     galtab.add_column(gname, index=0)
                     print(galtab[20:50])
@@ -66,7 +74,7 @@ for imsk, msk in enumerate(msktyp):
                     if os.path.exists(getfile):
                         print('Reading',getfile)
                         addtb = fitsextract(getfile, bunit=unit[j], col_lbl=type+'_'+line, 
-                                        keepnan=True, stride=[3,3,1], use_hexgrid=True)
+                                        keepnan=True, stride=stride, use_hexgrid=hexgrid)
                         jointb = join(galtab, addtb, keys=['ix','iy'])
                         galtab = jointb
                     else:
@@ -106,6 +114,10 @@ for imsk, msk in enumerate(msktyp):
         outname = 'edge'
     else:
         outname = gal
+    if hexgrid:
+        outname += '_hex'
+    if allpix:
+        outname += '_allpix'
     if imsk == 0:
         t_merge.write(outname+'.comom_'+seq+'.hdf5', path=msk, overwrite=True, 
                 serialize_meta=True, compression=True)

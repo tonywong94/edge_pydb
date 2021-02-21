@@ -102,7 +102,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     else:
     	pseudo = False
 
-    # Create the coordinate columns
+    # Create the coordinate columns.  First case is for PPV cubes.
     if iscube and not pseudo:
         print('This is a data cube of shape', data.shape)
         data = np.squeeze(data)
@@ -119,6 +119,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         tab['iz'].description = '0-based pixel index in z direction'
         # Get the pixel coordinates as tuples
         wcsin = (np.array([tab['ix'],tab['iy'],tab['iz']])).T
+    # Next case is for 2D images or pseudo-cubes
     else:
         print('This is an image of shape', data.shape)
         data = np.squeeze(data)
@@ -134,13 +135,20 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         tab['iy'].description = '0-based pixel index in y direction'
         # Get the pixel coordinates as tuples
         wcsin = (np.array([tab['ix'],tab['iy']])).T
+    # Reduce WCS to 2-D for pseudocubes
     wfix = w.sub(naxis)
     if first:
         wcsout = wfix.wcs_pix2world(wcsin,0)
-        col_ra = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
+        col_ra = Column(wcsout.T[0], name='ra_abs',  dtype='f8', 
+                        unit='deg', format='.12f', 
+                        description='sample ra coord')
+        col_dc = Column(wcsout.T[1], name='dec_abs', dtype='f8', 
+                        unit='deg', format='.12f', 
+                        description='sample dec coord')
+        col_raoff = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
                         unit='deg', format='.6f', 
                         description='ra offset from ref pixel')
-        col_dc = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
+        col_dcoff = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
                         unit='deg', format='.6f', 
                         description='dec offset from ref pixel')
         if ra_gc is None:
@@ -152,7 +160,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             description='radius based on {}'.format(ortlabel))
         col_th = Column(theta, name='azi_ang', dtype='f4', unit='deg', format='.3f',
             description='azang based on {}'.format(ortlabel))
-        tab.add_columns([col_ra,col_dc,col_r,col_th])
+        tab.add_columns([col_ra,col_dc,col_raoff,col_dcoff,col_r,col_th])
         if iscube and not pseudo:
             col_vel = Column(wcsout.T[2]/1000., name='vel', dtype='f4', 
                 unit='km/s', description='velocity in LSRK frame using radio def')
