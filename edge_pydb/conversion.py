@@ -47,9 +47,10 @@ def uarray_to_list(target):
     retval[1] -> standard deviation
     if no value for std, then return None
     '''
-    result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) 
-                    or isinstance(x, int)) else (x, None), target)
-    return list(map(list, zip(*list(result))))
+    # result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) 
+    #                 or isinstance(x, int)) else (x, None), target)
+    # return list(map(list, zip(*list(result))))
+    return [unumpy.nominal_values(target), unumpy.std_devs(target)]
 
 
 # Convert Halpha intensity to A_V-corrected SFR surface density
