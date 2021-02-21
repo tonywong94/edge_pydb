@@ -71,7 +71,7 @@ for prod in prodtype:
             if key in cahd.keys():
                 del cahd[key]
 
-        # First process the native resolution file since it has the astrometry
+        # First process the native resolution file (tab0) since it has the astrometry
         hdu = fits.open(cadir+'x'+base, ignore_missing_end=True)[0]
         # No longer needed after blanking pre-processing
         # hdu.data[hdu.data==0] = np.nan
@@ -88,7 +88,7 @@ for prod in prodtype:
         tab0.add_column(gname, index=0)
         rglist.append(tab0)
 
-        # Then process the smoothed file
+        # Then process the smoothed file (tab1)
         hdu = fits.open(cadir+base, ignore_missing_end=True)[0]
         # No longer needed after blanking pre-processing
         # hdu.data[hdu.data==0] = np.nan
@@ -107,23 +107,46 @@ for prod in prodtype:
         
         # Add additional columns
         if prod == 'ELINES':
-            sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['Halpha_rg'], 
+            # sfr0 is uncorrected SFR from Halpha
+            sfr0_rg = sfr_ha(tab0['Halpha_rg'], imf='salpeter', name='sigsfr0_rg')
+            fsfr0_rg = Column(abs(tab0['e_Halpha_rg']/tab0['Halpha_rg']), 
+                name='fe_sigsfr0_rg', dtype='f4', unit='fraction',
+                description='fractional error in Halpha flux')
+            tab0.add_columns([sfr0_rg, fsfr0_rg])
+            # sfr is Balmer decrement corrected SFR
+            sfr_rg, sfrext_rg, e_sfr_rg, e_sfrext_rg = sfr_ha(tab0['Halpha_rg'], 
                 flux_hb=tab0['Hbeta_rg'], e_flux_ha=tab0['e_Halpha_rg'],
                 e_flux_hb=tab0['e_Hbeta_rg'], imf='salpeter', name='sigsfr_rg')
-            tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
-            sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['Halpha_sm'],
+            tab0.add_columns([sfr_rg, e_sfr_rg, sfrext_rg, e_sfrext_rg])
+            #
+            sfr0_sm = sfr_ha(tab1['Halpha_sm'], imf='salpeter', name='sigsfr0_sm')
+            fsfr0_sm = Column(abs(tab1['e_Halpha_sm']/tab1['Halpha_sm']), 
+                name='fe_sigsfr0_sm', dtype='f4', unit='fraction',
+                description='fractional error in Halpha flux')
+            sfr_sm, sfrext_sm, e_sfr_sm, e_sfrext_sm = sfr_ha(tab1['Halpha_sm'],
                 flux_hb=tab1['Hbeta_sm'], e_flux_ha=tab1['e_Halpha_sm'],
                 e_flux_hb=tab1['e_Hbeta_sm'], imf='salpeter', name='sigsfr_sm')
-            tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
+            tab1.add_columns([sfr0_sm, fsfr0_sm, sfr_sm, e_sfr_sm, sfrext_sm, e_sfrext_sm])
         elif prod == 'flux_elines':
-            sfr0, sfrext0, e_sfr0, e_sfrext0 = sfr_ha(tab0['flux_Halpha_rg'],
+            sfr0_rg = sfr_ha(tab0['flux_Halpha_rg'], imf='salpeter', name='flux_sigsfr0_rg')
+            fsfr0_rg = Column(abs(tab0['e_flux_Halpha_rg']/tab0['flux_Halpha_rg']), 
+                name='fe_flux_sigsfr0_rg', dtype='f4', unit='fraction',
+                description='fractional error in Halpha flux')
+            tab0.add_columns([sfr0_rg, fsfr0_rg])
+            sfr_rg, sfrext_rg, e_sfr_rg, e_sfrext_rg = sfr_ha(tab0['flux_Halpha_rg'],
                 flux_hb=tab0['flux_Hbeta_rg'], e_flux_ha=tab0['e_flux_Halpha_rg'],
                 e_flux_hb=tab0['e_flux_Hbeta_rg'], imf='salpeter', name='flux_sigsfr_rg')
-            tab0.add_columns([sfr0, e_sfr0, sfrext0, e_sfrext0])
-            sfr1, sfrext1, e_sfr1, e_sfrext1 = sfr_ha(tab1['flux_Halpha_sm'],
+            tab0.add_columns([sfr_rg, e_sfr_rg, sfrext_rg, e_sfrext_rg])
+            #
+            sfr0_sm = sfr_ha(tab1['flux_Halpha_sm'], imf='salpeter', name='flux_sigsfr0_sm')
+            fsfr0_sm = Column(abs(tab1['e_flux_Halpha_sm']/tab1['flux_Halpha_sm']), 
+                name='fe_flux_sigsfr0_sm', dtype='f4', unit='fraction',
+                description='fractional error in Halpha flux')
+            tab1.add_columns([sfr0_sm, fsfr0_sm])
+            sfr_sm, sfrext_sm, e_sfr_sm, e_sfrext_sm = sfr_ha(tab1['flux_Halpha_sm'],
                 flux_hb=tab1['flux_Hbeta_sm'], e_flux_ha=tab1['e_flux_Halpha_sm'],
                 e_flux_hb=tab1['e_flux_Hbeta_sm'], imf='salpeter', name='flux_sigsfr_sm')
-            tab1.add_columns([sfr1, e_sfr1, sfrext1, e_sfrext1])
+            tab1.add_columns([sfr_sm, e_sfr_sm, sfrext_sm, e_sfrext_sm])
             #
             BPT0, BPT0sf, p_BPT0 = bpt_type(tab0, ext='_rg', name='BPT_rg', prob=True)
             tab0.add_columns([BPT0, p_BPT0, BPT0sf])
@@ -146,10 +169,10 @@ for prod in prodtype:
             avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], dz=tab1['cont_dezon_sm'],
                             dist=dist.loc[gal]['caDistP3d'], name='sigstar_Avcor_sm')
             avstar1.description += ' dust corrected'
-            ferr0 = Column(tab0['e_medflx_ssp_rg']/tab0['medflx_ssp_rg'], 
+            ferr0 = Column(abs(tab0['e_medflx_ssp_rg']/tab0['medflx_ssp_rg']), 
                 name='fe_sigstar_rg', dtype='f4', unit='fraction',
                 description='fractional error in continuum flux')
-            ferr1 = Column(tab1['e_medflx_ssp_sm']/tab1['medflx_ssp_sm'], 
+            ferr1 = Column(abs(tab1['e_medflx_ssp_sm']/tab1['medflx_ssp_sm']), 
                 name='fe_sigstar_sm', dtype='f4', unit='fraction',
                 description='fractional error in continuum flux')
             tab0.add_columns([star0, avstar0, ferr0])

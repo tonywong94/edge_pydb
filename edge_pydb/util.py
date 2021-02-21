@@ -38,7 +38,7 @@ def _walkthrough(dir=_ROOT, max_depth=-1):
     for _root, _dirs, _files in _os.walk(dir):
         cur_depth = _root.count(_os.path.sep)
         if max_depth >= 0 and cur_depth > max_depth + base_depth:
-            continue 
+            continue
         for _file in _files:
             if _file.endswith('.csv') or _file.endswith('.hdf5'):
                 if _file in retval:
@@ -215,11 +215,11 @@ def add_from_dir(src, dest='', copy=True, overwrite=False, max_depth=-1):
     ----------
     src: source directory to copy from
     dest: destination directory to copy to
-    copy: if copy is false, files will not be copied, and instead the path of 
+    copy: if copy is false, files will not be copied, and instead the path of
             these files will be recorded in the _config.json
-    overwrite: if file is at the destination, overwrite the file if true, else create 
+    overwrite: if file is at the destination, overwrite the file if true, else create
             and copy into a subdirectory data/ under the edge_pydb package directory
-    max_depth: specify the depth the copy should perform. 
+    max_depth: specify the depth the copy should perform.
             -1 means copy all directories
             0 means just under the root directory and do not go into subdirectories
     '''
@@ -263,4 +263,4 @@ def getPath(file):
     '''get the hdf5 path'''
     h5f = _h5py.File(fetch(file), 'r')
     return [key for key in h5f.keys() if "__table_column_meta__" not in key]
-    
+
