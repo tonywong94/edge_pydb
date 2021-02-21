@@ -64,6 +64,6 @@ For additional database files not in this Github repository, it’s better to ke
 
 - should show only the public data.  Now suppose the additional data files are in a folder called `pybase`.
 
-`edgeutil.add_from_dir('/path/to/pybase/', copy=False)`
+`edgeutil.add_from_dir('/path/to/pybase/', max_depth=0, copy=False)`
 
-- will add these to your environment.  This only needs to be done once after package installation.
+- will add these to your environment.  This only needs to be done once after package installation.  The `max_depth=0` parameter prevents files in subdirectories from being added.
