@@ -1,72 +1,84 @@
 filename: NGC4047.pipe3d.hdf5
 path: ELINES_rg
 <Table length=1849>
-      name       dtype          unit        format               description                n_bad
---------------- ------- ------------------- ------ ---------------------------------------- -----
-           Name bytes10                                                         Galaxy Name     0
-             ix   int32                                  0-based pixel index in x direction     0
-             iy   int32                                  0-based pixel index in y direction     0
-         ra_off float32                 deg    .6f                 ra offset from ref pixel     0
-        dec_off float32                 deg    .6f                dec offset from ref pixel     0
-        rad_arc float32              arcsec    .3f                     radius based on LEDA     0
-        azi_ang float32                 deg    .3f                      azang based on LEDA     0
-       Havel_rg float32              km / s                                 Halpha velocity  1367
-       Vdisp_rg float32            Angstrom        Velocity dispersion plus instrumenta one  1367
-   [OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  1367
-  [OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  1367
-  [OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  1367
-       Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line  1367
-      Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line  1367
-   [NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  1367
-   [NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  1367
-   [SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  1367
-   [SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  1367
- e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  1367
-e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  1367
-e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  1367
-     e_Hbeta_rg float32 1e-16 erg / (cm2 s)                             Hbeta emission line  1367
-    e_Halpha_rg float32 1e-16 erg / (cm2 s)                            Halpha emission line  1367
- e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  1367
- e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  1367
- e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  1367
- e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  1367
-      sigsfr_rg float32 solMass / (Gyr pc2)                BD corrected SFR surface density  1367
-  AHa_sigsfr_rg float32                 mag                           Ha extinction from BD  1367
+      name       dtype          unit        format                description                n_bad
+--------------- ------- ------------------- ------ ----------------------------------------- -----
+           Name bytes10                                                          Galaxy Name     0
+             ix   int32                                   0-based pixel index in x direction     0
+             iy   int32                                   0-based pixel index in y direction     0
+         ra_abs float64                 deg   .12f                           sample ra coord     0
+        dec_abs float64                 deg   .12f                          sample dec coord     0
+         ra_off float32                 deg    .6f                  ra offset from ref pixel     0
+        dec_off float32                 deg    .6f                 dec offset from ref pixel     0
+        rad_arc float32              arcsec    .3f                      radius based on LEDA     0
+        azi_ang float32                 deg    .3f                       azang based on LEDA     0
+       Havel_rg float32              km / s                                  Halpha velocity  1367
+       Vdisp_rg float32            Angstrom         Velocity dispersion plus instrumenta one  1367
+   [OII]3727_rg float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1367
+  [OIII]5007_rg float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1367
+  [OIII]4959_rg float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1367
+       Hbeta_rg float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1367
+      Halpha_rg float32 1e-16 erg / (cm2 s)                             Halpha emission line  1367
+   [NII]6583_rg float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1367
+   [NII]6548_rg float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1367
+   [SII]6731_rg float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1367
+   [SII]6717_rg float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1367
+ e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1367
+e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1367
+e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1367
+     e_Hbeta_rg float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1367
+    e_Halpha_rg float32 1e-16 erg / (cm2 s)                             Halpha emission line  1367
+ e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1367
+ e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1367
+ e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1367
+ e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1367
+     sigsfr0_rg float32 solMass / (Gyr pc2)                SFR surface density no extinction  1367
+  fe_sigsfr0_rg float32            fraction                  fractional error in Halpha flux  1367
+      sigsfr_rg float32 solMass / (Gyr pc2)                 BD corrected SFR surface density  1476
+    e_sigsfr_rg float32 solMass / (Gyr pc2)        error of BD corrected SFR surface density  1476
+  AHa_sigsfr_rg float32                 mag                            Ha extinction from BD  1476
+e_AHa_sigsfr_rg float32                 mag                   error of Ha extinction from BD     0
 
 filename: NGC4047.pipe3d.hdf5
 path: ELINES_sm
 <Table length=1849>
-      name       dtype          unit        format               description                n_bad
---------------- ------- ------------------- ------ ---------------------------------------- -----
-           Name bytes10                                                         Galaxy Name     0
-             ix   int32                                  0-based pixel index in x direction     0
-             iy   int32                                  0-based pixel index in y direction     0
-         ra_off float32                 deg    .6f                 ra offset from ref pixel     0
-        dec_off float32                 deg    .6f                dec offset from ref pixel     0
-        rad_arc float32              arcsec    .3f                     radius based on LEDA     0
-        azi_ang float32                 deg    .3f                      azang based on LEDA     0
-       Havel_sm float32              km / s                                 Halpha velocity  1348
-       Vdisp_sm float32            Angstrom        Velocity dispersion plus instrumenta one  1348
-   [OII]3727_sm float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  1348
-  [OIII]5007_sm float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  1348
-  [OIII]4959_sm float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  1348
-       Hbeta_sm float32 1e-16 erg / (cm2 s)                             Hbeta emission line  1348
-      Halpha_sm float32 1e-16 erg / (cm2 s)                            Halpha emission line  1348
-   [NII]6583_sm float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  1348
-   [NII]6548_sm float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  1348
-   [SII]6731_sm float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  1348
-   [SII]6717_sm float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  1348
- e_[OII]3727_sm float32 1e-16 erg / (cm2 s)                         [OII]3727 emission line  1348
-e_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                        [OIII]5007 emission line  1348
-e_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                        [OIII]4959 emission line  1348
-     e_Hbeta_sm float32 1e-16 erg / (cm2 s)                             Hbeta emission line  1348
-    e_Halpha_sm float32 1e-16 erg / (cm2 s)                            Halpha emission line  1348
- e_[NII]6583_sm float32 1e-16 erg / (cm2 s)                         [NII]6583 emission line  1348
- e_[NII]6548_sm float32 1e-16 erg / (cm2 s)                         [NII]6548 emission line  1348
- e_[SII]6731_sm float32 1e-16 erg / (cm2 s)                         [SII]6731 emission line  1348
- e_[SII]6717_sm float32 1e-16 erg / (cm2 s)                         [SII]6717 emission line  1348
-      sigsfr_sm float32 solMass / (Gyr pc2)                BD corrected SFR surface density  1348
-  AHa_sigsfr_sm float32                 mag                           Ha extinction from BD  1348
+      name       dtype          unit        format                description                n_bad
+--------------- ------- ------------------- ------ ----------------------------------------- -----
+           Name bytes10                                                          Galaxy Name     0
+             ix   int32                                   0-based pixel index in x direction     0
+             iy   int32                                   0-based pixel index in y direction     0
+         ra_abs float64                 deg   .12f                           sample ra coord     0
+        dec_abs float64                 deg   .12f                          sample dec coord     0
+         ra_off float32                 deg    .6f                  ra offset from ref pixel     0
+        dec_off float32                 deg    .6f                 dec offset from ref pixel     0
+        rad_arc float32              arcsec    .3f                      radius based on LEDA     0
+        azi_ang float32                 deg    .3f                       azang based on LEDA     0
+       Havel_sm float32              km / s                                  Halpha velocity  1348
+       Vdisp_sm float32            Angstrom         Velocity dispersion plus instrumenta one  1348
+   [OII]3727_sm float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1348
+  [OIII]5007_sm float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1348
+  [OIII]4959_sm float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1348
+       Hbeta_sm float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1348
+      Halpha_sm float32 1e-16 erg / (cm2 s)                             Halpha emission line  1348
+   [NII]6583_sm float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1348
+   [NII]6548_sm float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1348
+   [SII]6731_sm float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1348
+   [SII]6717_sm float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1348
+ e_[OII]3727_sm float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1348
+e_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1348
+e_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1348
+     e_Hbeta_sm float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1348
+    e_Halpha_sm float32 1e-16 erg / (cm2 s)                             Halpha emission line  1348
+ e_[NII]6583_sm float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1348
+ e_[NII]6548_sm float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1348
+ e_[SII]6731_sm float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1348
+ e_[SII]6717_sm float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1348
+     sigsfr0_sm float32 solMass / (Gyr pc2)                SFR surface density no extinction  1348
+  fe_sigsfr0_sm float32            fraction                  fractional error in Halpha flux  1348
+      sigsfr_sm float32 solMass / (Gyr pc2)                 BD corrected SFR surface density  1469
+    e_sigsfr_sm float32 solMass / (Gyr pc2)        error of BD corrected SFR surface density  1468
+  AHa_sigsfr_sm float32                 mag                            Ha extinction from BD  1469
+e_AHa_sigsfr_sm float32                 mag                   error of Ha extinction from BD     0
 
 filename: NGC4047.pipe3d.hdf5
 path: SFH_rg
@@ -76,6 +88,8 @@ path: SFH_rg
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
+                  ra_abs float64      deg   .12f                              sample ra coord     0
+                 dec_abs float64      deg   .12f                             sample dec coord     0
                   ra_off float32      deg    .6f                     ra offset from ref pixel     0
                  dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
@@ -167,6 +181,8 @@ path: SFH_sm
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
+                  ra_abs float64      deg   .12f                              sample ra coord     0
+                 dec_abs float64      deg   .12f                             sample dec coord     0
                   ra_off float32      deg    .6f                     ra offset from ref pixel     0
                  dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
@@ -258,6 +274,8 @@ path: SSP_rg
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
+           ra_abs float64                          deg   .12f                                                sample ra coord     0
+          dec_abs float64                          deg   .12f                                               sample dec coord     0
            ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
           dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
@@ -284,6 +302,7 @@ path: SSP_rg
 mass_Avcor_ssp_rg float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1373
        sigstar_rg float32                solMass / pc2                                          stellar mass surface density  1373
  sigstar_Avcor_rg float32                solMass / pc2                           stellar mass surface density dust corrected  1373
+    fe_sigstar_rg float32                     fraction                                    fractional error in continuum flux  1373
 
 filename: NGC4047.pipe3d.hdf5
 path: SSP_sm
@@ -293,6 +312,8 @@ path: SSP_sm
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
+           ra_abs float64                          deg   .12f                                                sample ra coord     0
+          dec_abs float64                          deg   .12f                                               sample dec coord     0
            ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
           dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
@@ -319,6 +340,7 @@ path: SSP_sm
 mass_Avcor_ssp_sm float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1389
        sigstar_sm float32                solMass / pc2                                          stellar mass surface density  1389
  sigstar_Avcor_sm float32                solMass / pc2                           stellar mass surface density dust corrected  1389
+    fe_sigstar_sm float32                     fraction                                    fractional error in continuum flux  1389
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_rg
@@ -328,6 +350,8 @@ path: flux_elines_rg
                 Name bytes10                                                                    Galaxy Name     0
                   ix   int32                                             0-based pixel index in x direction     0
                   iy   int32                                             0-based pixel index in y direction     0
+              ra_abs float64                 deg   .12f                                     sample ra coord     0
+             dec_abs float64                 deg   .12f                                    sample dec coord     0
               ra_off float32                 deg    .6f                            ra offset from ref pixel     0
              dec_off float32                 deg    .6f                           dec offset from ref pixel     0
              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
@@ -412,11 +436,17 @@ e_disp_[OIII]4959_rg float32            Angstrom                                
    e_EW_[NII]6548_rg float32            Angstrom                                                             1367
    e_EW_[SII]6717_rg float32            Angstrom                                                             1367
    e_EW_[SII]6731_rg float32            Angstrom                                                             1367
-      flux_sigsfr_rg float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1383
-  AHa_flux_sigsfr_rg float32                 mag                                      Ha extinction from BD  1383
+     flux_sigsfr0_rg float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1367
+  fe_flux_sigsfr0_rg float32            fraction                            fractional error in Halpha flux  1367
+      flux_sigsfr_rg float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1502
+    e_flux_sigsfr_rg float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1502
+  AHa_flux_sigsfr_rg float32                 mag                                      Ha extinction from BD  1502
+e_AHa_flux_sigsfr_rg float32                 mag                             error of Ha extinction from BD     0
+              BPT_rg float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1428
+            p_BPT_rg float32                                                                BPT probability  1428
+           SF_BPT_rg    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
               ZOH_rg float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1532
             e_ZOH_rg float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1532
-              BPT_rg float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1428
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_sm
@@ -426,6 +456,8 @@ path: flux_elines_sm
                 Name bytes10                                                                    Galaxy Name     0
                   ix   int32                                             0-based pixel index in x direction     0
                   iy   int32                                             0-based pixel index in y direction     0
+              ra_abs float64                 deg   .12f                                     sample ra coord     0
+             dec_abs float64                 deg   .12f                                    sample dec coord     0
               ra_off float32                 deg    .6f                            ra offset from ref pixel     0
              dec_off float32                 deg    .6f                           dec offset from ref pixel     0
              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
@@ -510,11 +542,17 @@ e_disp_[OIII]4959_sm float32            Angstrom                                
    e_EW_[NII]6548_sm float32            Angstrom                                                             1420
    e_EW_[SII]6717_sm float32            Angstrom                                                             1420
    e_EW_[SII]6731_sm float32            Angstrom                                                             1420
-      flux_sigsfr_sm float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1420
-  AHa_flux_sigsfr_sm float32                 mag                                      Ha extinction from BD  1420
+     flux_sigsfr0_sm float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1420
+  fe_flux_sigsfr0_sm float32            fraction                            fractional error in Halpha flux  1420
+      flux_sigsfr_sm float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1481
+    e_flux_sigsfr_sm float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1481
+  AHa_flux_sigsfr_sm float32                 mag                                      Ha extinction from BD  1481
+e_AHa_flux_sigsfr_sm float32                 mag                             error of Ha extinction from BD     0
+              BPT_sm float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1427
+            p_BPT_sm float32                                                                BPT probability  1427
+           SF_BPT_sm    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
               ZOH_sm float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1510
             e_ZOH_sm float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1510
-              BPT_sm float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1427
 
 filename: NGC4047.pipe3d.hdf5
 path: indices_rg
@@ -524,6 +562,8 @@ path: indices_rg
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
+         ra_abs float64      deg   .12f                    sample ra coord     0
+        dec_abs float64      deg   .12f                   sample dec coord     0
          ra_off float32      deg    .6f           ra offset from ref pixel     0
         dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
@@ -555,6 +595,8 @@ path: indices_sm
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
+         ra_abs float64      deg   .12f                    sample ra coord     0
+        dec_abs float64      deg   .12f                   sample dec coord     0
          ra_off float32      deg    .6f           ra offset from ref pixel     0
         dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
