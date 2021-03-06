@@ -14,6 +14,7 @@ from edge_pydb.fitsextract import fitsextract
 seq = 'smo7'   # 'smo7' or 'de20'
 msktyp = ['str', 'dil', 'smo']
 lines  = ['12', '13']
+#lines  = ['12']
 
 # hexgrid = True to output in hexgrid
 hexgrid = False
