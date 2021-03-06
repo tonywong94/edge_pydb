@@ -7,30 +7,30 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang mom0_12 
-                  deg       deg     arcsec   deg   K km / s
-------- --- --- -------- --------- ------- ------- --------
-NGC4047   1  61 0.026481 -0.000836  63.788  -9.398      nan
-NGC4047   1  64 0.026482 -0.000003  64.046 -12.948      nan
-NGC4047   1  67 0.026482  0.000830  64.547 -16.456      nan
-NGC4047   1  70 0.026482  0.001664  65.286 -19.897      nan
-NGC4047   1  73 0.026483  0.002497  66.255 -23.249      nan
-NGC4047   1  76 0.026483  0.003330  67.443 -26.494      nan
-NGC4047   1  79 0.026484  0.004164  68.840 -29.617      nan
-NGC4047   1  82 0.026484  0.004997  70.433 -32.608      nan
-NGC4047   1  85 0.026485  0.005830  72.210 -35.458      nan
-NGC4047   1  88 0.026485  0.006664  74.156 -38.166      nan
-    ... ... ...      ...       ...     ...     ...      ...
-NGC4047   1 121 0.026490  0.015830 103.491 -59.422      nan
-NGC4047   1 124 0.026490  0.016664 106.644 -60.735      nan
-NGC4047   1 127 0.026491  0.017497 109.851 -61.973      nan
-NGC4047   4   1 0.025212 -0.017503  98.442  44.461      nan
-NGC4047   4   4 0.025212 -0.016669  95.351  42.990      nan
-NGC4047   4   7 0.025213 -0.015836  92.327  41.422      nan
-NGC4047   4  10 0.025213 -0.015003  89.377  39.749      nan
-NGC4047   4  13 0.025213 -0.014169  86.508  37.963      nan
-NGC4047   4  16 0.025214 -0.013336  83.729  36.056      nan
-NGC4047   4  19 0.025214 -0.012503  81.048  34.021      nan
+  Name   ix  iy      ra_abs      ...  dec_off  rad_arc azi_ang mom0_12 
+                      deg        ...    deg     arcsec   deg   K km / s
+------- --- --- ---------------- ... --------- ------- ------- --------
+NGC4047   1  61 180.737731095781 ... -0.000836  63.788  -9.398      nan
+NGC4047   1  64 180.737731533204 ... -0.000003  64.046 -12.948      nan
+NGC4047   1  67 180.737731970647 ...  0.000830  64.547 -16.456      nan
+NGC4047   1  70 180.737732408110 ...  0.001664  65.286 -19.897      nan
+NGC4047   1  73 180.737732845593 ...  0.002497  66.255 -23.249      nan
+NGC4047   1  76 180.737733283097 ...  0.003330  67.443 -26.494      nan
+NGC4047   1  79 180.737733720620 ...  0.004164  68.840 -29.617      nan
+NGC4047   1  82 180.737734158163 ...  0.004997  70.433 -32.608      nan
+NGC4047   1  85 180.737734595727 ...  0.005830  72.210 -35.458      nan
+NGC4047   1  88 180.737735033310 ...  0.006664  74.156 -38.166      nan
+    ... ... ...              ... ...       ...     ...     ...      ...
+NGC4047   1 121 180.737739848053 ...  0.015830 103.491 -59.422      nan
+NGC4047   1 124 180.737740285877 ...  0.016664 106.644 -60.735      nan
+NGC4047   1 127 180.737740723722 ...  0.017497 109.851 -61.973      nan
+NGC4047   4   1 180.736461763419 ... -0.017503  98.442  44.461      nan
+NGC4047   4   4 180.736462179631 ... -0.016669  95.351  42.990      nan
+NGC4047   4   7 180.736462595862 ... -0.015836  92.327  41.422      nan
+NGC4047   4  10 180.736463012111 ... -0.015003  89.377  39.749      nan
+NGC4047   4  13 180.736463428380 ... -0.014169  86.508  37.963      nan
+NGC4047   4  16 180.736463844668 ... -0.013336  83.729  36.056      nan
+NGC4047   4  19 180.736464260975 ... -0.012503  81.048  34.021      nan
 Length = 30 rows
 Reading fitsdata/NGC4047.co.smo7_str.emom0.fits.gz
 RA ref is 180.71125
@@ -53,30 +53,30 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off  ...   sigmol_fo    e_sigmol_fo  mom0_13  emom0_13
-                  deg    ... solMass / pc2 solMass / pc2 K km / s K km / s
-------- --- --- -------- ... ------------- ------------- -------- --------
-NGC4047   1  61 0.026481 ...           nan           nan      nan      nan
-NGC4047   1  64 0.026482 ...           nan           nan      nan      nan
-NGC4047   1  67 0.026482 ...           nan           nan      nan      nan
-NGC4047   1  70 0.026482 ...           nan           nan      nan      nan
-NGC4047   1  73 0.026483 ...           nan           nan      nan      nan
-NGC4047   1  76 0.026483 ...           nan           nan      nan      nan
-NGC4047   1  79 0.026484 ...           nan           nan      nan      nan
-NGC4047   1  82 0.026484 ...           nan           nan      nan      nan
-NGC4047   1  85 0.026485 ...           nan           nan      nan      nan
-NGC4047   1  88 0.026485 ...           nan           nan      nan      nan
-    ... ... ...      ... ...           ...           ...      ...      ...
-NGC4047   1 121 0.026490 ...           nan           nan      nan      nan
-NGC4047   1 124 0.026490 ...           nan           nan      nan      nan
-NGC4047   1 127 0.026491 ...           nan           nan      nan      nan
-NGC4047   4   1 0.025212 ...           nan           nan      nan      nan
-NGC4047   4   4 0.025212 ...           nan           nan      nan      nan
-NGC4047   4   7 0.025213 ...           nan           nan      nan      nan
-NGC4047   4  10 0.025213 ...           nan           nan      nan      nan
-NGC4047   4  13 0.025213 ...           nan           nan      nan      nan
-NGC4047   4  16 0.025214 ...           nan           nan      nan      nan
-NGC4047   4  19 0.025214 ...           nan           nan      nan      nan
+  Name   ix  iy      ra_abs      ...  e_sigmol_fo  mom0_13  emom0_13
+                      deg        ... solMass / pc2 K km / s K km / s
+------- --- --- ---------------- ... ------------- -------- --------
+NGC4047   1  61 180.737731095781 ...           nan      nan      nan
+NGC4047   1  64 180.737731533204 ...           nan      nan      nan
+NGC4047   1  67 180.737731970647 ...           nan      nan      nan
+NGC4047   1  70 180.737732408110 ...           nan      nan      nan
+NGC4047   1  73 180.737732845593 ...           nan      nan      nan
+NGC4047   1  76 180.737733283097 ...           nan      nan      nan
+NGC4047   1  79 180.737733720620 ...           nan      nan      nan
+NGC4047   1  82 180.737734158163 ...           nan      nan      nan
+NGC4047   1  85 180.737734595727 ...           nan      nan      nan
+NGC4047   1  88 180.737735033310 ...           nan      nan      nan
+    ... ... ...              ... ...           ...      ...      ...
+NGC4047   1 121 180.737739848053 ...           nan      nan      nan
+NGC4047   1 124 180.737740285877 ...           nan      nan      nan
+NGC4047   1 127 180.737740723722 ...           nan      nan      nan
+NGC4047   4   1 180.736461763419 ...           nan      nan      nan
+NGC4047   4   4 180.736462179631 ...           nan      nan      nan
+NGC4047   4   7 180.736462595862 ...           nan      nan      nan
+NGC4047   4  10 180.736463012111 ...           nan      nan      nan
+NGC4047   4  13 180.736463428380 ...           nan      nan      nan
+NGC4047   4  16 180.736463844668 ...           nan      nan      nan
+NGC4047   4  19 180.736464260975 ...           nan      nan      nan
 Length = 30 rows
 fitsdata/NGC4047.co.smo7_dil.snrpk.fits.gz
 Adopted inclination is 41.3 deg
@@ -87,30 +87,30 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang snrpk_12
-                  deg       deg     arcsec   deg           
-------- --- --- -------- --------- ------- ------- --------
-NGC4047   1  61 0.026481 -0.000836  63.788  -9.398      nan
-NGC4047   1  64 0.026482 -0.000003  64.046 -12.948      nan
-NGC4047   1  67 0.026482  0.000830  64.547 -16.456      nan
-NGC4047   1  70 0.026482  0.001664  65.286 -19.897      nan
-NGC4047   1  73 0.026483  0.002497  66.255 -23.249      nan
-NGC4047   1  76 0.026483  0.003330  67.443 -26.494      nan
-NGC4047   1  79 0.026484  0.004164  68.840 -29.617      nan
-NGC4047   1  82 0.026484  0.004997  70.433 -32.608      nan
-NGC4047   1  85 0.026485  0.005830  72.210 -35.458      nan
-NGC4047   1  88 0.026485  0.006664  74.156 -38.166      nan
-    ... ... ...      ...       ...     ...     ...      ...
-NGC4047   1 121 0.026490  0.015830 103.491 -59.422      nan
-NGC4047   1 124 0.026490  0.016664 106.644 -60.735      nan
-NGC4047   1 127 0.026491  0.017497 109.851 -61.973      nan
-NGC4047   4   1 0.025212 -0.017503  98.442  44.461      nan
-NGC4047   4   4 0.025212 -0.016669  95.351  42.990      nan
-NGC4047   4   7 0.025213 -0.015836  92.327  41.422      nan
-NGC4047   4  10 0.025213 -0.015003  89.377  39.749      nan
-NGC4047   4  13 0.025213 -0.014169  86.508  37.963      nan
-NGC4047   4  16 0.025214 -0.013336  83.729  36.056      nan
-NGC4047   4  19 0.025214 -0.012503  81.048  34.021      nan
+  Name   ix  iy      ra_abs      ...  dec_off  rad_arc azi_ang snrpk_12
+                      deg        ...    deg     arcsec   deg           
+------- --- --- ---------------- ... --------- ------- ------- --------
+NGC4047   1  61 180.737731095781 ... -0.000836  63.788  -9.398      nan
+NGC4047   1  64 180.737731533204 ... -0.000003  64.046 -12.948      nan
+NGC4047   1  67 180.737731970647 ...  0.000830  64.547 -16.456      nan
+NGC4047   1  70 180.737732408110 ...  0.001664  65.286 -19.897      nan
+NGC4047   1  73 180.737732845593 ...  0.002497  66.255 -23.249      nan
+NGC4047   1  76 180.737733283097 ...  0.003330  67.443 -26.494      nan
+NGC4047   1  79 180.737733720620 ...  0.004164  68.840 -29.617      nan
+NGC4047   1  82 180.737734158163 ...  0.004997  70.433 -32.608      nan
+NGC4047   1  85 180.737734595727 ...  0.005830  72.210 -35.458      nan
+NGC4047   1  88 180.737735033310 ...  0.006664  74.156 -38.166      nan
+    ... ... ...              ... ...       ...     ...     ...      ...
+NGC4047   1 121 180.737739848053 ...  0.015830 103.491 -59.422      nan
+NGC4047   1 124 180.737740285877 ...  0.016664 106.644 -60.735      nan
+NGC4047   1 127 180.737740723722 ...  0.017497 109.851 -61.973      nan
+NGC4047   4   1 180.736461763419 ... -0.017503  98.442  44.461      nan
+NGC4047   4   4 180.736462179631 ... -0.016669  95.351  42.990      nan
+NGC4047   4   7 180.736462595862 ... -0.015836  92.327  41.422      nan
+NGC4047   4  10 180.736463012111 ... -0.015003  89.377  39.749      nan
+NGC4047   4  13 180.736463428380 ... -0.014169  86.508  37.963      nan
+NGC4047   4  16 180.736463844668 ... -0.013336  83.729  36.056      nan
+NGC4047   4  19 180.736464260975 ... -0.012503  81.048  34.021      nan
 Length = 30 rows
 Reading fitsdata/NGC4047.co.smo7_dil.mom0.fits.gz
 RA ref is 180.71125
@@ -196,39 +196,37 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-ReadingWARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
-WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-REF to '1858-11-17' from MJD-REF'. [astropy.wcs.wcs]
- fitsdata/NGC4047.13co.smo7_mk12_dil.emom2.fits.gz
+Reading fitsdata/NGC4047.13co.smo7_mk12_dil.emom2.fits.gz
 RA ref is 180.71125
 DEC ref is 48.6361944444
 This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  ... mom1_13 emom1_13 mom2_13 emom2_13
-                  deg       deg    ...  km / s  km / s   km / s  km / s 
-------- --- --- -------- --------- ... ------- -------- ------- --------
-NGC4047   1  61 0.026481 -0.000836 ...     nan      nan     nan      nan
-NGC4047   1  64 0.026482 -0.000003 ...     nan      nan     nan      nan
-NGC4047   1  67 0.026482  0.000830 ...     nan      nan     nan      nan
-NGC4047   1  70 0.026482  0.001664 ...     nan      nan     nan      nan
-NGC4047   1  73 0.026483  0.002497 ...     nan      nan     nan      nan
-NGC4047   1  76 0.026483  0.003330 ...     nan      nan     nan      nan
-NGC4047   1  79 0.026484  0.004164 ...     nan      nan     nan      nan
-NGC4047   1  82 0.026484  0.004997 ...     nan      nan     nan      nan
-NGC4047   1  85 0.026485  0.005830 ...     nan      nan     nan      nan
-NGC4047   1  88 0.026485  0.006664 ...     nan      nan     nan      nan
-    ... ... ...      ...       ... ...     ...      ...     ...      ...
-NGC4047   1 121 0.026490  0.015830 ...     nan      nan     nan      nan
-NGC4047   1 124 0.026490  0.016664 ...     nan      nan     nan      nan
-NGC4047   1 127 0.026491  0.017497 ...     nan      nan     nan      nan
-NGC4047   4   1 0.025212 -0.017503 ...     nan      nan     nan      nan
-NGC4047   4   4 0.025212 -0.016669 ...     nan      nan     nan      nan
-NGC4047   4   7 0.025213 -0.015836 ...     nan      nan     nan      nan
-NGC4047   4  10 0.025213 -0.015003 ...     nan      nan     nan      nan
-NGC4047   4  13 0.025213 -0.014169 ...     nan      nan     nan      nan
-NGC4047   4  16 0.025214 -0.013336 ...     nan      nan     nan      nan
-NGC4047   4  19 0.025214 -0.012503 ...     nan      nan     nan      nan
+  Name   ix  iy      ra_abs      ... mom1_13 emom1_13 mom2_13 emom2_13
+                      deg        ...  km / s  km / s   km / s  km / s 
+------- --- --- ---------------- ... ------- -------- ------- --------
+NGC4047   1  61 180.737731095781 ...     nan      nan     nan      nan
+NGC4047   1  64 180.737731533204 ...     nan      nan     nan      nan
+NGC4047   1  67 180.737731970647 ...     nan      nan     nan      nan
+NGC4047   1  70 180.737732408110 ...     nan      nan     nan      nan
+NGC4047   1  73 180.737732845593 ...     nan      nan     nan      nan
+NGC4047   1  76 180.737733283097 ...     nan      nan     nan      nan
+NGC4047   1  79 180.737733720620 ...     nan      nan     nan      nan
+NGC4047   1  82 180.737734158163 ...     nan      nan     nan      nan
+NGC4047   1  85 180.737734595727 ...     nan      nan     nan      nan
+NGC4047   1  88 180.737735033310 ...     nan      nan     nan      nan
+    ... ... ...              ... ...     ...      ...     ...      ...
+NGC4047   1 121 180.737739848053 ...     nan      nan     nan      nan
+NGC4047   1 124 180.737740285877 ...     nan      nan     nan      nan
+NGC4047   1 127 180.737740723722 ...     nan      nan     nan      nan
+NGC4047   4   1 180.736461763419 ...     nan      nan     nan      nan
+NGC4047   4   4 180.736462179631 ...     nan      nan     nan      nan
+NGC4047   4   7 180.736462595862 ...     nan      nan     nan      nan
+NGC4047   4  10 180.736463012111 ...     nan      nan     nan      nan
+NGC4047   4  13 180.736463428380 ...     nan      nan     nan      nan
+NGC4047   4  16 180.736463844668 ...     nan      nan     nan      nan
+NGC4047   4  19 180.736464260975 ...     nan      nan     nan      nan
 Length = 30 rows
 fitsdata/NGC4047.co.smo7_smo.mom0.fits.gz
 Adopted inclination is 41.3 deg
@@ -239,30 +237,30 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  rad_arc azi_ang mom0_12 
-                  deg       deg     arcsec   deg   K km / s
-------- --- --- -------- --------- ------- ------- --------
-NGC4047   1  61 0.026481 -0.000836  63.788  -9.398      nan
-NGC4047   1  64 0.026482 -0.000003  64.046 -12.948      nan
-NGC4047   1  67 0.026482  0.000830  64.547 -16.456      nan
-NGC4047   1  70 0.026482  0.001664  65.286 -19.897      nan
-NGC4047   1  73 0.026483  0.002497  66.255 -23.249      nan
-NGC4047   1  76 0.026483  0.003330  67.443 -26.494      nan
-NGC4047   1  79 0.026484  0.004164  68.840 -29.617      nan
-NGC4047   1  82 0.026484  0.004997  70.433 -32.608      nan
-NGC4047   1  85 0.026485  0.005830  72.210 -35.458      nan
-NGC4047   1  88 0.026485  0.006664  74.156 -38.166      nan
-    ... ... ...      ...       ...     ...     ...      ...
-NGC4047   1 121 0.026490  0.015830 103.491 -59.422      nan
-NGC4047   1 124 0.026490  0.016664 106.644 -60.735      nan
-NGC4047   1 127 0.026491  0.017497 109.851 -61.973      nan
-NGC4047   4   1 0.025212 -0.017503  98.442  44.461      nan
-NGC4047   4   4 0.025212 -0.016669  95.351  42.990      nan
-NGC4047   4   7 0.025213 -0.015836  92.327  41.422      nan
-NGC4047   4  10 0.025213 -0.015003  89.377  39.749      nan
-NGC4047   4  13 0.025213 -0.014169  86.508  37.963      nan
-NGC4047   4  16 0.025214 -0.013336  83.729  36.056      nan
-NGC4047   4  19 0.025214 -0.012503  81.048  34.021      nan
+  Name   ix  iy      ra_abs      ...  dec_off  rad_arc azi_ang mom0_12 
+                      deg        ...    deg     arcsec   deg   K km / s
+------- --- --- ---------------- ... --------- ------- ------- --------
+NGC4047   1  61 180.737731095781 ... -0.000836  63.788  -9.398      nan
+NGC4047   1  64 180.737731533204 ... -0.000003  64.046 -12.948      nan
+NGC4047   1  67 180.737731970647 ...  0.000830  64.547 -16.456      nan
+NGC4047   1  70 180.737732408110 ...  0.001664  65.286 -19.897      nan
+NGC4047   1  73 180.737732845593 ...  0.002497  66.255 -23.249      nan
+NGC4047   1  76 180.737733283097 ...  0.003330  67.443 -26.494      nan
+NGC4047   1  79 180.737733720620 ...  0.004164  68.840 -29.617      nan
+NGC4047   1  82 180.737734158163 ...  0.004997  70.433 -32.608      nan
+NGC4047   1  85 180.737734595727 ...  0.005830  72.210 -35.458      nan
+NGC4047   1  88 180.737735033310 ...  0.006664  74.156 -38.166      nan
+    ... ... ...              ... ...       ...     ...     ...      ...
+NGC4047   1 121 180.737739848053 ...  0.015830 103.491 -59.422      nan
+NGC4047   1 124 180.737740285877 ...  0.016664 106.644 -60.735      nan
+NGC4047   1 127 180.737740723722 ...  0.017497 109.851 -61.973      nan
+NGC4047   4   1 180.736461763419 ... -0.017503  98.442  44.461      nan
+NGC4047   4   4 180.736462179631 ... -0.016669  95.351  42.990      nan
+NGC4047   4   7 180.736462595862 ... -0.015836  92.327  41.422      nan
+NGC4047   4  10 180.736463012111 ... -0.015003  89.377  39.749      nan
+NGC4047   4  13 180.736463428380 ... -0.014169  86.508  37.963      nan
+NGC4047   4  16 180.736463844668 ... -0.013336  83.729  36.056      nan
+NGC4047   4  19 180.736464260975 ... -0.012503  81.048  34.021      nan
 Length = 30 rows
 Reading fitsdata/NGC4047.co.smo7_smo.emom0.fits.gz
 RA ref is 180.71125
@@ -341,28 +339,58 @@ This is an image of shape (128, 128)
 Axis 1: crpix=65.0
 Axis 2: crpix=65.0
 Remainder:  [1, 1, 0]
-  Name   ix  iy  ra_off   dec_off  ... mom1_13 emom1_13 mom2_13 emom2_13
-                  deg       deg    ...  km / s  km / s   km / s  km / s 
-------- --- --- -------- --------- ... ------- -------- ------- --------
-NGC4047   1  61 0.026481 -0.000836 ...     nan      nan     nan      nan
-NGC4047   1  64 0.026482 -0.000003 ...     nan      nan     nan      nan
-NGC4047   1  67 0.026482  0.000830 ...     nan      nan     nan      nan
-NGC4047   1  70 0.026482  0.001664 ...     nan      nan     nan      nan
-NGC4047   1  73 0.026483  0.002497 ...     nan      nan     nan      nan
-NGC4047   1  76 0.026483  0.003330 ...     nan      nan     nan      nan
-NGC4047   1  79 0.026484  0.004164 ...     nan      nan     nan      nan
-NGC4047   1  82 0.026484  0.004997 ...     nan      nan     nan      nan
-NGC4047   1  85 0.026485  0.005830 ...     nan      nan     nan      nan
-NGC4047   1  88 0.026485  0.006664 ...     nan      nan     nan      nan
-    ... ... ...      ...       ... ...     ...      ...     ...      ...
-NGC4047   1 121 0.026490  0.015830 ...     nan      nan     nan      nan
-NGC4047   1 124 0.026490  0.016664 ...     nan      nan     nan      nan
-NGC4047   1 127 0.026491  0.017497 ...     nan      nan     nan      nan
-NGC4047   4   1 0.025212 -0.017503 ...     nan      nan     nan      nan
-NGC4047   4   4 0.025212 -0.016669 ...     nan      nan     nan      nan
-NGC4047   4   7 0.025213 -0.015836 ...     nan      nan     nan      nan
-NGC4047   4  10 0.025213 -0.015003 ...     nan      nan     nan      nan
-NGC4047   4  13 0.025213 -0.014169 ...     nan      nan     nan      nan
-NGC4047   4  16 0.025214 -0.013336 ...     nan      nan     nan      nan
-NGC4047   4  19 0.025214 -0.012503 ...     nan      nan     nan      nan
-Length = 30 rows
+  Name   ix  iy      ra_abs      ... mom1_13 emom1_13 mom2_13 emom2_13
+                      deg        ...  km / s  km / s   km / s  km / s 
+------- --- --- ---------------- ... ------- -------- ------- --------
+NGC4047   1  61 180.737731095781 ...     nan      nan     nan      nan
+NGC4047   1  64 180.737731533204 ...     nan      nan     nan      nan
+NGC4047   1  67 180.737731970647 ...     nan      nan     nan      nan
+NGC4047   1  70 180.737732408110 ...     nan      nan     nan      nan
+NGC4047   1  73 180.737732845593 ...     nan      nan     nan      nan
+NGC4047   1  76 180.737733283097 ...     nan      nan     nan      nan
+NGC4047   1  79 180.737733720620 ...     nan      nan     nan      nan
+NGC4047   1  82 180.737734158163 ...     nan      nan     nan      nan
+NGC4047   1  85 180.737734595727 ...     nan      nan     nan      nan
+NGC4047   1  88 180.737735033310 ...     nan      nan     nan      nan
+    ... ... ...              ... ...     ...      ...     ...      ...
+NGC4047   1 121 180.737739848053 ...     nan      nan     nan      nan
+NGC4047   1 124 180.737740285877 ...     nan      nan     nan      nan
+NGC4047   1 127 180.737740723722 ...     nan      nan     nan      nan
+NGC4047   4   1 180.736461763419 ...     nan      nan     nan      nan
+NGC4047   4   4 180.736462179631 ...     nan      nan     nan      nan
+NGC4047   4   7 180.736462595862 ...     nan      nan     nan      nan
+NGC4047   4  10 180.736463012111 ...     nan      nan     nan      nan
+NGC4047   4  13 180.736463428380 ...     nan      nan     nan      nan
+NGC4047   4  16 180.736463844668 ...     nan      nan     nan      nan
+NGC4047   4  19 180.736464260975 ...     nan      nan     nan      nan
+Length = 30 rowsWARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+WARNING: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU. [astropy.io.fits.hdu.image]
+
