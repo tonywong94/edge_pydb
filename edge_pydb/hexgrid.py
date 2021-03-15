@@ -8,25 +8,33 @@ use_python = False
 
 if use_numba:
     try: 
-        from numba import njit, prange, jit
+        from numba import jit, njit, prange
         from numba.typed import List
     except (ImportError, ModuleNotFoundError):
         print("cannot import numba modules, computation will be slow")
         use_python = True
+else:
+    use_python = True
 
 if use_python:
     prange = range
     List = list
+    def py_njit(parallel=False):
+        def py_njit_func(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                retval = func(*args, **kwargs)
+                return retval
+            return wrapper
+        return py_njit_func
     
-    def py_jit(func, parallel):
-        @wraps(func)
-        def wrapper(*args, **kargs):
-            return func()
-        return wrapper
+    def py_jit(func):
+        return func
+
     jit = py_jit
-    njit = py_jit
+    njit = py_njit
 
-
+@jit
 def ylin_hex(pos, hex_sidelen, bound):
     '''
     going along y dir
@@ -39,7 +47,7 @@ def ylin_hex(pos, hex_sidelen, bound):
     y_coord = np.concatenate([y_minus, y_plus])
     return np.array(list(zip(np.ones_like(y_coord) * pos[0], y_coord)))
 
-
+@jit
 def hex_basis(ref, hex_sidelen, bound):
     dist = np.sqrt(3) * hex_sidelen
     angle = np.pi/6
@@ -59,7 +67,7 @@ def hex_basis(ref, hex_sidelen, bound):
         
     return np.array(basis_pos)
 
-
+@jit
 def hex_grid(ref, sidelen, bound, starting_angle, precision):
     # hex side length same as the circumcircle Radius, = 2 / \sqrt(3) * incircle radius
     x_len = bound[1][0] - bound[0][0]
@@ -179,7 +187,6 @@ def hex_sampler(tab, sidelen, keepref, ref_pix, ra_ref, dec_ref,
     hexgrid_output -> output file to check
     '''
     header = tab.colnames
-    # print(header)
     upper = np.array([float(max(tab[header[0]])), float(max(tab[header[1]]))])
     lower = np.array([float(min(tab[header[0]])), float(min(tab[header[1]]))])
     bound = np.array([lower, upper])
@@ -200,5 +207,4 @@ def hex_sampler(tab, sidelen, keepref, ref_pix, ra_ref, dec_ref,
                 sampled_tab['dec_off'] + dec_ref,
                 ra_gc, dec_gc, pa, inc
             )
-    # print(f'datapoint: {len(datapoint)}\nsampledtable: {len(sampled_tab)}\ninfo: {len(info)}')
     return sampled_tab
