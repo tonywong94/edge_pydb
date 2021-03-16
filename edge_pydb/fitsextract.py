@@ -139,11 +139,11 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     wfix = w.sub(naxis)
     if first:
         wcsout = wfix.wcs_pix2world(wcsin,0)
-        col_ra = Column(wcsout.T[0], name='ra_abs',  dtype='f8', 
-                        unit='deg', format='.12f', 
+        col_ra = Column(wcsout.T[0], name='ra_abs',  dtype='f4', 
+                        unit='deg', format='.6f', 
                         description='sample ra coord')
-        col_dc = Column(wcsout.T[1], name='dec_abs', dtype='f8', 
-                        unit='deg', format='.12f', 
+        col_dc = Column(wcsout.T[1], name='dec_abs', dtype='f4', 
+                        unit='deg', format='.6f', 
                         description='sample dec coord')
         col_raoff = Column(wcsout.T[0]-w.wcs.crval[0], name='ra_off',  dtype='f4', 
                         unit='deg', format='.6f', 
