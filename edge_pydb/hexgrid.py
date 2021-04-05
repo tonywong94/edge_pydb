@@ -4,9 +4,9 @@ from edge_pydb.conversion import gc_polr
 from functools import wraps
 
 use_numba = True
-use_python = False
 
 if use_numba:
+    use_python = False
     try: 
         from numba import jit, njit, prange
         from numba.typed import List
