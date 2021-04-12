@@ -53,12 +53,33 @@ def uarray_to_list(target):
     return [unumpy.nominal_values(target), unumpy.std_devs(target)]
 
 
-# Convert Halpha intensity to A_V-corrected SFR surface density
-def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
-            name='sig_sfr', column=True, imf='kroupa'):
+def get_AHa(flux_ha, flux_hb, log10):
     '''
+    Get Halpha extinction in magnitudes given flux_ha and flux_hb.
+    The third arg is the log10 function, normally np.log10 but can
+    be unumpy.log10 for error propagation.
+    '''
+    A_Ha = flux_ha.data * np.nan
+    if flux_hb is not None:
+        # Need positive flux to take the log.
+        good = (flux_ha > 0) & (flux_hb > 0)
+        # Extinction curve from Cardelli+(1989).
+        K_Ha = 2.53
+        K_Hb = 3.61
+        # Get A_Ha using Eq(1) from Catalan-Torrecilla+(2015). 
+        A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
+    return A_Ha
+
+
+def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
+            name='sigsfr', column=True, imf='kroupa'):
+    '''
+    Convert Halpha intensity to SFR surface density, optionally
+    with extinction correction (if flux_hb is provided).
     Note that both e_flux_ha and e_flux_hb have to be not None
-    in order to propagate the error
+    in order to propagate the error.  Otherwise the SFR is computed
+    without dust correction (if flux_hb=None) or without error
+    estimation.
     '''
     # input line flux is actually flux per arcsec^2
     sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
@@ -68,70 +89,63 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     if imf == 'salpeter':
         lumcon *= 1.51
 
-    # If only flux_ha exists, just do a scaling
-    if flux_hb is None:
-        sb_ha  = flux_ha * sterad  # flux per steradian
-        lsd_ha = 4 * np.pi * sb_ha
-        sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
-        if e_flux_ha is not None:
-            e_sig_sfr = e_flux_ha / flux_ha * sig_sfr
-            return sig_sfr, e_sig_sfr
-        else:
+    # Case with error estimation
+    if e_flux_ha is not None:
+        u_flux_ha = unumpy.uarray(flux_ha, e_flux_ha)
+        sig_sfr = (lumcon * 4*np.pi * u_flux_ha * sterad).to(u.solMass/(u.pc**2*u.Gyr))
+        if flux_hb is None:   # no Balmer decrement
+            sig_sfr_out = uarray_to_list(sig_sfr.value)
+            if column:
+                return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
+                    description='SFR surface density no extinction'), \
+                    Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
+                    description='error of uncorrected SFR surface density')
+            else:
+                return sig_sfr_out[0], sig_sfr_out[1]
+        else:   # with Balmer decrement
+            if e_flux_hb is None:
+                e_flux_hb = np.zeros_like(flux_hb)
+            u_flux_hb = unumpy.uarray(flux_hb, e_flux_hb)
+            A_Ha = get_AHa(u_flux_ha, u_flux_hb, unumpy.log10)
+            sig_sfr = sig_sfr * 10**(0.4*A_Ha)
+            # * sig_sfr is a astropy Quantity, and A_Ha is still a Column
+            sig_sfr_out = uarray_to_list(sig_sfr.value)
+            A_Ha_out = uarray_to_list(A_Ha.data)
+            if column:
+                return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
+                    description='BD corrected SFR surface density'), \
+                    Column(A_Ha_out[0], name=name.replace('sigsfr','AHa'), 
+                    dtype='f4', unit='mag', description='Ha extinction from BD'), \
+                    Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
+                    description='error of BD corrected SFR surface density'), \
+                    Column(A_Ha_out[1], name='e_'+name.replace('sigsfr','AHa'), 
+                    dtype='f4', unit='mag', description='error of Ha extinction from BD')
+            else:
+                return sig_sfr_out[0], A_Ha_out[0], sig_sfr_out[1], A_Ha_out[1]
+
+    # Case with no error estimation
+    else:
+        sig_sfr = (lumcon * 4*np.pi * flux_ha * sterad).to(u.solMass/(u.pc**2*u.Gyr))
+        if flux_hb is None:   # no Balmer decrement
             if column:
                 return Column(sig_sfr, name=name, dtype='f4',
                     description='SFR surface density no extinction')
             else:
                 return sig_sfr
+        else:   # with Balmer decrement
+            A_Ha = get_AHa(flux_ha, flux_hb, np.log10)
+            sig_sfr = sig_sfr * 10**(0.4*A_Ha)
+            if column:
+                return Column(sig_sfr, name=name, dtype='f4',
+                    description='BD corrected SFR surface density'), \
+                    Column(A_Ha, name=name.replace('sigsfr','AHa'), dtype='f4', 
+                    unit='mag', description='Ha extinction from BD')
+            else:
+                return sig_sfr, A_Ha
 
-    def apply_extinction(flux_ha, flux_hb, log10):
-        # Do not apply negative extinction.
-        good = (flux_ha > 0) & (flux_hb > 0) & (flux_ha > 2.86*flux_hb)
-        # Extinction curve from Cardelli+(1989).
-        K_Ha = 2.53
-        K_Hb = 3.61
-        # Get A_Ha using Eq(1) from Catalan-Torrecilla+(2015). 
-        A_Ha = np.full_like(flux_ha, np.nan)
-        A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
-        flux_ha_cor = flux_ha * 10**(0.4*A_Ha)
-        # Convert flux to sig_sfr
-        sb_ha  = flux_ha_cor * sterad   # flux per steradian
-        lsd_ha = 4 * np.pi * sb_ha
-        sig_sfr = (lumcon * lsd_ha).to(u.solMass/(u.pc**2*u.Gyr))
-        return sig_sfr, A_Ha
-
-    if e_flux_ha is not None:
-        if e_flux_hb is None:
-            e_flux_hb = np.zeros_like(flux_hb)
-        u_flux_ha = unumpy.uarray(flux_ha, e_flux_ha)
-        u_flux_hb = unumpy.uarray(flux_hb, e_flux_hb)
-        sig_sfr, A_Ha = apply_extinction(u_flux_ha, u_flux_hb, unumpy.log10)
-        # * sig_sfr is a astropy Quantity, and A_Ha is still a Column
-        sig_sfr_out = uarray_to_list(sig_sfr.value)
-        A_Ha_out = uarray_to_list(A_Ha.data)
-        if column:
-            return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
-                description='BD corrected SFR surface density'), \
-                Column(A_Ha_out[0], name='AHa_'+name, dtype='f4', unit='mag', 
-                description='Ha extinction from BD'), \
-                Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
-                description='error of BD corrected SFR surface density'), \
-                Column(A_Ha_out[1], name='e_AHa_'+name, dtype='f4', unit='mag', 
-                description='error of Ha extinction from BD')
-        else:
-            return sig_sfr_out[0], A_Ha_out[0], sig_sfr_out[1], A_Ha_out[1]
-    else:
-        sig_sfr, A_Ha = apply_extinction(flux_ha, flux_hb, np.log10)
-        if column:
-            return Column(sig_sfr, name=name, dtype='f4',
-                description='BD corrected SFR surface density'), \
-                Column(A_Ha, name='AHa_'+name, dtype='f4', unit='mag', 
-                description='Ha extinction from BD')
-        else:
-            return sig_sfr, A_Ha
-    
 
 # Convert CO intensity to H2(+He) surface density
-def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
+def msd_co(sb_co, alphaco=4.3, name='sigmol'):
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
     sig_mol = (convfac*sb_co).to(u.solMass/u.pc**2)
     if isinstance(sb_co, Column):
@@ -143,7 +157,7 @@ def msd_co(sb_co, alphaco=4.3, name='sig_mol'):
 
 # Convert units for stellar surface density
 # dz = dezonification file from Pipe3D
-def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sig_star'):
+def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
     # Assume Mpc units if not given
     try:
         unit = dist.unit

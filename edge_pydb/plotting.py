@@ -138,7 +138,7 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
         bb = nx*ny+aa
         thispage = gallist[aa:bb]
         fig = plt.figure(figsize=(20,14))
-        print("Plotting", thispage)
+        print('Plotting', thispage[0], 'to', thispage[-1])
 
         for i in range(0,len(thispage)):
             gname = thispage[i]
@@ -174,10 +174,14 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
 
             if xrange is None:
                 ax.set_xlim(xran)
+                if i == 0:
+                    print("Default x limits used:",xran)
             else:
                 ax.set_xlim(xrange)
             if yrange is None:
                 ax.set_ylim(yran)
+                if i == 0:
+                    print("Default y limits used:",yran)
             else:
                 ax.set_ylim(yrange)
 
