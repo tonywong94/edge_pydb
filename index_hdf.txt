@@ -1,84 +1,92 @@
 filename: NGC4047.pipe3d.hdf5
 path: ELINES_rg
 <Table length=1849>
-      name       dtype          unit        format                description                n_bad
---------------- ------- ------------------- ------ ----------------------------------------- -----
-           Name bytes10                                                          Galaxy Name     0
-             ix   int32                                   0-based pixel index in x direction     0
-             iy   int32                                   0-based pixel index in y direction     0
-         ra_abs float64                 deg   .12f                           sample ra coord     0
-        dec_abs float64                 deg   .12f                          sample dec coord     0
-         ra_off float32                 deg    .6f                  ra offset from ref pixel     0
-        dec_off float32                 deg    .6f                 dec offset from ref pixel     0
-        rad_arc float32              arcsec    .3f                      radius based on LEDA     0
-        azi_ang float32                 deg    .3f                       azang based on LEDA     0
-       Havel_rg float32              km / s                                  Halpha velocity  1367
-       Vdisp_rg float32            Angstrom         Velocity dispersion plus instrumenta one  1367
-   [OII]3727_rg float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1367
-  [OIII]5007_rg float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1367
-  [OIII]4959_rg float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1367
-       Hbeta_rg float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1367
-      Halpha_rg float32 1e-16 erg / (cm2 s)                             Halpha emission line  1367
-   [NII]6583_rg float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1367
-   [NII]6548_rg float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1367
-   [SII]6731_rg float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1367
-   [SII]6717_rg float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1367
- e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1367
-e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1367
-e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1367
-     e_Hbeta_rg float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1367
-    e_Halpha_rg float32 1e-16 erg / (cm2 s)                             Halpha emission line  1367
- e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1367
- e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1367
- e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1367
- e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1367
-     sigsfr0_rg float32 solMass / (Gyr pc2)                SFR surface density no extinction  1367
-  fe_sigsfr0_rg float32            fraction                  fractional error in Halpha flux  1367
-      sigsfr_rg float32 solMass / (Gyr pc2)                 BD corrected SFR surface density  1476
-    e_sigsfr_rg float32 solMass / (Gyr pc2)        error of BD corrected SFR surface density  1476
-  AHa_sigsfr_rg float32                 mag                            Ha extinction from BD  1476
-e_AHa_sigsfr_rg float32                 mag                   error of Ha extinction from BD     0
+      name        dtype          unit        format                 description                  n_bad
+---------------- ------- ------------------- ------ -------------------------------------------- -----
+            Name bytes10                                                             Galaxy Name     0
+              ix   int32                                      0-based pixel index in x direction     0
+              iy   int32                                      0-based pixel index in y direction     0
+          ra_abs float32                 deg    .6f                              sample ra coord     0
+         dec_abs float32                 deg    .6f                             sample dec coord     0
+          ra_off float32                 deg    .6f                     ra offset from ref pixel     0
+         dec_off float32                 deg    .6f                    dec offset from ref pixel     0
+         rad_arc float32              arcsec    .3f                         radius based on LEDA     0
+         azi_ang float32                 deg    .3f                          azang based on LEDA     0
+        Havel_rg float32              km / s                                     Halpha velocity  1367
+        Vdisp_rg float32            Angstrom            Velocity dispersion plus instrumenta one  1367
+    [OII]3727_rg float32 1e-16 erg / (cm2 s)                             [OII]3727 emission line  1367
+   [OIII]5007_rg float32 1e-16 erg / (cm2 s)                            [OIII]5007 emission line  1367
+   [OIII]4959_rg float32 1e-16 erg / (cm2 s)                            [OIII]4959 emission line  1367
+        Hbeta_rg float32 1e-16 erg / (cm2 s)                                 Hbeta emission line  1367
+       Halpha_rg float32 1e-16 erg / (cm2 s)                                Halpha emission line  1367
+    [NII]6583_rg float32 1e-16 erg / (cm2 s)                             [NII]6583 emission line  1367
+    [NII]6548_rg float32 1e-16 erg / (cm2 s)                             [NII]6548 emission line  1367
+    [SII]6731_rg float32 1e-16 erg / (cm2 s)                             [SII]6731 emission line  1367
+    [SII]6717_rg float32 1e-16 erg / (cm2 s)                             [SII]6717 emission line  1367
+  e_[OII]3727_rg float32 1e-16 erg / (cm2 s)                             [OII]3727 emission line  1367
+ e_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                            [OIII]5007 emission line  1367
+ e_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                            [OIII]4959 emission line  1367
+      e_Hbeta_rg float32 1e-16 erg / (cm2 s)                                 Hbeta emission line  1367
+     e_Halpha_rg float32 1e-16 erg / (cm2 s)                                Halpha emission line  1367
+  e_[NII]6583_rg float32 1e-16 erg / (cm2 s)                             [NII]6583 emission line  1367
+  e_[NII]6548_rg float32 1e-16 erg / (cm2 s)                             [NII]6548 emission line  1367
+  e_[SII]6731_rg float32 1e-16 erg / (cm2 s)                             [SII]6731 emission line  1367
+  e_[SII]6717_rg float32 1e-16 erg / (cm2 s)                             [SII]6717 emission line  1367
+    Hbeta_sm3_rg float32 1e-16 erg / (cm2 s)                              Hbeta after 3as smooth  1367
+   Halpha_sm3_rg float32 1e-16 erg / (cm2 s)                             Halpha after 3as smooth  1367
+      sigsfr0_rg float32 solMass / (Gyr pc2)                   SFR surface density no extinction  1367
+    e_sigsfr0_rg float32 solMass / (Gyr pc2)            error of uncorrected SFR surface density  1367
+  sigsfr_corr_rg float32 solMass / (Gyr pc2)                    BD corrected SFR surface density  1367
+e_sigsfr_corr_rg float32 solMass / (Gyr pc2)           error of BD corrected SFR surface density  1367
+     AHa_corr_rg float32                 mag                               Ha extinction from BD  1367
+   e_AHa_corr_rg float32                 mag                      error of Ha extinction from BD  1367
+  AHa_smooth3_rg float32                 mag                      Ha extinction after 3as smooth  1367
+ sigsfr_adopt_rg float32 solMass / (Gyr pc2)        smooth+clip BD corrected SFR surface density  1367
 
 filename: NGC4047.pipe3d.hdf5
 path: ELINES_sm
 <Table length=1849>
-      name       dtype          unit        format                description                n_bad
---------------- ------- ------------------- ------ ----------------------------------------- -----
-           Name bytes10                                                          Galaxy Name     0
-             ix   int32                                   0-based pixel index in x direction     0
-             iy   int32                                   0-based pixel index in y direction     0
-         ra_abs float64                 deg   .12f                           sample ra coord     0
-        dec_abs float64                 deg   .12f                          sample dec coord     0
-         ra_off float32                 deg    .6f                  ra offset from ref pixel     0
-        dec_off float32                 deg    .6f                 dec offset from ref pixel     0
-        rad_arc float32              arcsec    .3f                      radius based on LEDA     0
-        azi_ang float32                 deg    .3f                       azang based on LEDA     0
-       Havel_sm float32              km / s                                  Halpha velocity  1348
-       Vdisp_sm float32            Angstrom         Velocity dispersion plus instrumenta one  1348
-   [OII]3727_sm float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1348
-  [OIII]5007_sm float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1348
-  [OIII]4959_sm float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1348
-       Hbeta_sm float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1348
-      Halpha_sm float32 1e-16 erg / (cm2 s)                             Halpha emission line  1348
-   [NII]6583_sm float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1348
-   [NII]6548_sm float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1348
-   [SII]6731_sm float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1348
-   [SII]6717_sm float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1348
- e_[OII]3727_sm float32 1e-16 erg / (cm2 s)                          [OII]3727 emission line  1348
-e_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                         [OIII]5007 emission line  1348
-e_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                         [OIII]4959 emission line  1348
-     e_Hbeta_sm float32 1e-16 erg / (cm2 s)                              Hbeta emission line  1348
-    e_Halpha_sm float32 1e-16 erg / (cm2 s)                             Halpha emission line  1348
- e_[NII]6583_sm float32 1e-16 erg / (cm2 s)                          [NII]6583 emission line  1348
- e_[NII]6548_sm float32 1e-16 erg / (cm2 s)                          [NII]6548 emission line  1348
- e_[SII]6731_sm float32 1e-16 erg / (cm2 s)                          [SII]6731 emission line  1348
- e_[SII]6717_sm float32 1e-16 erg / (cm2 s)                          [SII]6717 emission line  1348
-     sigsfr0_sm float32 solMass / (Gyr pc2)                SFR surface density no extinction  1348
-  fe_sigsfr0_sm float32            fraction                  fractional error in Halpha flux  1348
-      sigsfr_sm float32 solMass / (Gyr pc2)                 BD corrected SFR surface density  1469
-    e_sigsfr_sm float32 solMass / (Gyr pc2)        error of BD corrected SFR surface density  1468
-  AHa_sigsfr_sm float32                 mag                            Ha extinction from BD  1469
-e_AHa_sigsfr_sm float32                 mag                   error of Ha extinction from BD     0
+      name        dtype          unit        format                 description                  n_bad
+---------------- ------- ------------------- ------ -------------------------------------------- -----
+            Name bytes10                                                             Galaxy Name     0
+              ix   int32                                      0-based pixel index in x direction     0
+              iy   int32                                      0-based pixel index in y direction     0
+          ra_abs float32                 deg    .6f                              sample ra coord     0
+         dec_abs float32                 deg    .6f                             sample dec coord     0
+          ra_off float32                 deg    .6f                     ra offset from ref pixel     0
+         dec_off float32                 deg    .6f                    dec offset from ref pixel     0
+         rad_arc float32              arcsec    .3f                         radius based on LEDA     0
+         azi_ang float32                 deg    .3f                          azang based on LEDA     0
+        Havel_sm float32              km / s                                     Halpha velocity  1386
+        Vdisp_sm float32            Angstrom            Velocity dispersion plus instrumenta one  1386
+    [OII]3727_sm float32 1e-16 erg / (cm2 s)                             [OII]3727 emission line  1386
+   [OIII]5007_sm float32 1e-16 erg / (cm2 s)                            [OIII]5007 emission line  1386
+   [OIII]4959_sm float32 1e-16 erg / (cm2 s)                            [OIII]4959 emission line  1386
+        Hbeta_sm float32 1e-16 erg / (cm2 s)                                 Hbeta emission line  1386
+       Halpha_sm float32 1e-16 erg / (cm2 s)                                Halpha emission line  1386
+    [NII]6583_sm float32 1e-16 erg / (cm2 s)                             [NII]6583 emission line  1386
+    [NII]6548_sm float32 1e-16 erg / (cm2 s)                             [NII]6548 emission line  1386
+    [SII]6731_sm float32 1e-16 erg / (cm2 s)                             [SII]6731 emission line  1386
+    [SII]6717_sm float32 1e-16 erg / (cm2 s)                             [SII]6717 emission line  1386
+  e_[OII]3727_sm float32 1e-16 erg / (cm2 s)                             [OII]3727 emission line  1386
+ e_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                            [OIII]5007 emission line  1386
+ e_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                            [OIII]4959 emission line  1386
+      e_Hbeta_sm float32 1e-16 erg / (cm2 s)                                 Hbeta emission line  1386
+     e_Halpha_sm float32 1e-16 erg / (cm2 s)                                Halpha emission line  1386
+  e_[NII]6583_sm float32 1e-16 erg / (cm2 s)                             [NII]6583 emission line  1386
+  e_[NII]6548_sm float32 1e-16 erg / (cm2 s)                             [NII]6548 emission line  1386
+  e_[SII]6731_sm float32 1e-16 erg / (cm2 s)                             [SII]6731 emission line  1386
+  e_[SII]6717_sm float32 1e-16 erg / (cm2 s)                             [SII]6717 emission line  1386
+    Hbeta_sm5_sm float32 1e-16 erg / (cm2 s)                              Hbeta after 5as smooth  1386
+   Halpha_sm5_sm float32 1e-16 erg / (cm2 s)                             Halpha after 5as smooth  1386
+      sigsfr0_sm float32 solMass / (Gyr pc2)                   SFR surface density no extinction  1386
+    e_sigsfr0_sm float32 solMass / (Gyr pc2)            error of uncorrected SFR surface density  1386
+  sigsfr_corr_sm float32 solMass / (Gyr pc2)                    BD corrected SFR surface density  1386
+e_sigsfr_corr_sm float32 solMass / (Gyr pc2)           error of BD corrected SFR surface density  1386
+     AHa_corr_sm float32                 mag                               Ha extinction from BD  1386
+   e_AHa_corr_sm float32                 mag                      error of Ha extinction from BD  1386
+  AHa_smooth5_sm float32                 mag                      Ha extinction after 5as smooth  1386
+ sigsfr_adopt_sm float32 solMass / (Gyr pc2)        smooth+clip BD corrected SFR surface density  1386
 
 filename: NGC4047.pipe3d.hdf5
 path: SFH_rg
@@ -88,8 +96,8 @@ path: SFH_rg
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
-                  ra_abs float64      deg   .12f                              sample ra coord     0
-                 dec_abs float64      deg   .12f                             sample dec coord     0
+                  ra_abs float32      deg    .6f                              sample ra coord     0
+                 dec_abs float32      deg    .6f                             sample dec coord     0
                   ra_off float32      deg    .6f                     ra offset from ref pixel     0
                  dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
@@ -181,90 +189,90 @@ path: SFH_sm
                     Name bytes10                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
-                  ra_abs float64      deg   .12f                              sample ra coord     0
-                 dec_abs float64      deg   .12f                             sample dec coord     0
+                  ra_abs float32      deg    .6f                              sample ra coord     0
+                 dec_abs float32      deg    .6f                             sample dec coord     0
                   ra_off float32      deg    .6f                     ra offset from ref pixel     0
                  dec_off float32      deg    .6f                    dec offset from ref pixel     0
                  rad_arc float32   arcsec    .3f                         radius based on LEDA     0
                  azi_ang float32      deg    .3f                          azang based on LEDA     0
-   lumfrac_age_0.0010_sm float32 fraction              Luminosity Fraction for age 0.0010 SSP  1389
-   lumfrac_age_0.0030_sm float32 fraction              Luminosity Fraction for age 0.0030 SSP  1389
-   lumfrac_age_0.0040_sm float32 fraction              Luminosity Fraction for age 0.0040 SSP  1389
-   lumfrac_age_0.0056_sm float32 fraction              Luminosity Fraction for age 0.0056 SSP  1389
-   lumfrac_age_0.0089_sm float32 fraction              Luminosity Fraction for age 0.0089 SSP  1389
-   lumfrac_age_0.0100_sm float32 fraction              Luminosity Fraction for age 0.0100 SSP  1389
-   lumfrac_age_0.0126_sm float32 fraction              Luminosity Fraction for age 0.0126 SSP  1389
-   lumfrac_age_0.0141_sm float32 fraction              Luminosity Fraction for age 0.0141 SSP  1389
-   lumfrac_age_0.0178_sm float32 fraction              Luminosity Fraction for age 0.0178 SSP  1389
-   lumfrac_age_0.0199_sm float32 fraction              Luminosity Fraction for age 0.0199 SSP  1389
-   lumfrac_age_0.0251_sm float32 fraction              Luminosity Fraction for age 0.0251 SSP  1389
-   lumfrac_age_0.0316_sm float32 fraction              Luminosity Fraction for age 0.0316 SSP  1389
-   lumfrac_age_0.0398_sm float32 fraction              Luminosity Fraction for age 0.0398 SSP  1389
-   lumfrac_age_0.0562_sm float32 fraction              Luminosity Fraction for age 0.0562 SSP  1389
-   lumfrac_age_0.0630_sm float32 fraction              Luminosity Fraction for age 0.0630 SSP  1389
-   lumfrac_age_0.0631_sm float32 fraction              Luminosity Fraction for age 0.0631 SSP  1389
-   lumfrac_age_0.0708_sm float32 fraction              Luminosity Fraction for age 0.0708 SSP  1389
-   lumfrac_age_0.1000_sm float32 fraction              Luminosity Fraction for age 0.1000 SSP  1389
-   lumfrac_age_0.1122_sm float32 fraction              Luminosity Fraction for age 0.1122 SSP  1389
-   lumfrac_age_0.1259_sm float32 fraction              Luminosity Fraction for age 0.1259 SSP  1389
-   lumfrac_age_0.1585_sm float32 fraction              Luminosity Fraction for age 0.1585 SSP  1389
-   lumfrac_age_0.1995_sm float32 fraction              Luminosity Fraction for age 0.1995 SSP  1389
-   lumfrac_age_0.2818_sm float32 fraction              Luminosity Fraction for age 0.2818 SSP  1389
-   lumfrac_age_0.3548_sm float32 fraction              Luminosity Fraction for age 0.3548 SSP  1389
-   lumfrac_age_0.5012_sm float32 fraction              Luminosity Fraction for age 0.5012 SSP  1389
-   lumfrac_age_0.7079_sm float32 fraction              Luminosity Fraction for age 0.7079 SSP  1389
-   lumfrac_age_0.8913_sm float32 fraction              Luminosity Fraction for age 0.8913 SSP  1389
-   lumfrac_age_1.1220_sm float32 fraction             Luminosity Fraction for age 01.1220 SSP  1389
-   lumfrac_age_1.2589_sm float32 fraction             Luminosity Fraction for age 01.2589 SSP  1389
-   lumfrac_age_1.4125_sm float32 fraction             Luminosity Fraction for age 01.4125 SSP  1389
-   lumfrac_age_1.9953_sm float32 fraction             Luminosity Fraction for age 01.9953 SSP  1389
-   lumfrac_age_2.5119_sm float32 fraction             Luminosity Fraction for age 02.5119 SSP  1389
-   lumfrac_age_3.5481_sm float32 fraction             Luminosity Fraction for age 03.5481 SSP  1389
-   lumfrac_age_4.4668_sm float32 fraction             Luminosity Fraction for age 04.4668 SSP  1389
-   lumfrac_age_6.3096_sm float32 fraction             Luminosity Fraction for age 06.3096 SSP  1389
-   lumfrac_age_7.9433_sm float32 fraction             Luminosity Fraction for age 07.9433 SSP  1389
-   lumfrac_age_10.000_sm float32 fraction              Luminosity Fraction for age 10.000 SSP  1389
-  lumfrac_age_12.5893_sm float32 fraction             Luminosity Fraction for age 12.5893 SSP  1389
-  lumfrac_age_14.1254_sm float32 fraction             Luminosity Fraction for age 14.1254 SSP  1389
- e_lumfrac_age_0.0010_sm float32 fraction         Error in the Lum. Fract. for age 0.0010 SSP  1389
- e_lumfrac_age_0.0030_sm float32 fraction         Error in the Lum. Fract. for age 0.0030 SSP  1389
- e_lumfrac_age_0.0040_sm float32 fraction         Error in the Lum. Fract. for age 0.0040 SSP  1389
- e_lumfrac_age_0.0056_sm float32 fraction         Error in the Lum. Fract. for age 0.0056 SSP  1389
- e_lumfrac_age_0.0089_sm float32 fraction         Error in the Lum. Fract. for age 0.0089 SSP  1389
- e_lumfrac_age_0.0100_sm float32 fraction         Error in the Lum. Fract. for age 0.0100 SSP  1389
- e_lumfrac_age_0.0126_sm float32 fraction         Error in the Lum. Fract. for age 0.0126 SSP  1389
- e_lumfrac_age_0.0141_sm float32 fraction         Error in the Lum. Fract. for age 0.0141 SSP  1389
- e_lumfrac_age_0.0178_sm float32 fraction         Error in the Lum. Fract. for age 0.0178 SSP  1389
- e_lumfrac_age_0.0199_sm float32 fraction         Error in the Lum. Fract. for age 0.0199 SSP  1389
- e_lumfrac_age_0.0251_sm float32 fraction         Error in the Lum. Fract. for age 0.0251 SSP  1389
- e_lumfrac_age_0.0316_sm float32 fraction         Error in the Lum. Fract. for age 0.0316 SSP  1389
- e_lumfrac_age_0.0398_sm float32 fraction         Error in the Lum. Fract. for age 0.0398 SSP  1389
- e_lumfrac_age_0.0562_sm float32 fraction         Error in the Lum. Fract. for age 0.0562 SSP  1389
- e_lumfrac_age_0.0630_sm float32 fraction         Error in the Lum. Fract. for age 0.0630 SSP  1389
- e_lumfrac_age_0.0631_sm float32 fraction         Error in the Lum. Fract. for age 0.0631 SSP  1389
- e_lumfrac_age_0.0708_sm float32 fraction         Error in the Lum. Fract. for age 0.0708 SSP  1389
- e_lumfrac_age_0.1000_sm float32 fraction         Error in the Lum. Fract. for age 0.1000 SSP  1389
- e_lumfrac_age_0.1122_sm float32 fraction         Error in the Lum. Fract. for age 0.1122 SSP  1389
- e_lumfrac_age_0.1259_sm float32 fraction         Error in the Lum. Fract. for age 0.1259 SSP  1389
- e_lumfrac_age_0.1585_sm float32 fraction         Error in the Lum. Fract. for age 0.1585 SSP  1389
- e_lumfrac_age_0.1995_sm float32 fraction         Error in the Lum. Fract. for age 0.1995 SSP  1389
- e_lumfrac_age_0.2818_sm float32 fraction         Error in the Lum. Fract. for age 0.2818 SSP  1389
- e_lumfrac_age_0.3548_sm float32 fraction         Error in the Lum. Fract. for age 0.3548 SSP  1389
- e_lumfrac_age_0.5012_sm float32 fraction         Error in the Lum. Fract. for age 0.5012 SSP  1389
- e_lumfrac_age_0.7079_sm float32 fraction         Error in the Lum. Fract. for age 0.7079 SSP  1389
- e_lumfrac_age_0.8913_sm float32 fraction         Error in the Lum. Fract. for age 0.8913 SSP  1389
- e_lumfrac_age_1.1220_sm float32 fraction        Error in the Lum. Fract. for age 01.1220 SSP  1389
- e_lumfrac_age_1.2589_sm float32 fraction        Error in the Lum. Fract. for age 01.2589 SSP  1389
- e_lumfrac_age_1.4125_sm float32 fraction        Error in the Lum. Fract. for age 01.4125 SSP  1389
- e_lumfrac_age_1.9953_sm float32 fraction        Error in the Lum. Fract. for age 01.9953 SSP  1389
- e_lumfrac_age_2.5119_sm float32 fraction        Error in the Lum. Fract. for age 02.5119 SSP  1389
- e_lumfrac_age_3.5481_sm float32 fraction        Error in the Lum. Fract. for age 03.5481 SSP  1389
- e_lumfrac_age_4.4668_sm float32 fraction        Error in the Lum. Fract. for age 04.4668 SSP  1389
- e_lumfrac_age_6.3096_sm float32 fraction        Error in the Lum. Fract. for age 06.3096 SSP  1389
- e_lumfrac_age_7.9433_sm float32 fraction        Error in the Lum. Fract. for age 07.9433 SSP  1389
- e_lumfrac_age_10.000_sm float32 fraction         Error in the Lum. Fract. for age 10.000 SSP  1389
-e_lumfrac_age_12.5893_sm float32 fraction        Error in the Lum. Fract. for age 12.5893 SSP  1389
-e_lumfrac_age_14.1254_sm float32 fraction        Error in the Lum. Fract. for age 14.1254 SSP  1389
+   lumfrac_age_0.0010_sm float32 fraction              Luminosity Fraction for age 0.0010 SSP  1395
+   lumfrac_age_0.0030_sm float32 fraction              Luminosity Fraction for age 0.0030 SSP  1395
+   lumfrac_age_0.0040_sm float32 fraction              Luminosity Fraction for age 0.0040 SSP  1395
+   lumfrac_age_0.0056_sm float32 fraction              Luminosity Fraction for age 0.0056 SSP  1395
+   lumfrac_age_0.0089_sm float32 fraction              Luminosity Fraction for age 0.0089 SSP  1395
+   lumfrac_age_0.0100_sm float32 fraction              Luminosity Fraction for age 0.0100 SSP  1395
+   lumfrac_age_0.0126_sm float32 fraction              Luminosity Fraction for age 0.0126 SSP  1395
+   lumfrac_age_0.0141_sm float32 fraction              Luminosity Fraction for age 0.0141 SSP  1395
+   lumfrac_age_0.0178_sm float32 fraction              Luminosity Fraction for age 0.0178 SSP  1395
+   lumfrac_age_0.0199_sm float32 fraction              Luminosity Fraction for age 0.0199 SSP  1395
+   lumfrac_age_0.0251_sm float32 fraction              Luminosity Fraction for age 0.0251 SSP  1395
+   lumfrac_age_0.0316_sm float32 fraction              Luminosity Fraction for age 0.0316 SSP  1395
+   lumfrac_age_0.0398_sm float32 fraction              Luminosity Fraction for age 0.0398 SSP  1395
+   lumfrac_age_0.0562_sm float32 fraction              Luminosity Fraction for age 0.0562 SSP  1395
+   lumfrac_age_0.0630_sm float32 fraction              Luminosity Fraction for age 0.0630 SSP  1395
+   lumfrac_age_0.0631_sm float32 fraction              Luminosity Fraction for age 0.0631 SSP  1395
+   lumfrac_age_0.0708_sm float32 fraction              Luminosity Fraction for age 0.0708 SSP  1395
+   lumfrac_age_0.1000_sm float32 fraction              Luminosity Fraction for age 0.1000 SSP  1395
+   lumfrac_age_0.1122_sm float32 fraction              Luminosity Fraction for age 0.1122 SSP  1395
+   lumfrac_age_0.1259_sm float32 fraction              Luminosity Fraction for age 0.1259 SSP  1395
+   lumfrac_age_0.1585_sm float32 fraction              Luminosity Fraction for age 0.1585 SSP  1395
+   lumfrac_age_0.1995_sm float32 fraction              Luminosity Fraction for age 0.1995 SSP  1395
+   lumfrac_age_0.2818_sm float32 fraction              Luminosity Fraction for age 0.2818 SSP  1395
+   lumfrac_age_0.3548_sm float32 fraction              Luminosity Fraction for age 0.3548 SSP  1395
+   lumfrac_age_0.5012_sm float32 fraction              Luminosity Fraction for age 0.5012 SSP  1395
+   lumfrac_age_0.7079_sm float32 fraction              Luminosity Fraction for age 0.7079 SSP  1395
+   lumfrac_age_0.8913_sm float32 fraction              Luminosity Fraction for age 0.8913 SSP  1395
+   lumfrac_age_1.1220_sm float32 fraction             Luminosity Fraction for age 01.1220 SSP  1395
+   lumfrac_age_1.2589_sm float32 fraction             Luminosity Fraction for age 01.2589 SSP  1395
+   lumfrac_age_1.4125_sm float32 fraction             Luminosity Fraction for age 01.4125 SSP  1395
+   lumfrac_age_1.9953_sm float32 fraction             Luminosity Fraction for age 01.9953 SSP  1395
+   lumfrac_age_2.5119_sm float32 fraction             Luminosity Fraction for age 02.5119 SSP  1395
+   lumfrac_age_3.5481_sm float32 fraction             Luminosity Fraction for age 03.5481 SSP  1395
+   lumfrac_age_4.4668_sm float32 fraction             Luminosity Fraction for age 04.4668 SSP  1395
+   lumfrac_age_6.3096_sm float32 fraction             Luminosity Fraction for age 06.3096 SSP  1395
+   lumfrac_age_7.9433_sm float32 fraction             Luminosity Fraction for age 07.9433 SSP  1395
+   lumfrac_age_10.000_sm float32 fraction              Luminosity Fraction for age 10.000 SSP  1395
+  lumfrac_age_12.5893_sm float32 fraction             Luminosity Fraction for age 12.5893 SSP  1395
+  lumfrac_age_14.1254_sm float32 fraction             Luminosity Fraction for age 14.1254 SSP  1395
+ e_lumfrac_age_0.0010_sm float32 fraction         Error in the Lum. Fract. for age 0.0010 SSP  1395
+ e_lumfrac_age_0.0030_sm float32 fraction         Error in the Lum. Fract. for age 0.0030 SSP  1395
+ e_lumfrac_age_0.0040_sm float32 fraction         Error in the Lum. Fract. for age 0.0040 SSP  1395
+ e_lumfrac_age_0.0056_sm float32 fraction         Error in the Lum. Fract. for age 0.0056 SSP  1395
+ e_lumfrac_age_0.0089_sm float32 fraction         Error in the Lum. Fract. for age 0.0089 SSP  1395
+ e_lumfrac_age_0.0100_sm float32 fraction         Error in the Lum. Fract. for age 0.0100 SSP  1395
+ e_lumfrac_age_0.0126_sm float32 fraction         Error in the Lum. Fract. for age 0.0126 SSP  1395
+ e_lumfrac_age_0.0141_sm float32 fraction         Error in the Lum. Fract. for age 0.0141 SSP  1395
+ e_lumfrac_age_0.0178_sm float32 fraction         Error in the Lum. Fract. for age 0.0178 SSP  1395
+ e_lumfrac_age_0.0199_sm float32 fraction         Error in the Lum. Fract. for age 0.0199 SSP  1395
+ e_lumfrac_age_0.0251_sm float32 fraction         Error in the Lum. Fract. for age 0.0251 SSP  1395
+ e_lumfrac_age_0.0316_sm float32 fraction         Error in the Lum. Fract. for age 0.0316 SSP  1395
+ e_lumfrac_age_0.0398_sm float32 fraction         Error in the Lum. Fract. for age 0.0398 SSP  1395
+ e_lumfrac_age_0.0562_sm float32 fraction         Error in the Lum. Fract. for age 0.0562 SSP  1395
+ e_lumfrac_age_0.0630_sm float32 fraction         Error in the Lum. Fract. for age 0.0630 SSP  1395
+ e_lumfrac_age_0.0631_sm float32 fraction         Error in the Lum. Fract. for age 0.0631 SSP  1395
+ e_lumfrac_age_0.0708_sm float32 fraction         Error in the Lum. Fract. for age 0.0708 SSP  1395
+ e_lumfrac_age_0.1000_sm float32 fraction         Error in the Lum. Fract. for age 0.1000 SSP  1395
+ e_lumfrac_age_0.1122_sm float32 fraction         Error in the Lum. Fract. for age 0.1122 SSP  1395
+ e_lumfrac_age_0.1259_sm float32 fraction         Error in the Lum. Fract. for age 0.1259 SSP  1395
+ e_lumfrac_age_0.1585_sm float32 fraction         Error in the Lum. Fract. for age 0.1585 SSP  1395
+ e_lumfrac_age_0.1995_sm float32 fraction         Error in the Lum. Fract. for age 0.1995 SSP  1395
+ e_lumfrac_age_0.2818_sm float32 fraction         Error in the Lum. Fract. for age 0.2818 SSP  1395
+ e_lumfrac_age_0.3548_sm float32 fraction         Error in the Lum. Fract. for age 0.3548 SSP  1395
+ e_lumfrac_age_0.5012_sm float32 fraction         Error in the Lum. Fract. for age 0.5012 SSP  1395
+ e_lumfrac_age_0.7079_sm float32 fraction         Error in the Lum. Fract. for age 0.7079 SSP  1395
+ e_lumfrac_age_0.8913_sm float32 fraction         Error in the Lum. Fract. for age 0.8913 SSP  1395
+ e_lumfrac_age_1.1220_sm float32 fraction        Error in the Lum. Fract. for age 01.1220 SSP  1395
+ e_lumfrac_age_1.2589_sm float32 fraction        Error in the Lum. Fract. for age 01.2589 SSP  1395
+ e_lumfrac_age_1.4125_sm float32 fraction        Error in the Lum. Fract. for age 01.4125 SSP  1395
+ e_lumfrac_age_1.9953_sm float32 fraction        Error in the Lum. Fract. for age 01.9953 SSP  1395
+ e_lumfrac_age_2.5119_sm float32 fraction        Error in the Lum. Fract. for age 02.5119 SSP  1395
+ e_lumfrac_age_3.5481_sm float32 fraction        Error in the Lum. Fract. for age 03.5481 SSP  1395
+ e_lumfrac_age_4.4668_sm float32 fraction        Error in the Lum. Fract. for age 04.4668 SSP  1395
+ e_lumfrac_age_6.3096_sm float32 fraction        Error in the Lum. Fract. for age 06.3096 SSP  1395
+ e_lumfrac_age_7.9433_sm float32 fraction        Error in the Lum. Fract. for age 07.9433 SSP  1395
+ e_lumfrac_age_10.000_sm float32 fraction         Error in the Lum. Fract. for age 10.000 SSP  1395
+e_lumfrac_age_12.5893_sm float32 fraction        Error in the Lum. Fract. for age 12.5893 SSP  1395
+e_lumfrac_age_14.1254_sm float32 fraction        Error in the Lum. Fract. for age 14.1254 SSP  1395
 
 filename: NGC4047.pipe3d.hdf5
 path: SSP_rg
@@ -274,8 +282,8 @@ path: SSP_rg
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
-           ra_abs float64                          deg   .12f                                                sample ra coord     0
-          dec_abs float64                          deg   .12f                                               sample dec coord     0
+           ra_abs float32                          deg    .6f                                                sample ra coord     0
+          dec_abs float32                          deg    .6f                                               sample dec coord     0
            ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
           dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
@@ -312,247 +320,255 @@ path: SSP_sm
              Name bytes10                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
-           ra_abs float64                          deg   .12f                                                sample ra coord     0
-          dec_abs float64                          deg   .12f                                               sample dec coord     0
+           ra_abs float32                          deg    .6f                                                sample ra coord     0
+          dec_abs float32                          deg    .6f                                               sample dec coord     0
            ra_off float32                          deg    .6f                                       ra offset from ref pixel     0
           dec_off float32                          deg    .6f                                      dec offset from ref pixel     0
           rad_arc float32                       arcsec    .3f                                           radius based on LEDA     0
           azi_ang float32                          deg    .3f                                            azang based on LEDA     0
-     Vcont_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)                                                     pseudo V-band map  1389
-     cont_segm_sm float32                         none                                           continuum segmentation file  1389
-    cont_dezon_sm float32                         none                                         continuum dezonification file  1389
-    medflx_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)                     median intensity flux within the wavelength range  1389
-  e_medflx_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)              StdDev median intensity flux within the wavelength range  1389
-       age_lwt_sm float32                      dex(yr)                     luminosity weighted age of the stellar population  1389
-       age_mwt_sm float32                      dex(yr)                           mass weighted age of the stellar population  1389
-     e_age_lwt_sm float32                     fraction                            error of the age of the stellar population  1389
-        ZH_lwt_sm float32                          dex             luminosity weighted metallicity of the stellar population  1389
-        ZH_mwt_sm float32                          dex                   mass weighted metallicity of the stellar population  1389
-      e_ZH_lwt_sm float32                     fraction                           error metallicity of the stellar population  1389
-        Av_ssp_sm float32                          mag                     average dust attnuation of the stellar population  1389
-      e_Av_ssp_sm float32                          mag        error of the average dust attnuation of the stellar population  1389
-       vel_ssp_sm float32                       km / s                                    velocity of the stellar population  1389
-     e_vel_ssp_sm float32                       km / s                       error in the velocity of the stellar population  1389
-     vdisp_ssp_sm float32                       km / s                         velocity dispersion of the stellar population  1389
-   e_vdisp_ssp_sm float32                       km / s                error in velocity dispersion of the stellar population  1389
-        ML_ssp_sm float32             solMass / solLum                 average mass-to-light ratio of the stellar population  1389
-      mass_ssp_sm float32       dex(solMass / arcsec2)                                                  stellar mass density  1389
-mass_Avcor_ssp_sm float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1389
-       sigstar_sm float32                solMass / pc2                                          stellar mass surface density  1389
- sigstar_Avcor_sm float32                solMass / pc2                           stellar mass surface density dust corrected  1389
-    fe_sigstar_sm float32                     fraction                                    fractional error in continuum flux  1389
+     Vcont_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)                                                     pseudo V-band map  1395
+     cont_segm_sm float32                         none                                           continuum segmentation file  1395
+    cont_dezon_sm float32                         none                                         continuum dezonification file  1395
+    medflx_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)                     median intensity flux within the wavelength range  1395
+  e_medflx_ssp_sm float32 1e-16 erg / (Angstrom cm2 s)              StdDev median intensity flux within the wavelength range  1395
+       age_lwt_sm float32                      dex(yr)                     luminosity weighted age of the stellar population  1395
+       age_mwt_sm float32                      dex(yr)                           mass weighted age of the stellar population  1395
+     e_age_lwt_sm float32                     fraction                            error of the age of the stellar population  1395
+        ZH_lwt_sm float32                          dex             luminosity weighted metallicity of the stellar population  1395
+        ZH_mwt_sm float32                          dex                   mass weighted metallicity of the stellar population  1395
+      e_ZH_lwt_sm float32                     fraction                           error metallicity of the stellar population  1395
+        Av_ssp_sm float32                          mag                     average dust attnuation of the stellar population  1395
+      e_Av_ssp_sm float32                          mag        error of the average dust attnuation of the stellar population  1395
+       vel_ssp_sm float32                       km / s                                    velocity of the stellar population  1395
+     e_vel_ssp_sm float32                       km / s                       error in the velocity of the stellar population  1395
+     vdisp_ssp_sm float32                       km / s                         velocity dispersion of the stellar population  1395
+   e_vdisp_ssp_sm float32                       km / s                error in velocity dispersion of the stellar population  1395
+        ML_ssp_sm float32             solMass / solLum                 average mass-to-light ratio of the stellar population  1395
+      mass_ssp_sm float32       dex(solMass / arcsec2)                                                  stellar mass density  1395
+mass_Avcor_ssp_sm float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1395
+       sigstar_sm float32                solMass / pc2                                          stellar mass surface density  1395
+ sigstar_Avcor_sm float32                solMass / pc2                           stellar mass surface density dust corrected  1395
+    fe_sigstar_sm float32                     fraction                                    fractional error in continuum flux  1395
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_rg
 <Table length=1849>
-        name          dtype          unit        format                     description                     n_bad
--------------------- ------- ------------------- ------ --------------------------------------------------- -----
-                Name bytes10                                                                    Galaxy Name     0
-                  ix   int32                                             0-based pixel index in x direction     0
-                  iy   int32                                             0-based pixel index in y direction     0
-              ra_abs float64                 deg   .12f                                     sample ra coord     0
-             dec_abs float64                 deg   .12f                                    sample dec coord     0
-              ra_off float32                 deg    .6f                            ra offset from ref pixel     0
-             dec_off float32                 deg    .6f                           dec offset from ref pixel     0
-             rad_arc float32              arcsec    .3f                                radius based on LEDA     0
-             azi_ang float32                 deg    .3f                                 azang based on LEDA     0
-   flux_[OII]3727_rg float32 1e-16 erg / (cm2 s)                                                             1367
-  flux_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                                                             1367
-  flux_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                                                             1367
-       flux_Hbeta_rg float32 1e-16 erg / (cm2 s)                                                             1367
-    flux_[OI]6300_rg float32 1e-16 erg / (cm2 s)                                                             1367
-      flux_Halpha_rg float32 1e-16 erg / (cm2 s)                                                             1367
-   flux_[NII]6583_rg float32 1e-16 erg / (cm2 s)                                                             1367
-   flux_[NII]6548_rg float32 1e-16 erg / (cm2 s)                                                             1367
-   flux_[SII]6717_rg float32 1e-16 erg / (cm2 s)                                                             1367
-   flux_[SII]6731_rg float32 1e-16 erg / (cm2 s)                                                             1367
-    vel_[OII]3727_rg float32              km / s                                                             1367
-   vel_[OIII]5007_rg float32              km / s                                                             1367
-   vel_[OIII]4959_rg float32              km / s                                                             1367
-        vel_Hbeta_rg float32              km / s                                                             1367
-     vel_[OI]6300_rg float32              km / s                                                             1367
-       vel_Halpha_rg float32              km / s                                                             1367
-    vel_[NII]6583_rg float32              km / s                                                             1367
-    vel_[NII]6548_rg float32              km / s                                                             1367
-    vel_[SII]6717_rg float32              km / s                                                             1367
-    vel_[SII]6731_rg float32              km / s                                                             1367
-   disp_[OII]3727_rg float32            Angstrom                                                             1367
-  disp_[OIII]5007_rg float32            Angstrom                                                             1367
-  disp_[OIII]4959_rg float32            Angstrom                                                             1367
-       disp_Hbeta_rg float32            Angstrom                                                             1367
-    disp_[OI]6300_rg float32            Angstrom                                                             1367
-      disp_Halpha_rg float32            Angstrom                                                             1367
-   disp_[NII]6583_rg float32            Angstrom                                                             1367
-   disp_[NII]6548_rg float32            Angstrom                                                             1367
-   disp_[SII]6717_rg float32            Angstrom                                                             1367
-   disp_[SII]6731_rg float32            Angstrom                                                             1367
-     EW_[OII]3727_rg float32            Angstrom                                                             1367
-    EW_[OIII]5007_rg float32            Angstrom                                                             1367
-    EW_[OIII]4959_rg float32            Angstrom                                                             1367
-         EW_Hbeta_rg float32            Angstrom                                                             1367
-      EW_[OI]6300_rg float32            Angstrom                                                             1367
-        EW_Halpha_rg float32            Angstrom                                                             1367
-     EW_[NII]6583_rg float32            Angstrom                                                             1367
-     EW_[NII]6548_rg float32            Angstrom                                                             1367
-     EW_[SII]6717_rg float32            Angstrom                                                             1367
-     EW_[SII]6731_rg float32            Angstrom                                                             1367
- e_flux_[OII]3727_rg float32 1e-16 erg / (cm2 s)                                                             1367
-e_flux_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                                                             1367
-e_flux_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                                                             1367
-     e_flux_Hbeta_rg float32 1e-16 erg / (cm2 s)                                                             1367
-  e_flux_[OI]6300_rg float32 1e-16 erg / (cm2 s)                                                             1367
-    e_flux_Halpha_rg float32 1e-16 erg / (cm2 s)                                                             1367
- e_flux_[NII]6583_rg float32 1e-16 erg / (cm2 s)                                                             1367
- e_flux_[NII]6548_rg float32 1e-16 erg / (cm2 s)                                                             1367
- e_flux_[SII]6717_rg float32 1e-16 erg / (cm2 s)                                                             1367
- e_flux_[SII]6731_rg float32 1e-16 erg / (cm2 s)                                                             1367
-  e_vel_[OII]3727_rg float32              km / s                                                             1367
- e_vel_[OIII]5007_rg float32              km / s                                                             1367
- e_vel_[OIII]4959_rg float32              km / s                                                             1367
-      e_vel_Hbeta_rg float32              km / s                                                             1367
-   e_vel_[OI]6300_rg float32              km / s                                                             1367
-     e_vel_Halpha_rg float32              km / s                                                             1367
-  e_vel_[NII]6583_rg float32              km / s                                                             1367
-  e_vel_[NII]6548_rg float32              km / s                                                             1367
-  e_vel_[SII]6717_rg float32              km / s                                                             1367
-  e_vel_[SII]6731_rg float32              km / s                                                             1367
- e_disp_[OII]3727_rg float32            Angstrom                                                             1367
-e_disp_[OIII]5007_rg float32            Angstrom                                                             1367
-e_disp_[OIII]4959_rg float32            Angstrom                                                             1367
-     e_disp_Hbeta_rg float32            Angstrom                                                             1367
-  e_disp_[OI]6300_rg float32            Angstrom                                                             1367
-    e_disp_Halpha_rg float32            Angstrom                                                             1367
- e_disp_[NII]6583_rg float32            Angstrom                                                             1367
- e_disp_[NII]6548_rg float32            Angstrom                                                             1367
- e_disp_[SII]6717_rg float32            Angstrom                                                             1367
- e_disp_[SII]6731_rg float32            Angstrom                                                             1367
-   e_EW_[OII]3727_rg float32            Angstrom                                                             1367
-  e_EW_[OIII]5007_rg float32            Angstrom                                                             1367
-  e_EW_[OIII]4959_rg float32            Angstrom                                                             1367
-       e_EW_Hbeta_rg float32            Angstrom                                                             1367
-    e_EW_[OI]6300_rg float32            Angstrom                                                             1367
-      e_EW_Halpha_rg float32            Angstrom                                                             1367
-   e_EW_[NII]6583_rg float32            Angstrom                                                             1367
-   e_EW_[NII]6548_rg float32            Angstrom                                                             1367
-   e_EW_[SII]6717_rg float32            Angstrom                                                             1367
-   e_EW_[SII]6731_rg float32            Angstrom                                                             1367
-     flux_sigsfr0_rg float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1367
-  fe_flux_sigsfr0_rg float32            fraction                            fractional error in Halpha flux  1367
-      flux_sigsfr_rg float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1502
-    e_flux_sigsfr_rg float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1502
-  AHa_flux_sigsfr_rg float32                 mag                                      Ha extinction from BD  1502
-e_AHa_flux_sigsfr_rg float32                 mag                             error of Ha extinction from BD     0
-              BPT_rg float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1428
-            p_BPT_rg float32                                                                BPT probability  1428
-           SF_BPT_rg    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
-              ZOH_rg float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1532
-            e_ZOH_rg float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1532
+         name          dtype          unit        format                     description                     n_bad
+--------------------- ------- ------------------- ------ --------------------------------------------------- -----
+                 Name bytes10                                                                    Galaxy Name     0
+                   ix   int32                                             0-based pixel index in x direction     0
+                   iy   int32                                             0-based pixel index in y direction     0
+               ra_abs float32                 deg    .6f                                     sample ra coord     0
+              dec_abs float32                 deg    .6f                                    sample dec coord     0
+               ra_off float32                 deg    .6f                            ra offset from ref pixel     0
+              dec_off float32                 deg    .6f                           dec offset from ref pixel     0
+              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
+              azi_ang float32                 deg    .3f                                 azang based on LEDA     0
+    flux_[OII]3727_rg float32 1e-16 erg / (cm2 s)                                                             1367
+   flux_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                                                             1367
+   flux_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                                                             1367
+        flux_Hbeta_rg float32 1e-16 erg / (cm2 s)                                                             1367
+     flux_[OI]6300_rg float32 1e-16 erg / (cm2 s)                                                             1367
+       flux_Halpha_rg float32 1e-16 erg / (cm2 s)                                                             1367
+    flux_[NII]6583_rg float32 1e-16 erg / (cm2 s)                                                             1367
+    flux_[NII]6548_rg float32 1e-16 erg / (cm2 s)                                                             1367
+    flux_[SII]6717_rg float32 1e-16 erg / (cm2 s)                                                             1367
+    flux_[SII]6731_rg float32 1e-16 erg / (cm2 s)                                                             1367
+     vel_[OII]3727_rg float32              km / s                                                             1367
+    vel_[OIII]5007_rg float32              km / s                                                             1367
+    vel_[OIII]4959_rg float32              km / s                                                             1367
+         vel_Hbeta_rg float32              km / s                                                             1367
+      vel_[OI]6300_rg float32              km / s                                                             1367
+        vel_Halpha_rg float32              km / s                                                             1367
+     vel_[NII]6583_rg float32              km / s                                                             1367
+     vel_[NII]6548_rg float32              km / s                                                             1367
+     vel_[SII]6717_rg float32              km / s                                                             1367
+     vel_[SII]6731_rg float32              km / s                                                             1367
+    disp_[OII]3727_rg float32            Angstrom                                                             1367
+   disp_[OIII]5007_rg float32            Angstrom                                                             1367
+   disp_[OIII]4959_rg float32            Angstrom                                                             1367
+        disp_Hbeta_rg float32            Angstrom                                                             1367
+     disp_[OI]6300_rg float32            Angstrom                                                             1367
+       disp_Halpha_rg float32            Angstrom                                                             1367
+    disp_[NII]6583_rg float32            Angstrom                                                             1367
+    disp_[NII]6548_rg float32            Angstrom                                                             1367
+    disp_[SII]6717_rg float32            Angstrom                                                             1367
+    disp_[SII]6731_rg float32            Angstrom                                                             1367
+      EW_[OII]3727_rg float32            Angstrom                                                             1367
+     EW_[OIII]5007_rg float32            Angstrom                                                             1367
+     EW_[OIII]4959_rg float32            Angstrom                                                             1367
+          EW_Hbeta_rg float32            Angstrom                                                             1367
+       EW_[OI]6300_rg float32            Angstrom                                                             1367
+         EW_Halpha_rg float32            Angstrom                                                             1367
+      EW_[NII]6583_rg float32            Angstrom                                                             1367
+      EW_[NII]6548_rg float32            Angstrom                                                             1367
+      EW_[SII]6717_rg float32            Angstrom                                                             1367
+      EW_[SII]6731_rg float32            Angstrom                                                             1367
+  e_flux_[OII]3727_rg float32 1e-16 erg / (cm2 s)                                                             1367
+ e_flux_[OIII]5007_rg float32 1e-16 erg / (cm2 s)                                                             1367
+ e_flux_[OIII]4959_rg float32 1e-16 erg / (cm2 s)                                                             1367
+      e_flux_Hbeta_rg float32 1e-16 erg / (cm2 s)                                                             1367
+   e_flux_[OI]6300_rg float32 1e-16 erg / (cm2 s)                                                             1367
+     e_flux_Halpha_rg float32 1e-16 erg / (cm2 s)                                                             1367
+  e_flux_[NII]6583_rg float32 1e-16 erg / (cm2 s)                                                             1367
+  e_flux_[NII]6548_rg float32 1e-16 erg / (cm2 s)                                                             1367
+  e_flux_[SII]6717_rg float32 1e-16 erg / (cm2 s)                                                             1367
+  e_flux_[SII]6731_rg float32 1e-16 erg / (cm2 s)                                                             1367
+   e_vel_[OII]3727_rg float32              km / s                                                             1367
+  e_vel_[OIII]5007_rg float32              km / s                                                             1367
+  e_vel_[OIII]4959_rg float32              km / s                                                             1367
+       e_vel_Hbeta_rg float32              km / s                                                             1367
+    e_vel_[OI]6300_rg float32              km / s                                                             1367
+      e_vel_Halpha_rg float32              km / s                                                             1367
+   e_vel_[NII]6583_rg float32              km / s                                                             1367
+   e_vel_[NII]6548_rg float32              km / s                                                             1367
+   e_vel_[SII]6717_rg float32              km / s                                                             1367
+   e_vel_[SII]6731_rg float32              km / s                                                             1367
+  e_disp_[OII]3727_rg float32            Angstrom                                                             1367
+ e_disp_[OIII]5007_rg float32            Angstrom                                                             1367
+ e_disp_[OIII]4959_rg float32            Angstrom                                                             1367
+      e_disp_Hbeta_rg float32            Angstrom                                                             1367
+   e_disp_[OI]6300_rg float32            Angstrom                                                             1367
+     e_disp_Halpha_rg float32            Angstrom                                                             1367
+  e_disp_[NII]6583_rg float32            Angstrom                                                             1367
+  e_disp_[NII]6548_rg float32            Angstrom                                                             1367
+  e_disp_[SII]6717_rg float32            Angstrom                                                             1367
+  e_disp_[SII]6731_rg float32            Angstrom                                                             1367
+    e_EW_[OII]3727_rg float32            Angstrom                                                             1367
+   e_EW_[OIII]5007_rg float32            Angstrom                                                             1367
+   e_EW_[OIII]4959_rg float32            Angstrom                                                             1367
+        e_EW_Hbeta_rg float32            Angstrom                                                             1367
+     e_EW_[OI]6300_rg float32            Angstrom                                                             1367
+       e_EW_Halpha_rg float32            Angstrom                                                             1367
+    e_EW_[NII]6583_rg float32            Angstrom                                                             1367
+    e_EW_[NII]6548_rg float32            Angstrom                                                             1367
+    e_EW_[SII]6717_rg float32            Angstrom                                                             1367
+    e_EW_[SII]6731_rg float32            Angstrom                                                             1367
+    flux_Hbeta_sm3_rg float32 1e-16 erg / (cm2 s)                                                             1367
+   flux_Halpha_sm3_rg float32 1e-16 erg / (cm2 s)                                                             1367
+      flux_sigsfr0_rg float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1367
+    e_flux_sigsfr0_rg float32 solMass / (Gyr pc2)                   error of uncorrected SFR surface density  1367
+  flux_sigsfr_corr_rg float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1385
+e_flux_sigsfr_corr_rg float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1385
+     flux_AHa_corr_rg float32                 mag                                      Ha extinction from BD  1385
+   e_flux_AHa_corr_rg float32                 mag                             error of Ha extinction from BD  1385
+  flux_AHa_smooth3_rg float32                 mag                             Ha extinction after 3as smooth  1367
+ flux_sigsfr_adopt_rg float32 solMass / (Gyr pc2)               smooth+clip BD corrected SFR surface density  1367
+               BPT_rg float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1428
+             p_BPT_rg float32                                                                BPT probability  1428
+            SF_BPT_rg    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
+               ZOH_rg float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1532
+             e_ZOH_rg float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1532
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_sm
 <Table length=1849>
-        name          dtype          unit        format                     description                     n_bad
--------------------- ------- ------------------- ------ --------------------------------------------------- -----
-                Name bytes10                                                                    Galaxy Name     0
-                  ix   int32                                             0-based pixel index in x direction     0
-                  iy   int32                                             0-based pixel index in y direction     0
-              ra_abs float64                 deg   .12f                                     sample ra coord     0
-             dec_abs float64                 deg   .12f                                    sample dec coord     0
-              ra_off float32                 deg    .6f                            ra offset from ref pixel     0
-             dec_off float32                 deg    .6f                           dec offset from ref pixel     0
-             rad_arc float32              arcsec    .3f                                radius based on LEDA     0
-             azi_ang float32                 deg    .3f                                 azang based on LEDA     0
-   flux_[OII]3727_sm float32 1e-16 erg / (cm2 s)                                                             1420
-  flux_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                                                             1420
-  flux_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                                                             1420
-       flux_Hbeta_sm float32 1e-16 erg / (cm2 s)                                                             1420
-    flux_[OI]6300_sm float32 1e-16 erg / (cm2 s)                                                             1420
-      flux_Halpha_sm float32 1e-16 erg / (cm2 s)                                                             1420
-   flux_[NII]6583_sm float32 1e-16 erg / (cm2 s)                                                             1420
-   flux_[NII]6548_sm float32 1e-16 erg / (cm2 s)                                                             1420
-   flux_[SII]6717_sm float32 1e-16 erg / (cm2 s)                                                             1420
-   flux_[SII]6731_sm float32 1e-16 erg / (cm2 s)                                                             1420
-    vel_[OII]3727_sm float32              km / s                                                             1420
-   vel_[OIII]5007_sm float32              km / s                                                             1420
-   vel_[OIII]4959_sm float32              km / s                                                             1420
-        vel_Hbeta_sm float32              km / s                                                             1420
-     vel_[OI]6300_sm float32              km / s                                                             1420
-       vel_Halpha_sm float32              km / s                                                             1420
-    vel_[NII]6583_sm float32              km / s                                                             1420
-    vel_[NII]6548_sm float32              km / s                                                             1420
-    vel_[SII]6717_sm float32              km / s                                                             1420
-    vel_[SII]6731_sm float32              km / s                                                             1420
-   disp_[OII]3727_sm float32            Angstrom                                                             1420
-  disp_[OIII]5007_sm float32            Angstrom                                                             1420
-  disp_[OIII]4959_sm float32            Angstrom                                                             1420
-       disp_Hbeta_sm float32            Angstrom                                                             1420
-    disp_[OI]6300_sm float32            Angstrom                                                             1420
-      disp_Halpha_sm float32            Angstrom                                                             1420
-   disp_[NII]6583_sm float32            Angstrom                                                             1420
-   disp_[NII]6548_sm float32            Angstrom                                                             1420
-   disp_[SII]6717_sm float32            Angstrom                                                             1420
-   disp_[SII]6731_sm float32            Angstrom                                                             1420
-     EW_[OII]3727_sm float32            Angstrom                                                             1420
-    EW_[OIII]5007_sm float32            Angstrom                                                             1420
-    EW_[OIII]4959_sm float32            Angstrom                                                             1420
-         EW_Hbeta_sm float32            Angstrom                                                             1420
-      EW_[OI]6300_sm float32            Angstrom                                                             1420
-        EW_Halpha_sm float32            Angstrom                                                             1420
-     EW_[NII]6583_sm float32            Angstrom                                                             1420
-     EW_[NII]6548_sm float32            Angstrom                                                             1420
-     EW_[SII]6717_sm float32            Angstrom                                                             1420
-     EW_[SII]6731_sm float32            Angstrom                                                             1420
- e_flux_[OII]3727_sm float32 1e-16 erg / (cm2 s)                                                             1420
-e_flux_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                                                             1420
-e_flux_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                                                             1420
-     e_flux_Hbeta_sm float32 1e-16 erg / (cm2 s)                                                             1420
-  e_flux_[OI]6300_sm float32 1e-16 erg / (cm2 s)                                                             1420
-    e_flux_Halpha_sm float32 1e-16 erg / (cm2 s)                                                             1420
- e_flux_[NII]6583_sm float32 1e-16 erg / (cm2 s)                                                             1420
- e_flux_[NII]6548_sm float32 1e-16 erg / (cm2 s)                                                             1420
- e_flux_[SII]6717_sm float32 1e-16 erg / (cm2 s)                                                             1420
- e_flux_[SII]6731_sm float32 1e-16 erg / (cm2 s)                                                             1420
-  e_vel_[OII]3727_sm float32              km / s                                                             1420
- e_vel_[OIII]5007_sm float32              km / s                                                             1420
- e_vel_[OIII]4959_sm float32              km / s                                                             1420
-      e_vel_Hbeta_sm float32              km / s                                                             1420
-   e_vel_[OI]6300_sm float32              km / s                                                             1420
-     e_vel_Halpha_sm float32              km / s                                                             1420
-  e_vel_[NII]6583_sm float32              km / s                                                             1420
-  e_vel_[NII]6548_sm float32              km / s                                                             1420
-  e_vel_[SII]6717_sm float32              km / s                                                             1420
-  e_vel_[SII]6731_sm float32              km / s                                                             1420
- e_disp_[OII]3727_sm float32            Angstrom                                                             1420
-e_disp_[OIII]5007_sm float32            Angstrom                                                             1420
-e_disp_[OIII]4959_sm float32            Angstrom                                                             1420
-     e_disp_Hbeta_sm float32            Angstrom                                                             1420
-  e_disp_[OI]6300_sm float32            Angstrom                                                             1420
-    e_disp_Halpha_sm float32            Angstrom                                                             1420
- e_disp_[NII]6583_sm float32            Angstrom                                                             1420
- e_disp_[NII]6548_sm float32            Angstrom                                                             1420
- e_disp_[SII]6717_sm float32            Angstrom                                                             1420
- e_disp_[SII]6731_sm float32            Angstrom                                                             1420
-   e_EW_[OII]3727_sm float32            Angstrom                                                             1420
-  e_EW_[OIII]5007_sm float32            Angstrom                                                             1420
-  e_EW_[OIII]4959_sm float32            Angstrom                                                             1420
-       e_EW_Hbeta_sm float32            Angstrom                                                             1420
-    e_EW_[OI]6300_sm float32            Angstrom                                                             1420
-      e_EW_Halpha_sm float32            Angstrom                                                             1420
-   e_EW_[NII]6583_sm float32            Angstrom                                                             1420
-   e_EW_[NII]6548_sm float32            Angstrom                                                             1420
-   e_EW_[SII]6717_sm float32            Angstrom                                                             1420
-   e_EW_[SII]6731_sm float32            Angstrom                                                             1420
-     flux_sigsfr0_sm float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1420
-  fe_flux_sigsfr0_sm float32            fraction                            fractional error in Halpha flux  1420
-      flux_sigsfr_sm float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1481
-    e_flux_sigsfr_sm float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1481
-  AHa_flux_sigsfr_sm float32                 mag                                      Ha extinction from BD  1481
-e_AHa_flux_sigsfr_sm float32                 mag                             error of Ha extinction from BD     0
-              BPT_sm float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1427
-            p_BPT_sm float32                                                                BPT probability  1427
-           SF_BPT_sm    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
-              ZOH_sm float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1510
-            e_ZOH_sm float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1510
+         name          dtype          unit        format                     description                     n_bad
+--------------------- ------- ------------------- ------ --------------------------------------------------- -----
+                 Name bytes10                                                                    Galaxy Name     0
+                   ix   int32                                             0-based pixel index in x direction     0
+                   iy   int32                                             0-based pixel index in y direction     0
+               ra_abs float32                 deg    .6f                                     sample ra coord     0
+              dec_abs float32                 deg    .6f                                    sample dec coord     0
+               ra_off float32                 deg    .6f                            ra offset from ref pixel     0
+              dec_off float32                 deg    .6f                           dec offset from ref pixel     0
+              rad_arc float32              arcsec    .3f                                radius based on LEDA     0
+              azi_ang float32                 deg    .3f                                 azang based on LEDA     0
+    flux_[OII]3727_sm float32 1e-16 erg / (cm2 s)                                                             1386
+   flux_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                                                             1386
+   flux_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                                                             1386
+        flux_Hbeta_sm float32 1e-16 erg / (cm2 s)                                                             1386
+     flux_[OI]6300_sm float32 1e-16 erg / (cm2 s)                                                             1386
+       flux_Halpha_sm float32 1e-16 erg / (cm2 s)                                                             1386
+    flux_[NII]6583_sm float32 1e-16 erg / (cm2 s)                                                             1386
+    flux_[NII]6548_sm float32 1e-16 erg / (cm2 s)                                                             1386
+    flux_[SII]6717_sm float32 1e-16 erg / (cm2 s)                                                             1386
+    flux_[SII]6731_sm float32 1e-16 erg / (cm2 s)                                                             1386
+     vel_[OII]3727_sm float32              km / s                                                             1386
+    vel_[OIII]5007_sm float32              km / s                                                             1386
+    vel_[OIII]4959_sm float32              km / s                                                             1386
+         vel_Hbeta_sm float32              km / s                                                             1386
+      vel_[OI]6300_sm float32              km / s                                                             1386
+        vel_Halpha_sm float32              km / s                                                             1386
+     vel_[NII]6583_sm float32              km / s                                                             1386
+     vel_[NII]6548_sm float32              km / s                                                             1386
+     vel_[SII]6717_sm float32              km / s                                                             1386
+     vel_[SII]6731_sm float32              km / s                                                             1386
+    disp_[OII]3727_sm float32            Angstrom                                                             1386
+   disp_[OIII]5007_sm float32            Angstrom                                                             1386
+   disp_[OIII]4959_sm float32            Angstrom                                                             1386
+        disp_Hbeta_sm float32            Angstrom                                                             1386
+     disp_[OI]6300_sm float32            Angstrom                                                             1386
+       disp_Halpha_sm float32            Angstrom                                                             1386
+    disp_[NII]6583_sm float32            Angstrom                                                             1386
+    disp_[NII]6548_sm float32            Angstrom                                                             1386
+    disp_[SII]6717_sm float32            Angstrom                                                             1386
+    disp_[SII]6731_sm float32            Angstrom                                                             1386
+      EW_[OII]3727_sm float32            Angstrom                                                             1386
+     EW_[OIII]5007_sm float32            Angstrom                                                             1386
+     EW_[OIII]4959_sm float32            Angstrom                                                             1386
+          EW_Hbeta_sm float32            Angstrom                                                             1386
+       EW_[OI]6300_sm float32            Angstrom                                                             1386
+         EW_Halpha_sm float32            Angstrom                                                             1386
+      EW_[NII]6583_sm float32            Angstrom                                                             1386
+      EW_[NII]6548_sm float32            Angstrom                                                             1386
+      EW_[SII]6717_sm float32            Angstrom                                                             1386
+      EW_[SII]6731_sm float32            Angstrom                                                             1386
+  e_flux_[OII]3727_sm float32 1e-16 erg / (cm2 s)                                                             1386
+ e_flux_[OIII]5007_sm float32 1e-16 erg / (cm2 s)                                                             1386
+ e_flux_[OIII]4959_sm float32 1e-16 erg / (cm2 s)                                                             1386
+      e_flux_Hbeta_sm float32 1e-16 erg / (cm2 s)                                                             1386
+   e_flux_[OI]6300_sm float32 1e-16 erg / (cm2 s)                                                             1386
+     e_flux_Halpha_sm float32 1e-16 erg / (cm2 s)                                                             1386
+  e_flux_[NII]6583_sm float32 1e-16 erg / (cm2 s)                                                             1386
+  e_flux_[NII]6548_sm float32 1e-16 erg / (cm2 s)                                                             1386
+  e_flux_[SII]6717_sm float32 1e-16 erg / (cm2 s)                                                             1386
+  e_flux_[SII]6731_sm float32 1e-16 erg / (cm2 s)                                                             1386
+   e_vel_[OII]3727_sm float32              km / s                                                             1386
+  e_vel_[OIII]5007_sm float32              km / s                                                             1386
+  e_vel_[OIII]4959_sm float32              km / s                                                             1386
+       e_vel_Hbeta_sm float32              km / s                                                             1386
+    e_vel_[OI]6300_sm float32              km / s                                                             1386
+      e_vel_Halpha_sm float32              km / s                                                             1386
+   e_vel_[NII]6583_sm float32              km / s                                                             1386
+   e_vel_[NII]6548_sm float32              km / s                                                             1386
+   e_vel_[SII]6717_sm float32              km / s                                                             1386
+   e_vel_[SII]6731_sm float32              km / s                                                             1386
+  e_disp_[OII]3727_sm float32            Angstrom                                                             1386
+ e_disp_[OIII]5007_sm float32            Angstrom                                                             1386
+ e_disp_[OIII]4959_sm float32            Angstrom                                                             1386
+      e_disp_Hbeta_sm float32            Angstrom                                                             1386
+   e_disp_[OI]6300_sm float32            Angstrom                                                             1386
+     e_disp_Halpha_sm float32            Angstrom                                                             1386
+  e_disp_[NII]6583_sm float32            Angstrom                                                             1386
+  e_disp_[NII]6548_sm float32            Angstrom                                                             1386
+  e_disp_[SII]6717_sm float32            Angstrom                                                             1386
+  e_disp_[SII]6731_sm float32            Angstrom                                                             1386
+    e_EW_[OII]3727_sm float32            Angstrom                                                             1386
+   e_EW_[OIII]5007_sm float32            Angstrom                                                             1386
+   e_EW_[OIII]4959_sm float32            Angstrom                                                             1386
+        e_EW_Hbeta_sm float32            Angstrom                                                             1386
+     e_EW_[OI]6300_sm float32            Angstrom                                                             1386
+       e_EW_Halpha_sm float32            Angstrom                                                             1386
+    e_EW_[NII]6583_sm float32            Angstrom                                                             1386
+    e_EW_[NII]6548_sm float32            Angstrom                                                             1386
+    e_EW_[SII]6717_sm float32            Angstrom                                                             1386
+    e_EW_[SII]6731_sm float32            Angstrom                                                             1386
+    flux_Hbeta_sm5_sm float32 1e-16 erg / (cm2 s)                                                             1386
+   flux_Halpha_sm5_sm float32 1e-16 erg / (cm2 s)                                                             1386
+      flux_sigsfr0_sm float32 solMass / (Gyr pc2)                          SFR surface density no extinction  1386
+    e_flux_sigsfr0_sm float32 solMass / (Gyr pc2)                   error of uncorrected SFR surface density  1386
+  flux_sigsfr_corr_sm float32 solMass / (Gyr pc2)                           BD corrected SFR surface density  1387
+e_flux_sigsfr_corr_sm float32 solMass / (Gyr pc2)                  error of BD corrected SFR surface density  1387
+     flux_AHa_corr_sm float32                 mag                                      Ha extinction from BD  1387
+   e_flux_AHa_corr_sm float32                 mag                             error of Ha extinction from BD  1387
+  flux_AHa_smooth5_sm float32                 mag                             Ha extinction after 5as smooth  1386
+ flux_sigsfr_adopt_sm float32 solMass / (Gyr pc2)               smooth+clip BD corrected SFR surface density  1386
+               BPT_sm float32                        .1f               BPT type (-1=SF 0=inter 1=LINER 2=Sy)  1397
+             p_BPT_sm float32                                                                BPT probability  1397
+            SF_BPT_sm    bool                                      True if star forming (BPT=-1 and EW_Ha>6)     0
+               ZOH_sm float32                 dex                 12+log(O/H) using o3n2 method in Marino+13  1489
+             e_ZOH_sm float32                 dex        error in 12+log(O/H) using o3n2 method in Marino+13  1489
 
 filename: NGC4047.pipe3d.hdf5
 path: indices_rg
@@ -562,8 +578,8 @@ path: indices_rg
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
-         ra_abs float64      deg   .12f                    sample ra coord     0
-        dec_abs float64      deg   .12f                   sample dec coord     0
+         ra_abs float32      deg    .6f                    sample ra coord     0
+        dec_abs float32      deg    .6f                   sample dec coord     0
          ra_off float32      deg    .6f           ra offset from ref pixel     0
         dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
@@ -595,30 +611,30 @@ path: indices_sm
            Name bytes10                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
-         ra_abs float64      deg   .12f                    sample ra coord     0
-        dec_abs float64      deg   .12f                   sample dec coord     0
+         ra_abs float32      deg    .6f                    sample ra coord     0
+        dec_abs float32      deg    .6f                   sample dec coord     0
          ra_off float32      deg    .6f           ra offset from ref pixel     0
         dec_off float32      deg    .6f          dec offset from ref pixel     0
         rad_arc float32   arcsec    .3f               radius based on LEDA     0
         azi_ang float32      deg    .3f                azang based on LEDA     0
-    Hdel_idx_sm float32 Angstrom                                            1420
-    Hbet_idx_sm float32 Angstrom                                            1420
-     Mgb_idx_sm float32 Angstrom                                            1420
-  Fe5270_idx_sm float32 Angstrom                                            1420
-  Fe5335_idx_sm float32 Angstrom                                            1420
-   D4000_idx_sm float32 Angstrom                                            1420
-   Hdmod_idx_sm float32 Angstrom                                            1420
-    Hgam_idx_sm float32 Angstrom                                            1420
-      SN_idx_sm float32 Angstrom                                            1420
-  e_Hdel_idx_sm float32 Angstrom                                            1420
-  e_Hbet_idx_sm float32 Angstrom                                            1420
-   e_Mgb_idx_sm float32 Angstrom                                            1420
-e_Fe5270_idx_sm float32 Angstrom                                            1420
-e_Fe5335_idx_sm float32 Angstrom                                            1420
- e_D4000_idx_sm float32 Angstrom                                            1420
- e_Hdmod_idx_sm float32 Angstrom                                            1420
-  e_Hgam_idx_sm float32 Angstrom                                            1420
-    e_SN_idx_sm float32 Angstrom                                            1420
+    Hdel_idx_sm float32 Angstrom                                            1386
+    Hbet_idx_sm float32 Angstrom                                            1386
+     Mgb_idx_sm float32 Angstrom                                            1386
+  Fe5270_idx_sm float32 Angstrom                                            1386
+  Fe5335_idx_sm float32 Angstrom                                            1386
+   D4000_idx_sm float32 Angstrom                                            1386
+   Hdmod_idx_sm float32 Angstrom                                            1386
+    Hgam_idx_sm float32 Angstrom                                            1386
+      SN_idx_sm float32 Angstrom                                            1386
+  e_Hdel_idx_sm float32 Angstrom                                            1386
+  e_Hbet_idx_sm float32 Angstrom                                            1386
+   e_Mgb_idx_sm float32 Angstrom                                            1386
+e_Fe5270_idx_sm float32 Angstrom                                            1386
+e_Fe5335_idx_sm float32 Angstrom                                            1386
+ e_D4000_idx_sm float32 Angstrom                                            1386
+ e_Hdmod_idx_sm float32 Angstrom                                            1386
+  e_Hgam_idx_sm float32 Angstrom                                            1386
+    e_SN_idx_sm float32 Angstrom                                            1386
 
 
 filename: NGC4047.cocube_smo7.hdf5
@@ -649,6 +665,8 @@ path: dil
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
+     ra_abs float64           deg   .12f                                            sample ra coord     0
+    dec_abs float64           deg   .12f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
@@ -680,6 +698,8 @@ path: smo
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
+     ra_abs float64           deg   .12f                                            sample ra coord     0
+    dec_abs float64           deg   .12f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
@@ -709,6 +729,8 @@ path: str
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
+     ra_abs float64           deg   .12f                                            sample ra coord     0
+    dec_abs float64           deg   .12f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
@@ -721,5 +743,78 @@ path: str
 e_sigmol_fo float32 solMass / pc2                            error in sigmol deprojected to face-on   705
     mom0_13 float32      K km / s                          13CO integrated intensity using str mask   705
    emom0_13 float32      K km / s                              13CO error in mom0 assuming str mask   705
+
+
+filename: NGC4047_hex.comom_smo7.hdf5
+path: dil
+<Table length=2>
+    name     dtype       unit                            description                         n_bad
+----------- ------- ------------- ---------------------------------------------------------- -----
+       Name bytes10                                                              Galaxy Name     0
+         ix float64                                                                              0
+         iy float64                                                                              0
+     ra_abs float64           deg                                                                2
+    dec_abs float64           deg                                                                2
+     ra_off float64           deg                                                                2
+    dec_off float64           deg                                                                2
+    rad_arc float64                                                                              2
+    azi_ang float64                                                                              2
+   snrpk_12 float64                                          12CO peak signal to noise ratio     2
+    mom0_12 float64      K km / s                   12CO integrated intensity using dil mask     2
+   emom0_12 float64      K km / s                       12CO error in mom0 assuming dil mask     2
+    mom1_12 float64        km / s           12CO intensity wgtd mean velocity using dil mask     2
+   emom1_12 float64        km / s                       12CO error in mom1 assuming dil mask     2
+    mom2_12 float64        km / s                12CO intensity wgtd vel disp using dil mask     2
+   emom2_12 float64        km / s                       12CO error in mom2 assuming dil mask     2
+     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected     2
+   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected     2
+  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl     2
+e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on     2
+
+filename: NGC4047_hex.comom_smo7.hdf5
+path: smo
+<Table length=729>
+    name     dtype       unit                            description                         n_bad
+----------- ------- ------------- ---------------------------------------------------------- -----
+       Name bytes10                                                              Galaxy Name     0
+         ix float64                                                                              0
+         iy float64                                                                              0
+     ra_abs float64           deg                                                              729
+    dec_abs float64           deg                                                              729
+     ra_off float64           deg                                                              729
+    dec_off float64           deg                                                              729
+    rad_arc float64                                                                            729
+    azi_ang float64                                                                            729
+    mom0_12 float64      K km / s                   12CO integrated intensity using smo mask   729
+   emom0_12 float64      K km / s                       12CO error in mom0 assuming smo mask   729
+    mom1_12 float64        km / s                                                              729
+   emom1_12 float64        km / s                                                              729
+    mom2_12 float64        km / s                                                              729
+   emom2_12 float64        km / s                                                              729
+     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected   729
+   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected   729
+  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl   729
+e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on   729
+
+filename: NGC4047_hex.comom_smo7.hdf5
+path: str
+<Table length=2>
+    name     dtype       unit                            description                         n_bad
+----------- ------- ------------- ---------------------------------------------------------- -----
+       Name bytes10                                                              Galaxy Name     0
+         ix float64                                                                              0
+         iy float64                                                                              0
+     ra_abs float64           deg                                                                2
+    dec_abs float64           deg                                                                2
+     ra_off float64           deg                                                                2
+    dec_off float64           deg                                                                2
+    rad_arc float64                                                                              2
+    azi_ang float64                                                                              2
+    mom0_12 float64      K km / s                   12CO integrated intensity using str mask     2
+   emom0_12 float64      K km / s                       12CO error in mom0 assuming str mask     2
+     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected     2
+   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected     2
+  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl     2
+e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on     2
 
 
