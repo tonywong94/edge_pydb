@@ -43,8 +43,10 @@ class EdgeTable(_Table):
             self.table = _Table.read(util.fetch(file), path=path)
         self.__dict__.update(self.table.__dict__)
         
-    def join(self, table, join_type='inner', keys=['Name']):
+    def join(self, table, join_type='inner', keys=None):
         # check for ix or iy in both tables 
+        if keys is None:
+            keys = ['Name']
         join_keys = [i for i in keys]
         if 'ix' in self.colnames and 'ix' in table.colnames:
             join_keys.append('ix')

@@ -264,7 +264,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
     grid[:, liner] = 1 
     grid[:, seyfert] = 2
     
-    gauss2d = ndNormal(mean=(x, y), cov=(x_std, y_std))
+    gauss2d = ndNormal(mean=(x, y), cov=(x_std**2, y_std**2))
     pdf = gauss2d.pdf(pos)
     normal_prob = np.zeros((grid_size, grid_size))
     delta_x = x_arr[0][1] - x_arr[0][0]
