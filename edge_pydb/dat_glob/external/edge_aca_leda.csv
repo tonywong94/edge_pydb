@@ -1,0 +1,43 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: Name, datatype: string, description: Galaxy Name}
+# - {name: ledaRA, unit: hourangle, datatype: float64, description: RA J2000 from LEDA /al2000/}
+# - {name: ledaDE, unit: deg, datatype: float64, description: DEC J2000 from LEDA /de2000/}
+# - {name: ledaMorph, datatype: string, description: Hubble type from LEDA /type/}
+# - {name: ledaBar, datatype: string, description: B = bar present from LEDA /bar/}
+# - {name: ledaRing, datatype: string, description: R = ring present from LEDA /ring/}
+# - {name: ledaMultiple, datatype: int64, description: M = multiple system from LEDA /multiple/}
+# - {name: ledaType, datatype: float64, description: Morphological type from LEDA /t/}
+# - {name: ledaPA, unit: deg, datatype: float64, description: 'PA from LEDA /pa/, N to E'}
+# - {name: ledaBt, unit: mag, datatype: float64, description: Apparent B total magnitude from LEDA /bt/}
+# - {name: ledaIt, unit: mag, datatype: float64, description: Apparent I total magnitude from LEDA /it/}
+# - {name: ledaVmaxg, unit: km / s, datatype: float64, description: HI max v_rot uncorrected for incl from LEDA /vmaxg/}
+# - {name: ledaFIR, unit: mag, datatype: int64, description: FIR flux as magnitude from LEDA /mfir/}
+# - {name: ledaVrad, unit: km / s, datatype: float64, description: cz from mean data from LEDA /v/}
+# - {name: ledaA_Bgal, unit: mag, datatype: float64, description: Galactic A_B from LEDA /ag/}
+# - {name: ledaIncl, unit: deg, datatype: float64, description: Morph inclination from LEDA /incl/}
+# - {name: ledaVrot, unit: km / s, datatype: float64, description: HI max v_rot corrected for incl from LEDA /vrot/}
+# - {name: ledaVvir, unit: km / s, datatype: float64, description: Virgo infall corrected cz from LEDA /vvir/}
+# - {name: ledaModz, unit: mag, datatype: float64, description: Dist modulus from LEDA /modz/ based on /vvir/}
+# - {name: ledaD25, unit: arcmin, datatype: float64, format: .2f, description: Apparent B diameter from LEDA /logd25/ linearized}
+# - {name: ledaAxrat, datatype: float64, format: .4f, description: Minor to major axis ratio from LEDA /logr25/ linearized}
+# - {name: ledaAxIncl, unit: deg, datatype: float64, format: .1f, description: Inclination estimated from LEDA axratio using Bottinelli+83}
+# - {name: ledaDistMpc, unit: Mpc, datatype: float64, format: .2f, description: Luminosity distance in Mpc corresponding to ledaModz}
+# - {name: ledaHIflux, unit: Jy km / s, datatype: float64, format: .2f, description: 21cm flux from LEDA /m21/ linearized}
+# delimiter: ','
+# meta: !!omap
+# - {date: '2021-06-08'}
+# schema: astropy-2.0
+Name,ledaRA,ledaDE,ledaMorph,ledaBar,ledaRing,ledaMultiple,ledaType,ledaPA,ledaBt,ledaIt,ledaVmaxg,ledaFIR,ledaVrad,ledaA_Bgal,ledaIncl,ledaVrot,ledaVvir,ledaModz,ledaD25,ledaAxrat,ledaAxIncl,ledaDistMpc,ledaHIflux
+UGC11680N,21.128811,3.875,,,,,,70.0,14.5,,,,,0.363,,,,,,,,,
+UGC04240,8.1350284,14.837764,Sbc,,,,4.0,177.99,15.264,13.739,248.87,,8526.0,0.141,81.2,251.83,8485.9,35.466,1.26,0.2723,77.4,123.94,3.14
+UGC11792,21.703495,5.6153177,Sc,,,,5.8,160.29,15.525,13.012,162.46,,4812.4,0.605,90.0,162.46,4902.7,34.263,1.36,0.1832,83.0,71.22,3.69
+UGC11982,22.3147083,-1.0586722,SBc,B,,,6.0,171.84,15.711,14.439,122.92,,4905.3,0.453,84.61,123.46,4941.1,34.281,1.22,0.2004,81.4,71.81,5.12
+VV488NED0,22.947464,-8.9675601,SBc,B,,,4.9,73.64,15.367,13.059,313.0,,4934.0,0.157,90.0,313.0,4907.0,34.263,2.07,0.1914,83.2,71.22,10.50
+UGC05396,10.0279095,10.7564347,Sc,,,,5.8,155.94,14.577,13.286,152.63,,5402.3,0.133,69.95,162.48,5402.6,34.472,1.47,0.3837,68.8,78.42,5.12
+UGC04455,8.5258031,-1.1977411,Sa,B,R,,1.0,13.4,15.493,12.953,,,9272.3,0.147,39.99,,9163.5,35.633,0.83,0.7943,38.6,133.84,
+MCG-01-01,23.9863374,-4.1919115,Sb,,,,3.2,70.0,15.05,12.62,171.6,,5764.6,0.159,90.0,171.6,5719.1,34.601,1.57,0.2173,82.9,83.21,1.50
+NGC3300,10.6106743,14.1712429,S0,B,R,,-1.8,173.64,13.323,11.918,,,3017.7,0.165,75.44,,3056.5,33.246,1.53,0.5117,64.4,44.59,
+NGC7364,22.7401069,-0.1620814,S0-a,,R,,0.2,66.14,13.356,12.02,174.02,,4846.3,0.28,51.82,221.38,4869.6,34.245,1.65,0.6808,49.1,70.63,7.57
+NGC2449,7.7889734,26.9301937,SBab,B,,,2.0,135.47,14.111,12.401,101.13,,4880.6,0.191,73.74,105.34,4895.2,34.263,1.44,0.3954,69.8,71.22,2.11
