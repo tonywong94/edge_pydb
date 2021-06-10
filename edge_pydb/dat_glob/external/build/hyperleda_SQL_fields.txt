@@ -1,0 +1,18 @@
+#SQL constraints to generate edge_aca_ledaout.txt
+#SELECT
+objname,al2000,de2000,type,bar,ring,multiple,t,logd25,logr25,e_logr25,pa,bt,it,vmaxg,m21,mfir,v,ag,incl,vrot,vvir,modz
+#WHERE
+objname=objname('MCG-01-01-012') or 
+objname=objname('NGC2449') or 
+objname=objname('NGC3300') or 
+objname=objname('NGC3300') or
+objname=objname('NGC7364') or
+objname=objname('UGC04240') or
+objname=objname('UGC04455') or
+objname=objname('UGC05396') or
+objname=objname('UGC11680') or
+objname=objname('UGC11792') or
+objname=objname('UGC11982') or
+objname=objname('VV488')
+
+#output as CSV
