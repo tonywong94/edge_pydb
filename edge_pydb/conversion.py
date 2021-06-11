@@ -392,7 +392,7 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     flux_hb   = fluxtab['flux_Hbeta'+ext]
     ew_ha     = fluxtab['EW_Halpha'+ext]
 
-    good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0)
+    good = (flux_nii>1e-5) & (flux_oiii>1e-5) & (flux_ha>1e-5) & (flux_hb>1e-5)
     n2ha = np.full(len(flux_nii), np.nan)
     n2ha[good] = np.log10(flux_nii[good])  - np.log10(flux_ha[good])
     o3hb = np.full(len(flux_oiii), np.nan)
