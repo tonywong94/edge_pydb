@@ -322,11 +322,14 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
 
 if __name__ == "__main__":
     # NGC4047 only
-    do_califa(hexgrid=True)
+    do_califa()
+    do_califa(hexgrid=True, outname='NGC4047_hex')
+    # NGC3994 only
+    #do_califa(outname='NGC3994', gallist=['NGC3994'])
     # All EDGE125 galaxies
-    #gallist = [os.path.basename(file).split('.')[0] for file in 
-    #           sorted(glob.glob('fitsdata/[A-Z]*.SSP.cube.fits.gz'))]
-    #do_califa(gallist=gallist, outname='edge')
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('fitsdata/[A-Z]*.SSP.cube.fits.gz'))]
+    do_califa(gallist=gallist, outname='edge')
     # EDGE125 allpix data
-    #do_califa(gallist=gallist, outname='edge_allpix', allpix=True)
+    do_califa(gallist=gallist, outname='edge_allpix', allpix=True)
 
