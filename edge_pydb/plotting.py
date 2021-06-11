@@ -8,8 +8,36 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 
-# Prepare a 2D histogram from a scatterplot
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
+    '''
+    Prepare a 2D density histogram from a scatterplot.
+    Based on a response to a Stack Overflow question:
+    stackoverflow.com/questions/49662964/density-scatter-plot-for-huge-dataset-in-matplotlib
+
+    === Parameters ===
+    xarr : numpy.array
+        The x values in the scatter plot
+    yarr : numpy.array
+        The y values in the scatter plot
+    log : boolean
+        If True, take the log of input x and y, and of output density z
+    bins : list of int
+        The number of bins in x and y for the histogram
+
+    === Returns ===
+    x : numpy.array
+        x values sorted by increasing density
+    y : numpy.array
+        y values sorted by increasing density
+    z : numpy.array
+        histogram count for each point
+    hh : numpy.ndarray
+        2D histogram values
+    locx : numpy.array
+        bin edges along first dimension
+    locy : numpy.array
+        bin edges along first dimension
+    '''
     if log:
         x = np.log10(xarr)
         y = np.log10(yarr)
@@ -17,10 +45,10 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
         x = xarr
         y = yarr
     # Histogram the data
-    # https://stackoverflow.com/questions/49662964/density-scatter-plot-for-huge-dataset-in-matplotlib
     hh, locx, locy = np.histogram2d(x, y, bins=bins)
-    # Get the bin value for each point
+    # Get the bin value z for each (x,y) point
     z = np.array([hh[np.argmax(a<=locx[1:]),np.argmax(b<=locy[1:])] for a,b in zip(x,y)])
+    # Plot the highest density points last
     idx = z.argsort()
     x, y, z = x[idx], y[idx], z[idx]
     if log:
@@ -28,9 +56,33 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     return x, y, z, hh, locx, locy
 
 
-# Prepare binned averages from a scatterplot
-# If log=True, averaging is done after taking the log
 def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
+    '''
+    Prepare binned averages from a scatterplot.
+    If log=True, averaging is done after taking the log of x and y.
+
+    === Parameters ===
+    xarr : numpy.array
+        The x values in the scatter plot
+    yarr : numpy.array
+        The y values in the scatter plot
+    log : boolean
+        If True, take the log of input x and y
+    bins : int
+        The number of bins in x for the averaging
+    range : (float, float)
+        The lower and upper range of the bins. If not provided, uses (x.min(), x.max())
+    yval : string
+        'mean' (default) or 'median'
+
+    === Returns ===
+    xbin : numpy.array
+        the centers (NOT edges) of the x bins
+    ymean : numpy.array
+        the binned y-values
+    ystd : numpy.array
+        standard deviation of y-values
+    '''
     if log:
         good = (xarr>0) & (yarr>0)
         x = np.log10(xarr[good])
@@ -55,30 +107,34 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
         return [0], [0], [0]
 
 
-# Prepare a patch collection for a dotplot
-# def dotpatch(x, y, colors, size=1, vmin=None, vmax=None, cmap='jet'):
-# 
-#     patches = []
-#     for x1, y1 in zip(x,y):
-#         circle = Circle((x1, y1), size)
-#         patches.append(circle)
-# 
-#     p = PatchCollection(patches, cmap=cmap)
-#     p.set_array(np.array(colors))
-#     if vmax is None:
-#         vmax = np.nanmax(colors)
-#     if vmin is None:
-#         vmin = np.nanmin(colors)
-# 
-#     p.set_clim([vmin, vmax])
-#     xymin = np.min([x.min(),y.min()])
-#     xymax = np.max([x.max(),y.max()])
-# 
-#     return p, xymin, xymax
-
-
-# Prepare a patch collection for a dotplot
 def dotpatch(x, y, imval, blank=None, dotsize=1, axes=None, **kwargs):
+    '''
+    Generate and plot a patch collection for a dot plot.
+
+    === Parameters ===
+    x : numpy.array
+        The x values in the scatter plot (typically 'ix')
+    y : numpy.array
+        The y values in the scatter plot (typically 'iy')
+    imval : numpy.array
+        The z values which determine the dot colors
+    blank : boolean array
+        True values in this array are set to NaN
+    dotsize : float
+        The size of the filled circles
+    axes : matplotlib.axes
+        Axes for plotting
+    **kwargs :
+        Additional arguments including vmin, vmax, colormap normalization
+
+    === Returns ===
+    img : matplotlib image object
+        Plotted image
+    xminmax : tuple
+        [x.min(), x.max()]
+    yminmax : tuple
+        [y.min(), y.max()]
+    '''
     # blank is a boolean array that sets certain pixels to NaN
     if blank is not None:
         imval[blank] = np.nan
@@ -105,8 +161,32 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, axes=None, **kwargs):
     return img, xminmax, yminmax
 
 
-# Plot a non-dotpatch image
 def imarrayplot(x, y, imval, blank=None, axes=None, **kwargs):
+    '''
+    Plot a pixel image from a data column.
+
+    === Parameters ===
+    x : numpy.array
+        The x values in the image plot (typically 'ix')
+    y : numpy.array
+        The y values in the image plot (typically 'iy')
+    imval : numpy.array
+        The z values which determine the dot colors
+    blank : boolean array
+        True values in this array are set to NaN
+    axes : matplotlib.axes
+        Axes for plotting
+    **kwargs :
+        Additional arguments including vmin, vmax, colormap normalization
+
+    === Returns ===
+    img : matplotlib image object
+        Plotted image
+    xminmax : tuple
+        [x.min(), x.max()]
+    yminmax : tuple
+        [y.min(), y.max()]
+    '''
     if blank is not None:
         imval[blank] = np.nan
     if axes is None:
@@ -120,10 +200,40 @@ def imarrayplot(x, y, imval, blank=None, axes=None, **kwargs):
     return img, xminmax, yminmax
 
 
-# Multi-page plots with all galaxies
 def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg', 
             xrange=None, yrange=None, blank=None, plotstyle='image',
             cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, **kwargs):
+    '''
+    Plot multiple galaxies on a grid.
+
+    === Parameters ===
+    edgetab : EdgeTable
+        Table containing the galaxies and data to plot
+    gallist : list of strings
+        List of galaxy names; default is to plot all galaxies
+    column : string
+        Name of column in the table that has the image data
+    xrange : tuple of float
+        x limits applied to each panel (pixels)
+    yrange : tuple of float
+        y limits applied to each panel (pixels)
+    blank : boolean array with same length as 'column'
+        True values in this array are set to NaN
+    plotstyle : string
+        'dot' for dot plot, 'image' for pixel image
+    cmap : string
+        name of color map
+    nx : int
+        number of sub-panels in x direction
+    ny : int
+        number of sub-panels in y direction
+    dotsize : float
+        size of plot symbol for dot plot
+    pdfname : string
+        name of output PDF file, otherwise plot to screen
+    **kwargs :
+        Additional arguments including vmin, vmax, colormap normalization
+    '''
 
     # Plot all galaxies by default
     if gallist is None:
@@ -147,41 +257,41 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
 
             if plotstyle == 'dot':
                 if blank is not None:
-                    img, xran, yran = dotpatch(edgetab[galtab]['ix'], 
+                    img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
                                                edgetab[galtab]['iy'],
                                                edgetab[galtab][column], 
                                                blank=blank[galtab], 
                                                dotsize=dotsize, cmap=cmap, 
                                                axes=ax, **kwargs)
                 else:
-                    img, xran, yran = dotpatch(edgetab[galtab]['ix'], 
+                    img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
                                                edgetab[galtab]['iy'],
                                                edgetab[galtab][column],
                                                dotsize=dotsize, cmap=cmap, 
                                                axes=ax, **kwargs)
             else:
                 if blank is not None:
-                    img, xran, yran = imarrayplot(edgetab[galtab]['ix'], 
+                    img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
                                                   edgetab[galtab]['iy'],
                                                   edgetab[galtab][column], 
                                                   blank=blank[galtab], 
                                                   cmap=cmap, axes=ax, **kwargs)        
                 else:
-                    img, xran, yran = imarrayplot(edgetab[galtab]['ix'], 
+                    img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
                                                   edgetab[galtab]['iy'],
                                                   edgetab[galtab][column],
                                                   cmap=cmap, axes=ax, **kwargs)        
 
             if xrange is None:
-                ax.set_xlim(xran)
+                ax.set_xlim(xlims)
                 if i == 0:
-                    print("Default x limits used:",xran)
+                    print("Default x limits used:",xlims)
             else:
                 ax.set_xlim(xrange)
             if yrange is None:
-                ax.set_ylim(yran)
+                ax.set_ylim(ylims)
                 if i == 0:
-                    print("Default y limits used:",yran)
+                    print("Default y limits used:",ylims)
             else:
                 ax.set_ylim(yrange)
 
