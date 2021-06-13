@@ -310,7 +310,7 @@ path: SSP_rg
 mass_Avcor_ssp_rg float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1373
        sigstar_rg float32                solMass / pc2                                          stellar mass surface density  1373
  sigstar_Avcor_rg float32                solMass / pc2                           stellar mass surface density dust corrected  1373
-    fe_sigstar_rg float32                     fraction                                    fractional error in continuum flux  1373
+     fe_medflx_rg float32                     fraction                                    fractional error in continuum flux  1373
 
 filename: NGC4047.pipe3d.hdf5
 path: SSP_sm
@@ -348,7 +348,7 @@ path: SSP_sm
 mass_Avcor_ssp_sm float32       dex(solMass / arcsec2)                                   stellar mass density dust corrected  1395
        sigstar_sm float32                solMass / pc2                                          stellar mass surface density  1395
  sigstar_Avcor_sm float32                solMass / pc2                           stellar mass surface density dust corrected  1395
-    fe_sigstar_sm float32                     fraction                                    fractional error in continuum flux  1395
+     fe_medflx_sm float32                     fraction                                    fractional error in continuum flux  1395
 
 filename: NGC4047.pipe3d.hdf5
 path: flux_elines_rg
@@ -640,21 +640,27 @@ e_Fe5335_idx_sm float32 Angstrom                                            1386
 filename: NGC4047.cocube_smo7.hdf5
 path: data
 <Table length=81356>
-   name    dtype   unit  format              description               n_bad
---------- ------- ------ ------ -------------------------------------- -----
-     Name bytes10                                          Galaxy Name     0
-       ix   int32                   0-based pixel index in x direction     0
-       iy   int32                   0-based pixel index in y direction     0
-       iz   int32                   0-based pixel index in z direction     0
-   ra_off float32    deg    .6f               ra offset from ref pixel     0
-  dec_off float32    deg    .6f              dec offset from ref pixel     0
-  rad_arc float32 arcsec    .3f                   radius based on LEDA     0
-  azi_ang float32    deg    .3f                    azang based on LEDA     0
-      vel float32 km / s        velocity in LSRK frame using radio def     0
-  co_data float32      K                brightness temperature in cube 31128
-   co_rms float32      K               estimated 1-sigma channel noise 31128
-co_dilmsk float32                          mask value for dilated mask     0
-co_smomsk float32                         mask value for smoothed mask     0
+    name     dtype   unit  format              description               n_bad
+----------- ------- ------ ------ -------------------------------------- -----
+       Name bytes10                                          Galaxy Name     0
+         ix   int32                   0-based pixel index in x direction     0
+         iy   int32                   0-based pixel index in y direction     0
+         iz   int32                   0-based pixel index in z direction     0
+     ra_abs float32    deg    .6f                        sample ra coord     0
+    dec_abs float32    deg    .6f                       sample dec coord     0
+     ra_off float32    deg    .6f               ra offset from ref pixel     0
+    dec_off float32    deg    .6f              dec offset from ref pixel     0
+    rad_arc float32 arcsec    .3f                   radius based on LEDA     0
+    azi_ang float32    deg    .3f                    azang based on LEDA     0
+        vel float32 km / s        velocity in LSRK frame using radio def     0
+  data3d_12 float32      K             co brightness temperature in cube 31128
+   rms3d_12 float32      K            co estimated 1-sigma channel noise 31128
+dilmsk3d_12 float32                       co mask value for dilated mask     0
+smomsk3d_12 float32                      co mask value for smoothed mask     0
+  data3d_13 float32      K           13co brightness temperature in cube 28523
+   rms3d_13 float32      K          13co estimated 1-sigma channel noise 28523
+dilmsk3d_13 float32                     13co mask value for dilated mask     0
+smomsk3d_13 float32                    13co mask value for smoothed mask     0
 
 
 filename: NGC4047.comom_smo7.hdf5
@@ -665,30 +671,30 @@ path: dil
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_abs float64           deg   .12f                                            sample ra coord     0
-    dec_abs float64           deg   .12f                                           sample dec coord     0
+     ra_abs float32           deg    .6f                                            sample ra coord     0
+    dec_abs float32           deg    .6f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
-   snrpk_12 float32                                                 12CO peak signal to noise ratio   705
-    mom0_12 float32      K km / s                          12CO integrated intensity using dil mask  1657
-   emom0_12 float32      K km / s                              12CO error in mom0 assuming dil mask  1657
-    mom1_12 float32        km / s                  12CO intensity wgtd mean velocity using dil mask  1670
-   emom1_12 float32        km / s                              12CO error in mom1 assuming dil mask  1670
-    mom2_12 float32        km / s                       12CO intensity wgtd vel disp using dil mask  1694
-   emom2_12 float32        km / s                              12CO error in mom2 assuming dil mask  1694
+   snrpk_12 float32                                                   co peak signal to noise ratio   705
+    mom0_12 float32      K km / s                            co integrated intensity using dil mask  1657
+  e_mom0_12 float32      K km / s                                co error in mom0 assuming dil mask  1657
+    mom1_12 float32        km / s                    co intensity wgtd mean velocity using dil mask  1670
+  e_mom1_12 float32        km / s                                co error in mom1 assuming dil mask  1670
+    mom2_12 float32        km / s                         co intensity wgtd vel disp using dil mask  1694
+  e_mom2_12 float32        km / s                                co error in mom2 assuming dil mask  1694
      sigmol float32 solMass / pc2                       apparent H2+He surf density not deprojected  1657
    e_sigmol float32 solMass / pc2                                   error in sigmol not deprojected  1657
   sigmol_fo float32 solMass / pc2        H2+He surf density deprojected to face-on using ledaAxIncl  1657
 e_sigmol_fo float32 solMass / pc2                            error in sigmol deprojected to face-on  1657
-   snrpk_13 float32                                                 13CO peak signal to noise ratio   705
-    mom0_13 float32      K km / s                          13CO integrated intensity using dil mask  1657
-   emom0_13 float32      K km / s                              13CO error in mom0 assuming dil mask  1657
-    mom1_13 float32        km / s                  13CO intensity wgtd mean velocity using dil mask  1673
-   emom1_13 float32        km / s                              13CO error in mom1 assuming dil mask  1670
-    mom2_13 float32        km / s                       13CO intensity wgtd vel disp using dil mask  1732
-   emom2_13 float32        km / s                              13CO error in mom2 assuming dil mask  1732
+   snrpk_13 float32                                                 13co peak signal to noise ratio   648
+    mom0_13 float32      K km / s                          13co integrated intensity using dil mask  1657
+  e_mom0_13 float32      K km / s                              13co error in mom0 assuming dil mask  1657
+    mom1_13 float32        km / s                  13co intensity wgtd mean velocity using dil mask  1673
+  e_mom1_13 float32        km / s                              13co error in mom1 assuming dil mask  1670
+    mom2_13 float32        km / s                       13co intensity wgtd vel disp using dil mask  1731
+  e_mom2_13 float32        km / s                              13co error in mom2 assuming dil mask  1731
 
 filename: NGC4047.comom_smo7.hdf5
 path: smo
@@ -698,28 +704,28 @@ path: smo
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_abs float64           deg   .12f                                            sample ra coord     0
-    dec_abs float64           deg   .12f                                           sample dec coord     0
+     ra_abs float32           deg    .6f                                            sample ra coord     0
+    dec_abs float32           deg    .6f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
-    mom0_12 float32      K km / s                          12CO integrated intensity using smo mask  1563
-   emom0_12 float32      K km / s                              12CO error in mom0 assuming smo mask  1563
-    mom1_12 float32        km / s                                                                    1592
-   emom1_12 float32        km / s                                                                    1584
-    mom2_12 float32        km / s                                                                    1750
-   emom2_12 float32        km / s                                                                    1750
+    mom0_12 float32      K km / s                            co integrated intensity using smo mask  1563
+  e_mom0_12 float32      K km / s                                co error in mom0 assuming smo mask  1563
+    mom1_12 float32        km / s                    co intensity wgtd mean velocity using smo mask  1591
+  e_mom1_12 float32        km / s                                co error in mom1 assuming smo mask  1583
+    mom2_12 float32        km / s                         co intensity wgtd vel disp using smo mask  1749
+  e_mom2_12 float32        km / s                                co error in mom2 assuming smo mask  1749
      sigmol float32 solMass / pc2                       apparent H2+He surf density not deprojected  1563
    e_sigmol float32 solMass / pc2                                   error in sigmol not deprojected  1563
   sigmol_fo float32 solMass / pc2        H2+He surf density deprojected to face-on using ledaAxIncl  1563
 e_sigmol_fo float32 solMass / pc2                            error in sigmol deprojected to face-on  1563
-    mom0_13 float32      K km / s                          13CO integrated intensity using smo mask  1563
-   emom0_13 float32      K km / s                              13CO error in mom0 assuming smo mask  1563
-    mom1_13 float32        km / s                                                                    1596
-   emom1_13 float32        km / s                                                                    1584
-    mom2_13 float32        km / s                                                                    1737
-   emom2_13 float32        km / s                                                                    1737
+    mom0_13 float32      K km / s                          13co integrated intensity using smo mask  1563
+  e_mom0_13 float32      K km / s                              13co error in mom0 assuming smo mask  1563
+    mom1_13 float32        km / s                  13co intensity wgtd mean velocity using smo mask  1595
+  e_mom1_13 float32        km / s                              13co error in mom1 assuming smo mask  1583
+    mom2_13 float32        km / s                       13co intensity wgtd vel disp using smo mask  1737
+  e_mom2_13 float32        km / s                              13co error in mom2 assuming smo mask  1737
 
 filename: NGC4047.comom_smo7.hdf5
 path: str
@@ -729,92 +735,19 @@ path: str
        Name bytes10                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
-     ra_abs float64           deg   .12f                                            sample ra coord     0
-    dec_abs float64           deg   .12f                                           sample dec coord     0
+     ra_abs float32           deg    .6f                                            sample ra coord     0
+    dec_abs float32           deg    .6f                                           sample dec coord     0
      ra_off float32           deg    .6f                                   ra offset from ref pixel     0
     dec_off float32           deg    .6f                                  dec offset from ref pixel     0
     rad_arc float32        arcsec    .3f                                       radius based on LEDA     0
     azi_ang float32           deg    .3f                                        azang based on LEDA     0
-    mom0_12 float32      K km / s                          12CO integrated intensity using str mask   705
-   emom0_12 float32      K km / s                              12CO error in mom0 assuming str mask   705
+    mom0_12 float32      K km / s                            co integrated intensity using str mask   705
+  e_mom0_12 float32      K km / s                                co error in mom0 assuming str mask   705
      sigmol float32 solMass / pc2                       apparent H2+He surf density not deprojected   705
    e_sigmol float32 solMass / pc2                                   error in sigmol not deprojected   705
   sigmol_fo float32 solMass / pc2        H2+He surf density deprojected to face-on using ledaAxIncl   705
 e_sigmol_fo float32 solMass / pc2                            error in sigmol deprojected to face-on   705
-    mom0_13 float32      K km / s                          13CO integrated intensity using str mask   705
-   emom0_13 float32      K km / s                              13CO error in mom0 assuming str mask   705
-
-
-filename: NGC4047_hex.comom_smo7.hdf5
-path: dil
-<Table length=2>
-    name     dtype       unit                            description                         n_bad
------------ ------- ------------- ---------------------------------------------------------- -----
-       Name bytes10                                                              Galaxy Name     0
-         ix float64                                                                              0
-         iy float64                                                                              0
-     ra_abs float64           deg                                                                2
-    dec_abs float64           deg                                                                2
-     ra_off float64           deg                                                                2
-    dec_off float64           deg                                                                2
-    rad_arc float64                                                                              2
-    azi_ang float64                                                                              2
-   snrpk_12 float64                                          12CO peak signal to noise ratio     2
-    mom0_12 float64      K km / s                   12CO integrated intensity using dil mask     2
-   emom0_12 float64      K km / s                       12CO error in mom0 assuming dil mask     2
-    mom1_12 float64        km / s           12CO intensity wgtd mean velocity using dil mask     2
-   emom1_12 float64        km / s                       12CO error in mom1 assuming dil mask     2
-    mom2_12 float64        km / s                12CO intensity wgtd vel disp using dil mask     2
-   emom2_12 float64        km / s                       12CO error in mom2 assuming dil mask     2
-     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected     2
-   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected     2
-  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl     2
-e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on     2
-
-filename: NGC4047_hex.comom_smo7.hdf5
-path: smo
-<Table length=729>
-    name     dtype       unit                            description                         n_bad
------------ ------- ------------- ---------------------------------------------------------- -----
-       Name bytes10                                                              Galaxy Name     0
-         ix float64                                                                              0
-         iy float64                                                                              0
-     ra_abs float64           deg                                                              729
-    dec_abs float64           deg                                                              729
-     ra_off float64           deg                                                              729
-    dec_off float64           deg                                                              729
-    rad_arc float64                                                                            729
-    azi_ang float64                                                                            729
-    mom0_12 float64      K km / s                   12CO integrated intensity using smo mask   729
-   emom0_12 float64      K km / s                       12CO error in mom0 assuming smo mask   729
-    mom1_12 float64        km / s                                                              729
-   emom1_12 float64        km / s                                                              729
-    mom2_12 float64        km / s                                                              729
-   emom2_12 float64        km / s                                                              729
-     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected   729
-   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected   729
-  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl   729
-e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on   729
-
-filename: NGC4047_hex.comom_smo7.hdf5
-path: str
-<Table length=2>
-    name     dtype       unit                            description                         n_bad
------------ ------- ------------- ---------------------------------------------------------- -----
-       Name bytes10                                                              Galaxy Name     0
-         ix float64                                                                              0
-         iy float64                                                                              0
-     ra_abs float64           deg                                                                2
-    dec_abs float64           deg                                                                2
-     ra_off float64           deg                                                                2
-    dec_off float64           deg                                                                2
-    rad_arc float64                                                                              2
-    azi_ang float64                                                                              2
-    mom0_12 float64      K km / s                   12CO integrated intensity using str mask     2
-   emom0_12 float64      K km / s                       12CO error in mom0 assuming str mask     2
-     sigmol float32 solMass / pc2                apparent H2+He surf density not deprojected     2
-   e_sigmol float32 solMass / pc2                            error in sigmol not deprojected     2
-  sigmol_fo float32 solMass / pc2 H2+He surf density deprojected to face-on using ledaAxIncl     2
-e_sigmol_fo float32 solMass / pc2                     error in sigmol deprojected to face-on     2
+    mom0_13 float32      K km / s                          13co integrated intensity using str mask   648
+  e_mom0_13 float32      K km / s                              13co error in mom0 assuming str mask   648
 
 

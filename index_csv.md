@@ -9,6 +9,7 @@
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
 - [edge_coobs_E.csv](#edge_coobs_Ecsv)
 - [edge_coobs_D.csv](#edge_coobs_Dcsv)
+- [edge_aca_leda.csv](#edge_aca_ledacsv)
 - [edge_wise.csv](#edge_wisecsv)
 - [edge_nsa.csv](#edge_nsacsv)
 - [edge_ned.csv](#edge_nedcsv)
@@ -323,6 +324,39 @@ date: '2020-06-01'
 | coTpk_mK | mK | int64 |   | Peak brightness in 20 km/s channel |
 | coSNRpeak |   | float64 |   | Peak brightness in SNR units |
 | ImagingDate |   | string |   | Date of imaging |
+
+## [edge_aca_leda.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_aca_leda.csv)
+
+
+
+date: '2021-06-08'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| ledaRA | hourangle | float64 |   | RA J2000 from LEDA /al2000/ |
+| ledaDE | deg | float64 |   | DEC J2000 from LEDA /de2000/ |
+| ledaMorph |   | string |   | Hubble type from LEDA /type/ |
+| ledaBar |   | string |   | B = bar present from LEDA /bar/ |
+| ledaRing |   | string |   | R = ring present from LEDA /ring/ |
+| ledaMultiple |   | int64 |   | M = multiple system from LEDA /multiple/ |
+| ledaType |   | float64 |   | Morphological type from LEDA /t/ |
+| ledaPA | deg | float64 |   | 'PA from LEDA /pa/, N to E' |
+| ledaBt | mag | float64 |   | Apparent B total magnitude from LEDA /bt/ |
+| ledaIt | mag | float64 |   | Apparent I total magnitude from LEDA /it/ |
+| ledaVmaxg | km / s | float64 |   | HI max v_rot uncorrected for incl from LEDA /vmaxg/ |
+| ledaFIR | mag | int64 |   | FIR flux as magnitude from LEDA /mfir/ |
+| ledaVrad | km / s | float64 |   | cz from mean data from LEDA /v/ |
+| ledaA_Bgal | mag | float64 |   | Galactic A_B from LEDA /ag/ |
+| ledaIncl | deg | float64 |   | Morph inclination from LEDA /incl/ |
+| ledaVrot | km / s | float64 |   | HI max v_rot corrected for incl from LEDA /vrot/ |
+| ledaVvir | km / s | float64 |   | Virgo infall corrected cz from LEDA /vvir/ |
+| ledaModz | mag | float64 |   | Dist modulus from LEDA /modz/ based on /vvir/ |
+| ledaD25 | arcmin | float64 | .2f | Apparent B diameter from LEDA /logd25/ linearized |
+| ledaAxrat |   | float64 | .4f | Minor to major axis ratio from LEDA /logr25/ linearized |
+| ledaAxIncl | deg | float64 | .1f | Inclination estimated from LEDA axratio using Bottinelli+83 |
+| ledaDistMpc | Mpc | float64 | .2f | Luminosity distance in Mpc corresponding to ledaModz |
+| ledaHIflux | Jy km / s | float64 | .2f | 21cm flux from LEDA /m21/ linearized |
 
 ## [edge_wise.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_wise.csv)
 
