@@ -13,7 +13,7 @@ _runtime = False
 _config = {}
 
 try:
-    _fp = open(_filepath, 'r+')
+    _fp = open(_filepath, 'r')
     if _os.stat(_filepath).st_size > 0:
         _config = _json.load(_fp)
 
