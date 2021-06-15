@@ -19,9 +19,10 @@ from edge_pydb.conversion import stmass_pc2, sfr_ha, ZOH_M13, bpt_type, get_AHa
 from edge_pydb.fitsextract import fitsextract, getlabels
 
 def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
-             hexgrid=False, allpix=False, debug=False, cadir='fitsdata',
-             codir='../img_comom/fitsdata', nfiles=5, astrom='x',
-             ortpar='edge_leda.csv', distpar='edge_califa.csv'):
+             hexgrid=False, allpix=False, debug=False, califa_natv='fitsdata',
+             califa_smo='fitsdata', comom='../img_comom/fitsdata', nfiles=5, 
+             astrom='x', ortpar='edge_leda.csv', distpar='edge_califa.csv',
+             distcol='caDistP3d', discard_cdmatrix=False):
     """
     Extract Pipe3D products into an HDF5 database.  This script assumes
     there are 5 native resolution and 5 smoothed resolution files per galaxy.
@@ -32,8 +33,8 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
         Prefix of the output filename
     gallist : list of str
         List of galaxy names
-    linelbl : list of str
-        How different lines are identified in the CO FITS file names
+    linelbl : str
+        Identifier for reference line in the CO FITS filenames
     seq : str
         Identifier, generally to indicate smoothing resolution for CO
     hexgrid : boolean
@@ -42,18 +43,27 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
         True to dump every pixel, otherwise every 3rd pixel in x and y is used.
     debug : boolean
         True to generate some additional output
-    cadir : str
-        Path to the directory where CALIFA FITS files reside
-    codir : str
-        Path to the directory where CO FITS files reside
+    califa_natv : str
+        Path to the directory where native res CALIFA FITS files reside
+    califa_smo : str
+        Path to the directory where smoothed res CALIFA FITS files reside
+    comom : str
+        Path to the directory where CO moments FITS files reside
     nfiles : int
-        Number of Pipe3D files per galaxy.  Should be 5 or 1.
+        Number of Pipe3D files per galaxy.  Should be 5 (old) or 1 (packed).
     astrom : str
         String at start of filename for native resolution images with astrometry.
+        This is ignored in nfiles=1.
     ortpar : filename
         Name of the EdgeTable which has LEDA orientation parameters for the sample
     distpar : filename
-        Name of the EdgeTable which has distances assumed by Pipe3D
+        Name of the EdgeTable which has distances for converting \Sigma_*.
+    distcol : str
+        Name of the distance column in 'distpar' to use.  Default is 'caDistP3d'
+        taken from 'DL' column in get_proc_elines_CALIFA.csv.
+    discard_cdmatrix : boolean
+        True to discard CD matrix in CALIFA files.  Use with care since this
+        relies on the CDELT1 and CDELT2 being correct.
     """
     if allpix:
         stride = [1,1,1]
@@ -65,6 +75,13 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
     hbcut = 0.04    # 1e-16 erg / (cm2 s)
     ahalo = 0       # mag
     ahahi = 6       # mag
+
+    # FITS keywords important for astrometry
+    wcskeys = ['CTYPE1', 'CTYPE2', 'CRVAL1', 'CRVAL2', 'CRPIX1', 'CRPIX2', 
+               'CDELT1', 'CDELT2']
+    cdkeys = ['CD1_1', 'CD1_2', 'CD2_1', 'CD2_2', 'CD1_3', 'CD2_3',
+                'CD3_1', 'CD3_2', 'CD3_3']
+    dimkeys = ['NAXIS1', 'NAXIS2']
 
     # Get the orientation parameters from LEDA
     orttbl = EdgeTable(ortpar)
@@ -87,42 +104,78 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
         rglist = []
         smlist = []
 
+        if len(gallist) == 0:
+            raise RuntimeError('Error: gallist is empty!')
+
         for gal in gallist:
             print('\nWorking on galaxy {} product {} nsel={}'.format(
                 gal, prod, nsel))
 
             # Generate output header using CO astrometry
-            cofile = os.path.join(codir,
+            cofile = os.path.join(comom,
                     gal+'.'+linelbl+'.'+seq+'_dil.snrpk.fits.gz')
             if not os.path.exists(cofile):
                 print('####### Cannot find',cofile)
                 continue
             cohd = fits.getheader(cofile)
             # CALIFA files with x in name have optical astrometry
-            cafile = os.path.join(cadir,
+            if nfiles == 5:
+                cafile = os.path.join(califa_natv,
                     astrom+leadstr[i_prod]+gal+tailstr[i_prod])
+            else:
+                cafile = os.path.join(califa_natv, gal+'.Pipe3D.cube.fits.gz')
             if not os.path.exists(cafile):
                 print('####### Cannot find',cafile)
                 continue          
-            cahd = fits.getheader(cafile, ignore_missing_end=True)
+            if nfiles == 5:
+                hdus = fits.open(cafile, ignore_missing_end=True)
+                cahd = hdus[0].header
+                #cahd = fits.getheader(cafile, ignore_missing_end=True)
+            else:
+                hdus = fits.open(cafile)
+                # The header for the selected extension
+                cahd = hdus[hdus.index_of(prod)].header
+                # Blanking of CTYPE3 so that fitsextract treats as pseudocube
+                cahd['CTYPE3'] = ''
+                # Use HDU 0 'ORG_HDR' when possible
+                cahd0 = hdus[0].header
+                for key in cdkeys+wcskeys:
+                    if key in cahd0.keys():
+                        cahd[key] = cahd0[key]
+                # Set CDELT3 to 1 since this will be its value in template
+                for key in ['CDELT3', 'CD3_3']:
+                	if key in cahd.keys():
+                		cahd[key] = 1.
+            # Copy the CALIFA header and replace wcskeys with CO values
             outhd = cahd.copy()
-            for key in ['NAXIS1', 'NAXIS2', 'CTYPE1', 'CTYPE2', 'CRVAL1', 'CRVAL2', 
-                        'CRPIX1', 'CRPIX2', 'CDELT1', 'CDELT2']:
-                outhd[key] = cohd[key]
-            cdkeys = ['CD1_1','CD1_2','CD2_1','CD2_2','CD1_3','CD2_3','CD3_1','CD3_2','CD3_3']
-            for key in cdkeys:
-                if key in outhd.keys():
-                    del outhd[key]
-                if key in cahd.keys():
-                    del cahd[key]
+            for key in dimkeys+wcskeys:
+                if key in cohd.keys():
+                    outhd[key] = cohd[key]
+            # Need to discard CD matrix which would override the new wcskeys
+            if 'CDELT1' in cohd.keys() and 'CDELT2' in cohd.keys():
+                for key in cdkeys:
+                    if key in outhd.keys():
+                        del outhd[key]
+            # Optionally discard CD matrix in CALIFA files and fall back on CDELTs
+            if discard_cdmatrix:
+                for key in cdkeys:
+                    if key in cahd.keys():
+                        del cahd[key]
 
             # First process the native resolution file (tab0) with astrometry
-            hdu = fits.open(cafile, ignore_missing_end=True)[0]
+            if nfiles == 5:
+                #hdu = fits.open(cafile, ignore_missing_end=True)[0]
+                hdu = hdus[0]
+            else:
+                hdu = hdus[hdus.index_of(prod)]
+            if debug:
+                print('\nINPUT',WCS(hdu.header))
+                print('\nOUTPUT',WCS(outhd))
             newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
             nz = newim.shape[0]
             if debug:
                 print('nz=',nz)
-                fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
+                #fits.writeto(base.replace('fits','rg.fits'), newim, outhd, overwrite=True)
             rglabels = [s+'_rg' for s in labels]
             # Add smoothed Ha and Hb columns for extinction estimates
             if prod == 'ELINES' or prod == 'flux_elines':
@@ -159,12 +212,13 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
             rglist.append(tab0)
 
             # Then process the smoothed file (tab1)
-            smofile = os.path.join(cadir,
+            smofile = os.path.join(califa_smo,
                                    leadstr[i_prod]+gal+tailstr[i_prod])
             hdu = fits.open(smofile, ignore_missing_end=True)[0]
+            hdu.header = cahd
             newim = reproject_interp(hdu, outhd, order=0, return_footprint=False)
-            if debug:
-                fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
+#             if debug:
+#                 fits.writeto(base.replace('fits','sm.fits'), newim, outhd, overwrite=True)
             smlabels = [s+'_sm' for s in labels]
             # Add smoothed Ha and Hb for extinction estimates
             if prod == 'ELINES' or prod == 'flux_elines':
@@ -277,14 +331,14 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
             elif prod == 'SSP':
                 # For stellar surface density we need distance
                 star0 = stmass_pc2(tab0['mass_ssp_rg'], dz=tab0['cont_dezon_rg'],
-                                dist=disttbl.loc[gal]['caDistP3d'], name='sigstar_rg')
+                                dist=disttbl.loc[gal][distcol], name='sigstar_rg')
                 star1 = stmass_pc2(tab1['mass_ssp_sm'], dz=tab1['cont_dezon_sm'],
-                                dist=disttbl.loc[gal]['caDistP3d'], name='sigstar_sm')
+                                dist=disttbl.loc[gal][distcol], name='sigstar_sm')
                 avstar0 = stmass_pc2(tab0['mass_Avcor_ssp_rg'], dz=tab0['cont_dezon_rg'],
-                                dist=disttbl.loc[gal]['caDistP3d'], name='sigstar_Avcor_rg')
+                                dist=disttbl.loc[gal][distcol], name='sigstar_Avcor_rg')
                 avstar0.description += ' dust corrected'
                 avstar1 = stmass_pc2(tab1['mass_Avcor_ssp_sm'], dz=tab1['cont_dezon_sm'],
-                                dist=disttbl.loc[gal]['caDistP3d'], name='sigstar_Avcor_sm')
+                                dist=disttbl.loc[gal][distcol], name='sigstar_Avcor_sm')
                 avstar1.description += ' dust corrected'
                 ferr0 = Column(abs(tab0['e_medflx_ssp_rg']/tab0['medflx_ssp_rg']), 
                     name='fe_medflx_rg', dtype='f4', unit='fraction',
@@ -322,14 +376,21 @@ def do_califa(outname='NGC4047', gallist=['NGC4047'], linelbl='co', seq='smo7',
 
 if __name__ == "__main__":
     # NGC4047 only
-    do_califa()
-    do_califa(hexgrid=True, outname='NGC4047_hex')
-    # NGC3994 only
-    #do_califa(outname='NGC3994', gallist=['NGC3994'])
+#     do_califa()
+#     do_califa(hexgrid=True, outname='NGC4047_hex')
     # All EDGE125 galaxies
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fitsdata/[A-Z]*.SSP.cube.fits.gz'))]
-    do_califa(gallist=gallist, outname='edge')
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('fitsdata/[A-Z]*.SSP.cube.fits.gz'))]
+#     do_califa(gallist=gallist, outname='edge')
+#     do_califa(gallist=gallist, hexgrid=True, outname='edge_hex')
     # EDGE125 allpix data
-    do_califa(gallist=gallist, outname='edge_allpix', allpix=True)
+#     do_califa(gallist=gallist, outname='edge_allpix', allpix=True)
+    # ACA galaxies, native resolution
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('aca_packed/*.Pipe3D.cube.fits.gz'))]
+    do_califa(gallist=gallist, outname='edge_aca', seq='natv',
+            linelbl='co21', califa_natv='aca_packed',
+            califa_smo='aca_conv9', comom='../img_comom/acadata', nfiles=1,
+            ortpar='edge_aca_leda.csv', distpar='edge_aca_leda.csv', 
+            distcol='ledaDistMpc', debug=True)
 
