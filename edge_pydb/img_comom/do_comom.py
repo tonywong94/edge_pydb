@@ -14,7 +14,7 @@ from edge_pydb.fitsextract import fitsextract
 
 def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13'],
              linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], hexgrid=False, 
-             allpix=False, fitsdir='fitsdata/', ortpar='edge_leda.csv'):
+             allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv'):
     """
     Extract 2D molecular line data into an HDF5 database.  This script assumes
     standardized naming conventions, for example:
@@ -153,10 +153,19 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
 if __name__ == "__main__":
     # NGC4047 only
     do_comom()
+    do_comom(hexgrid=True, outname='NGC4047_hex')
     # All EDGE125 galaxies
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
     do_comom(gallist=gallist, outname='edge')
+    do_comom(gallist=gallist, hexgrid=True, outname='edge_hex')
     # EDGE125 allpix data
     do_comom(gallist=gallist, outname='edge_allpix', allpix=True)
+    # ACA galaxies, native resolution
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
+#             linelbl=['co21'], msktyp=['dil'], fitsdir='acadata', 
+#             ortpar='edge_aca_leda.csv')
+    
 
