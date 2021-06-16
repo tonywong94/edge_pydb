@@ -11,3 +11,6 @@ build.sh
 edge_pydb/img_cocube/fitsdata
 edge_pydb/img_comom/fitsdata
 edge_pydb/img_califa/fitsdata
+edge_pydb/img_califa/aca_conv9
+edge_pydb/img_califa/aca_packed
+edge_pydb/img_comom/acadata
