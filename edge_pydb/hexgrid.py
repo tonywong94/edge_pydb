@@ -93,13 +93,30 @@ def hex_grid(ref, sidelen, bound, starting_angle, precision):
     rotation_mtx = np.array([[np.cos(starting_angle), np.sin(starting_angle)], 
                              [-np.sin(starting_angle), np.cos(starting_angle)]])
     grid = np.dot(grid, rotation_mtx)
-    if precision != 0:
-        grid = np.around(grid, precision)
     cut = (grid[:, 0] > bound[0, 0]) & (grid[:, 1] > bound[0, 1]) \
      & (grid[:, 0] < bound[1, 0]) & (grid[:, 1] < bound[1, 1])
     # There will be repeated data points if we don't remove them
-    reptition = [True if np.where((coord == grid).all(axis=1))[0].shape[0] <= 1 else False for coord in grid[cut]]
-    return grid[cut][reptition]
+    # not_repeated = np.full(len(grid[cut]), False)
+    # for i, coord in enumerate(grid[cut]):
+    #     occurence = 0
+    #     for to_compare in grid[cut]:
+    #         if np.abs(coord[0] - to_compare[0]) < 1e-5 and np.abs(coord[1] - to_compare[1]) < 1e-5:
+    #             occurence += 1
+    #     if occurence <= 1:
+    #         not_repeated[i] = True
+    not_repeated = [True if np.where((np.abs(coord - grid) < 1e-5).all(axis=1))[0].shape[0] <= 1 else False for coord in grid[cut]]
+    repeated_x = []
+    repeated_y = []
+    for i in range(len(not_repeated)):
+        if not_repeated[i] == False \
+        and grid[cut][i][0] not in repeated_x \
+        and grid[cut][i][1] not in repeated_y:
+            repeated_x.append(grid[cut][i][0])
+            repeated_y.append(grid[cut][i][1])
+            not_repeated[i] = True
+    if precision != 0:
+        grid = np.around(grid, precision)
+    return grid[cut][not_repeated]
 
 @jit
 def interpolate_neighbor(point, bound, step_size=0):
