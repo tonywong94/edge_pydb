@@ -3,7 +3,7 @@ from astropy.table import Table, Column
 from edge_pydb.conversion import gc_polr
 from functools import wraps
 
-use_numba = True
+use_numba = False
 
 if use_numba:
     use_python = False
