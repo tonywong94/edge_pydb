@@ -1,6 +1,6 @@
 import numpy as np
 from astropy.io import fits
-from astropy.table import Table, Column, join
+from astropy.table import Table, Column
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from scipy.optimize import fsolve
@@ -21,23 +21,42 @@ INTERMEDIATE = 0
 LINER = 1
 SEYFERT = 2
 
-# Calculate galactocentric polar coordinates 
-# (radius in arcsec, azangle in degrees from receding majaxis)
-# Inputs should all be in degrees
-def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
+def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
+    '''
+    Returns galactocentric polar coordinates (radius in arcsec, 
+    azimuthal angle in degrees from receding majaxis).
+
+    === Parameters ===
+    ra : float or numpy.array
+        The RA coordinate(s) to transform, in degrees
+    dec : float or numpy.array
+        The DEC coordinate(s) to transform, in degrees
+    ra_gc : float
+        The RA of the galaxy center, in degrees
+    dec_gc : float
+        The DEC of the galaxy center, in degrees
+    pa : float
+        The position angle of the galaxy's receding major axis, in degrees
+    inc : float
+        The inclination of the galaxy disk, in degrees (0 = face-on)
+    reject : float
+        Return NaNs for inclinations larger than this (default=89)
+
+    === Returns ===
+    pair of floats or numpy.array [radius, azang]
+    '''
     ctr = SkyCoord(ra_gc, dec_gc, unit="deg")
     pos = SkyCoord(ra, dec, unit="deg")
     # Polar vector in sky plane 
     t_sky = ctr.position_angle(pos).degree
     r_sky = ctr.separation(pos).arcsecond
-    #print(t_sky,r_sky)
     # Convert to galaxy plane
     x_sky = r_sky * np.cos(np.radians(t_sky - pa))
     y_sky = r_sky * np.sin(np.radians(t_sky - pa))
     x_gal = x_sky
     y_gal = y_sky/np.cos(np.radians(inc))
     # Reject very high inclinations (cannot be deprojected)
-    y_gal[inc>89] = np.nan
+    y_gal[inc>reject] = np.nan
     radius = np.sqrt(x_gal**2 + y_gal**2)
     azang  = np.degrees(np.arctan2(y_gal, x_gal))
     return radius, azang
@@ -45,31 +64,42 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc):
 
 def uarray_to_list(target):
     '''
-    break array of uncertainties values into 2 lists, 
+    Break array of uncertainties values into 2 separate arrays.
+
+    === Parameters ===
+    target : unumpy.uarray
+        The array of values with uncertainties
+
+    === Returns ===
     retval[0] -> nominal values
     retval[1] -> standard deviation
-    if no value for std, then return None
     '''
-    # result = map(lambda x: (x.n, x.s) if not (isinstance(x, float) 
-    #                 or isinstance(x, int)) else (x, None), target)
-    # return list(map(list, zip(*list(result))))
     return [unumpy.nominal_values(target), unumpy.std_devs(target)]
 
 
 def get_AHa(flux_ha, flux_hb, log10):
     '''
-    Get Halpha extinction in magnitudes given flux_ha and flux_hb.
-    The third arg is the log10 function, normally np.log10 but can
-    be unumpy.log10 for error propagation.
+    Returns Halpha extinction in magnitudes given flux_ha and flux_hb.
+
+    === Parameters ===
+    flux_ha : astropy.table.Column
+        The H-alpha flux values
+    flux_hb : astropy.table.Column
+        The H-beta flux values
+    log10 : function
+        The log10 function, normally np.log10 but use unumpy.log10 for error propagation.
+
+    === Returns ===
+    numpy.ndarray representing AHa in magnitudes
     '''
     A_Ha = flux_ha.data * np.nan
     if flux_hb is not None:
         # Need positive flux to take the log.
         good = (flux_ha > 0) & (flux_hb > 0)
-        # Extinction curve from Cardelli+(1989).
+        # Extinction curve from Cardelli+ (1989).
         K_Ha = 2.53
         K_Hb = 3.61
-        # Get A_Ha using Eq(1) from Catalan-Torrecilla+(2015). 
+        # Get A_Ha using Eq(1) from Catalan-Torrecilla+ (2015). 
         A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
     return A_Ha
 
@@ -78,11 +108,30 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
             name='sigsfr', column=True, imf='kroupa'):
     '''
     Convert Halpha intensity to SFR surface density, optionally
-    with extinction correction (if flux_hb is provided).
+    with extinction estimates and corrections (if flux_hb is provided).
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error.  Otherwise the SFR is computed
     without dust correction (if flux_hb=None) or without error
-    estimation.
+    estimation. 
+
+    === Parameters ===
+    flux_ha : astropy.table.Column
+        The H-alpha flux values
+    flux_hb : astropy.table.Column
+        The H-beta flux values.  If not provided, no dust correction is made.
+    e_flux_ha : astropy.table.Column
+        Errors in H-alpha flux values.  If not provided, error propagation skipped.
+    e_flux_hb : astropy.table.Column
+        Errors in H-beta flux values.
+    name : string
+        Name of the output Column; error column will be prepended with 'e_'
+    column : boolean
+        True to return astropy Column objects, otherwise return arrays
+    imf : string
+        'salpeter' to scale by 1.51 (default uses Kroupa IMF)
+
+    === Returns ===
+    several columns depending on input (see code)
     '''
     # input line flux is actually flux per arcsec^2
     sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
@@ -147,8 +196,21 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
                 return sig_sfr, A_Ha
 
 
-# Convert CO intensity to H2(+He) surface density
 def msd_co(sb_co, alphaco=4.3, name='sigmol'):
+    '''
+    Convert CO intensity to H_2 (+ He) mass surface density.
+
+    === Parameters ===
+    sb_co : numpy.array or astropy.table.Column
+        CO integrated intensity values, in K km/s
+    alphaco : float
+        CO to H2 conversion factor, from K km/s to Msol/pc2
+    name : string
+        The name of the output Column, if input is a Column
+
+    === Returns ===
+    numpy.array or astropy.table.Column
+    '''
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
     sig_mol = (convfac*sb_co).to(u.solMass/u.pc**2)
     if isinstance(sb_co, Column):
@@ -158,9 +220,24 @@ def msd_co(sb_co, alphaco=4.3, name='sigmol'):
         return sig_mol
     
 
-# Convert units for stellar surface density
-# dz = dezonification file from Pipe3D
 def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
+    '''
+    Convert units for stellar surface density to Msol/pc2, optionally 
+    applying dezonification image.
+    
+    === Parameters ===
+    stmass_as2 : numpy.array or astropy.table.Column
+        stellar surface density in Pipe3D units
+    dz : numpy.array or astropy.table.Column
+        dezonification image from Pipe3D (optional)
+    dist : float or astropy.Quantity
+        The distance of the galaxy, assumed to be in Mpc if no units
+    name : string
+        The name of the output Column, if input is a Column
+
+    === Returns ===
+    numpy.array or astropy.table.Column
+    '''
     # Assume Mpc units if not given
     try:
         unit = dist.unit
@@ -187,17 +264,6 @@ def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
         return stmass_pc2
 
 
-# return log10(a/b), taking care of -InF values from the logarithm. 
-# def ulogratio(a, b, ae = 0.0, be = 0.0): 
-#     try: 
-#         ua = ufloat(a, ae)
-#         ub = ufloat(b, be)
-#         logr = unp.log10(ua) - unp.log10(ub)
-#         return logr.n, logr.s
-#     except:
-#         return np.nan, np.nan
-
-
 def findIntersec(fun1, fun2, x0):
     return fsolve(lambda x:fun1(x)-fun2(x), x0)
 
@@ -218,8 +284,22 @@ def cidfer10(nii):
 
 
 def bpt_region(n2ha, o3hb, good=True):
-    # just to make sure ew > 6 to take all the data if ew_ha is not available
-    # ? might be a good idea to store these values, as they are constants
+    '''
+    Determine BPT classification based on [NII]/Ha and [OIII]/Hb.  Does 
+    not impose a requirement on EW(Ha).
+
+    === Parameters ===
+    n2ha : numpy.ndarray
+        log10([NII]/Halpha)
+    o3hb : numpy.ndarray
+        log10([OIII]/Hbeta)
+    good : boolean
+        mask to apply to output arrays    
+
+    === Returns ===
+    boolean index arrays for SF, intermediate, LINER, and Seyfert.
+    '''
+    # These are constant values determined by the curve equations
     kewley_start = findIntersec(kewley01, kauffm03, -1)[0]  # -1.2805
     cidfer_start = findIntersec(kewley01, cidfer10, 0)[0]   # -0.1993
     kewley_end = findIntersec(kewley01, lambda x: -4, 0)[0] #  0.352466
@@ -240,33 +320,33 @@ def bpt_region(n2ha, o3hb, good=True):
     return retval
 
 
-def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
+def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     '''
-    Calculate the probability of a single point in the **bpt_type** region of the BPT plot.
-    This is done by first constructing a grid with **grid_size** resolution. Then, the grid is marked by 
-    three dividing lines (Kewley, Kauffmann, Cid Fernandes)
+    Calculate the probability that a measurement with uncertainty is in a particular
+    region of the BPT diagram.  This is done by constructing a grid and measuring the
+    normalized Gaussian area within the chosen BPT region.
 
-    Parameters
-    ----------
-    n2ha_u, o3hb_u : one data point with uncertainty
-    bpt_type : the bpt_type we are considering, -1 for star forming, 0 for intermediate, 1 for liner, 2 for seyfert
-    grid_size : the size of the square grid where normal dist constructed
+    === Parameters ===
+    n2ha_u : ufloat
+        log10([NII]/Halpha) and uncertainty
+    o3hb_u : ufloat
+        log10([OIII]/Hbeta) and uncertainty
+    bpt_type : float
+        BPT type to measure prob for, -1=SF, 0=intermediate, 1=LINER, 2=Seyfert
+    grid_size : float
+        The size of the square grid where normal dist constructed
     
-    Returns
-    -------
-    probability of data points in regions
+    === Returns ===
+    probability that measurement is in the specified region
     '''
     x = unumpy.nominal_values(n2ha_u)
     y = unumpy.nominal_values(o3hb_u)
     x_std = unumpy.std_devs(n2ha_u)
     y_std = unumpy.std_devs(o3hb_u)
-    if not grid_size:
-        grid_size = 5
-    x_arr, y_arr = np.meshgrid(np.linspace(x - x_std, x + x_std, grid_size),
-                 np.linspace(y - y_std, y + y_std, grid_size))
+    x_arr, y_arr = np.meshgrid( np.linspace(x - x_std, x + x_std, grid_size),
+                                np.linspace(y - y_std, y + y_std, grid_size) )
     pos = np.dstack((x_arr, y_arr))
-    grid = np.zeros((grid_size, grid_size))
-    # ! might be an issue since we try to use the diagonal values   
+    grid = np.zeros((grid_size, grid_size))  
     grid = bpt_region(x_arr, y_arr)
     gauss2d = ndNormal(mean=(x, y), cov=(x_std**2, y_std**2))
     pdf = gauss2d.pdf(pos)
@@ -283,17 +363,36 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=None):
 
 
 
-# BPT classification, see Husemann et al. (2013A&A...549A..87H) Figure 7.
-# Input is a flux_elines table.
 def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
+    '''
+    Adds BPT classification to the flux_elines table. BPT==-1 means in the
+    star-forming region of the diagram.  An additional column SF_BPT is
+    True when BPT==-1 and Halpha EW > 6. 
+    This function should be run before ZOH_M13.
+    For more information see Husemann et al. (2013A&A...549A..87H) Figure 7.
 
+    === Parameters ===
+    fluxtab : astropy.Table
+        flux_elines table extracted from Pipe3D output
+    ext : string
+        suffix for selected column names, e.g. '_rg' or '_sm'
+    name : string
+        name of the output column
+    prob : boolean
+        True to calculate the BPT probabilities as an additional column
+    grid_size : float
+        The size of the square grid where BPT probabilities constructed
+    
+    === Returns ===
+    two or three astropy.table.Column [BPT, SF_BPT, p_BPT]
+    '''
     flux_nii  = fluxtab['flux_[NII]6583'+ext]
     flux_oiii = fluxtab['flux_[OIII]5007'+ext]
     flux_ha   = fluxtab['flux_Halpha'+ext]
     flux_hb   = fluxtab['flux_Hbeta'+ext]
     ew_ha     = fluxtab['EW_Halpha'+ext]
 
-    good = (flux_nii>0) & (flux_oiii>0) & (flux_ha>0) & (flux_hb>0) #& (~np.isnan(ew_ha))
+    good = (flux_nii>1e-5) & (flux_oiii>1e-5) & (flux_ha>1e-5) & (flux_hb>1e-5)
     n2ha = np.full(len(flux_nii), np.nan)
     n2ha[good] = np.log10(flux_nii[good])  - np.log10(flux_ha[good])
     o3hb = np.full(len(flux_oiii), np.nan)
@@ -345,7 +444,25 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
 # Require star-forming in BPT diagram.
 # Input is a flux_elines table.
 def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
+    '''
+    Adds gas-phase metallicity from Marino+13 calibration to flux_elines table.
+    This function should be run after bpt_type since it requires spaxel to be
+    star-forming in the BPT diagram.
+    Both O3N2 and N2 methods are supported.
 
+    === Parameters ===
+    fluxtab : astropy.Table
+        flux_elines table extracted from Pipe3D output
+    ext : string
+        suffix for selected column names, e.g. '_rg' or '_sm'
+    method : string
+        choose 'o3n2' (default) or 'n2'
+    err : boolean
+        True to calculate uncertainty as an additional column
+    
+    === Returns ===
+    one or two astropy.table.Column [ZOH, e_ZOH]
+    '''
     N2F = fluxtab['flux_[NII]6583'+ext]
     O3F = fluxtab['flux_[OIII]5007'+ext]
     HaF = fluxtab['flux_Halpha'+ext]
@@ -359,8 +476,6 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     else:
         raise Exception('Method {} is not recognized'.format(method))
     nelt = len(N2F)
-
-    #BPT = bpt_type(fluxtab, ext=ext)
 
     if err == False:
         O3N2 = np.full(nelt, np.nan)
@@ -389,10 +504,8 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
 
     desc = '12+log(O/H) using {} method in Marino+13'.format(method)
     if err == False: 
-        #ZOH_M13[BPT != -1] = np.nan
         return Column(ZOH_M13, name=name, unit='dex', dtype='f4', description=desc)
     else:            
-        #ZOH_M13[BPT != -1] = ufloat(np.nan, np.nan)
         return (Column(unp.nominal_values(ZOH_M13), name=name, dtype='f4',
                        unit='dex', description=desc), 
                 Column(unp.std_devs(ZOH_M13), name='e_'+name, dtype='f4',
