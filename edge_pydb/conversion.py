@@ -10,13 +10,16 @@ from scipy.stats import multivariate_normal as ndNormal
 try:
     from uncertainties import unumpy, umath
 except (ImportError, ModuleNotFoundError) as error:
-    # ? should we require the uncertainties package in the requirement.txt? 
     print(error.__class__.__name__ + ": " + str(error))
     print("Could not import uncertainties package, \
         please try to install it or do not input the error as argument.")
 except Exception as exception: 
     print(exception.__class__.__name__ + ": " + str(exception))
 
+STAR_FORMING = -1
+INTERMEDIATE = 0
+LINER = 1
+SEYFERT = 2
 
 def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
     '''
@@ -309,7 +312,12 @@ def bpt_region(n2ha, o3hb, good=True):
     liner = (~sf) & (~inter) & (o3hb < cidfer10(n2ha))
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
-    return sf, inter, liner, seyfert     
+    retval = np.full_like(n2ha, fill_value=np.nan)
+    retval[sf] = STAR_FORMING
+    retval[inter] = INTERMEDIATE
+    retval[liner] = LINER
+    retval[seyfert] = SEYFERT
+    return retval
 
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
@@ -338,16 +346,8 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     x_arr, y_arr = np.meshgrid( np.linspace(x - x_std, x + x_std, grid_size),
                                 np.linspace(y - y_std, y + y_std, grid_size) )
     pos = np.dstack((x_arr, y_arr))
-    grid = np.zeros((grid_size, grid_size))
-    #
-    # TW: don't understand why this next line is not bpt_region(pos)
-    #
-    sf, inter, liner, seyfert = bpt_region(x_arr[0], y_arr[:, 0])
-    grid[:, sf] = -1 
-    grid[:, inter] = 0 
-    grid[:, liner] = 1 
-    grid[:, seyfert] = 2
-    
+    grid = np.zeros((grid_size, grid_size))  
+    grid = bpt_region(x_arr, y_arr)
     gauss2d = ndNormal(mean=(x, y), cov=(x_std**2, y_std**2))
     pdf = gauss2d.pdf(pos)
     normal_prob = np.zeros((grid_size, grid_size))
@@ -398,13 +398,7 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     o3hb = np.full(len(flux_oiii), np.nan)
     o3hb[good] = np.log10(flux_oiii[good]) - np.log10(flux_hb[good])   
 
-    sf, inter, liner, seyfert = bpt_region(n2ha, o3hb, good)
-
-    BPT = np.full(len(n2ha), np.nan)
-    BPT[sf] = -1
-    BPT[inter] = 0
-    BPT[liner] = 1
-    BPT[seyfert] = 2
+    BPT = bpt_region(n2ha, o3hb, good)
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
     bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
@@ -428,46 +422,27 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         n2ha_u[good] = unumpy.uarray(unumpy.nominal_values(t1), unumpy.std_devs(t1))
         o3hb_u[good] = unumpy.uarray(unumpy.nominal_values(t2), unumpy.std_devs(t2)) 
         print("Working on SFR")
-        for i in np.where(sf)[0]:
-            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[sf][0], grid_size)
+        for i in np.where(BPT == STAR_FORMING)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], STAR_FORMING, grid_size)
         print("Working on intermediate region, composite")
-        for i in np.where(inter)[0]:
-            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[inter][0], grid_size)
+        for i in np.where(BPT == INTERMEDIATE)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], INTERMEDIATE, grid_size)
         print("Working on liner")
-        for i in np.where(liner)[0]:
-            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[liner][0], grid_size)
+        for i in np.where(BPT == LINER)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], LINER, grid_size)
         print("Working on Seyfert")
-        for i in np.where(seyfert)[0]:
-            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], BPT[seyfert][0], grid_size)
+        for i in np.where(BPT == SEYFERT)[0]:
+            BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], SEYFERT, grid_size)
         prob_col = Column(BPT_prob, name='p_'+name, dtype='f4', description='BPT probability')
         return bpt_col, bpt_sfcol, prob_col
     else:
         return bpt_col, bpt_sfcol
 
 
-def plot_uncertainty_ellipse(xval_u, yval_u, indices, x_arr, save_to=''):
-    '''
-    parameters
-    xval_u, yval_u : list of coordinates with uncertainty 
-    indices : indices of the list of coordinates to plot with
-    save_to: file to save the plot to, optional
-    '''
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Ellipse
-    plt.figure(figsize=(8,8))
-    ax = plt.gca()
-    for i in indices:
-        ax.add_patch(Ellipse(xy=(xval_u[i].n, yval_u[i].n),
-                            width=xval_u[i].s, height=yval_u[i].s,
-                            edgecolor='red', fc='white'))
-    plt.plot(x_arr, kewley01(x_arr), 'k-.', label="Kewley")
-    plt.plot(x_arr, kauffm03(x_arr), 'k--', label="Kauffmann")
-    plt.plot(x_arr, cidfer10(x_arr), 'k-', label="Cidfer")
-    if save_to:
-        plt.savefig(save_to)
-    plt.show()
-
-
+# Metallicity derived from Marino+13 calibration.
+# use method='o3n2' or method='n2'
+# Require star-forming in BPT diagram.
+# Input is a flux_elines table.
 def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     '''
     Adds gas-phase metallicity from Marino+13 calibration to flux_elines table.
