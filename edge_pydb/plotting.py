@@ -6,6 +6,7 @@ from matplotlib.patches import Circle
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+from edge_pydb.conversion import kewley01, kauffm03, cidfer10
 
 
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
@@ -314,3 +315,27 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
         d['CreationDate'] = datetime.datetime.today()
         pp.close()
     return
+
+
+def plot_uncertainty_ellipse(xval_n, xval_s, yval_n, yval_s, indices, x_arr, save_to=''):
+    '''
+    parameters
+    xval_n, yval_u : list of nominal values of coordinates (pixels) 
+    xval_s, yval_s : list of standard deviation of coordinates (pixels)
+    indices : indices of the list of coordinates to plot with
+    save_to: file to save the plot to, optional
+    '''
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Ellipse
+    plt.figure(figsize=(8,8))
+    ax = plt.gca()
+    for i in indices:
+        ax.add_patch(Ellipse(xy=(xval_n[i], yval_n[i]),
+                            width=xval_s[i], height=yval_s[i],
+                            edgecolor='red', facecolor='none'))
+    plt.plot(x_arr, kewley01(x_arr), 'k-.', label="Kewley")
+    plt.plot(x_arr, kauffm03(x_arr), 'k--', label="Kauffmann")
+    plt.plot(x_arr, cidfer10(x_arr), 'k-', label="Cidfer")
+    if save_to:
+        plt.savefig(save_to)
+    plt.show()
