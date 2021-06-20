@@ -108,7 +108,7 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
         return [0], [0], [0]
 
 
-def dotpatch(x, y, imval, blank=None, dotsize=1, axes=None, **kwargs):
+def dotpatch(x, y, imval, blank=None, dotsize=1, clipedge=True, pad=5, axes=None, **kwargs):
     '''
     Generate and plot a patch collection for a dot plot.
 
@@ -123,6 +123,11 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, axes=None, **kwargs):
         True values in this array are set to NaN
     dotsize : float
         The size of the filled circles
+    clipedge : boolean
+        True to derive a square bounding box around non-Nan values.
+        False to show full image.
+    pad : int
+        Padding in pixels around edges if clipedge=True
     axes : matplotlib.axes
         Axes for plotting
     **kwargs :
@@ -156,13 +161,26 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, axes=None, **kwargs):
     p = PatchCollection(patches, **kwargs)
     p.set_array(np.array(imval))
     p.set_clim([vmin, vmax])
-    xminmax = [x.min(), x.max()]
-    yminmax = [y.min(), y.max()]
+    if clipedge:
+        valid = ~np.isnan(imval)
+        xspan = x[valid].max() - x[valid].min()
+        yspan = y[valid].max() - y[valid].min()
+        if xspan > yspan:
+            xminmax = [x[valid].min()-pad, x[valid].max()+pad]
+            yminmax = [y[valid].min()-pad-np.floor((xspan-yspan)/2), 
+                       y[valid].min()+pad-np.floor((xspan-yspan)/2)+xspan]
+        else:
+            yminmax = [y[valid].min()-pad, y[valid].max()+pad]
+            xminmax = [x[valid].min()-pad-np.floor((yspan-xspan)/2), 
+                       x[valid].min()+pad-np.floor((yspan-xspan)/2)+yspan]
+    else:
+        xminmax = [x.min(), x.max()]
+        yminmax = [y.min(), y.max()]
     img = axes.add_collection(p)
     return img, xminmax, yminmax
 
 
-def imarrayplot(x, y, imval, blank=None, axes=None, **kwargs):
+def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwargs):
     '''
     Plot a pixel image from a data column.
 
@@ -175,6 +193,11 @@ def imarrayplot(x, y, imval, blank=None, axes=None, **kwargs):
         The z values which determine the dot colors
     blank : boolean array
         True values in this array are set to NaN
+    clipedge : boolean
+        True to derive a square bounding box around non-Nan values.
+        False to show full image.
+    pad : int
+        Padding in pixels around edges if clipedge=True
     axes : matplotlib.axes
         Axes for plotting
     **kwargs :
@@ -195,25 +218,44 @@ def imarrayplot(x, y, imval, blank=None, axes=None, **kwargs):
     xdim = len(np.unique(x))
     ydim = len(np.unique(y))
     imarray = np.reshape(imval, [ydim,xdim], order='F')
-    xminmax = [0, xdim-1]
-    yminmax = [0, ydim-1]
+    if clipedge:
+        valid = ~np.isnan(imarray)
+        xflat = np.flatnonzero(np.any(valid, axis=0))
+        yflat = np.flatnonzero(np.any(valid, axis=1))
+        xspan = xflat.max() - xflat.min()
+        yspan = yflat.max() - yflat.min()
+        if xspan > yspan:
+            xminmax = [xflat.min()-pad, xflat.max()+pad]
+            yminmax = [yflat.min()-pad-np.floor((xspan-yspan)/2), 
+                       yflat.min()+pad-np.floor((xspan-yspan)/2)+xspan]
+        else:
+            yminmax = [yflat.min()-pad, yflat.max()+pad]
+            xminmax = [xflat.min()-pad-np.floor((yspan-xspan)/2), 
+                       xflat.min()+pad-np.floor((yspan-xspan)/2)+yspan]
+    else:
+        xminmax = [0, xdim-1]
+        yminmax = [0, ydim-1]
     img = axes.imshow(imarray, origin='lower', **kwargs)
     return img, xminmax, yminmax
 
 
-def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg', 
+def gridplot(edgetab=None, gallist=None, columnlist=None, 
             xrange=None, yrange=None, blank=None, plotstyle='image',
-            cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, **kwargs):
+            cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, 
+            vshow=False, clipedge=True, pad=5, **kwargs):
     '''
-    Plot multiple galaxies on a grid.
+    Plot one column for multiple galaxies or multiple columns for 
+    one galaxy on a grid.
 
     === Parameters ===
     edgetab : EdgeTable
         Table containing the galaxies and data to plot
-    gallist : list of strings
-        List of galaxy names; default is to plot all galaxies
-    column : string
-        Name of column in the table that has the image data
+    gallist : string or list of strings
+        List of galaxy names to plot.  If plotting multiple columns,
+        only one galaxy should be given.
+    columnlist : string or list of strings
+        List of columns in the table to plot.  If plotting multiple
+        galaxies, only one column should be given.
     xrange : tuple of float
         x limits applied to each panel (pixels)
     yrange : tuple of float
@@ -232,75 +274,110 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
         size of plot symbol for dot plot
     pdfname : string
         name of output PDF file, otherwise plot to screen
+    vshow : boolean
+        True to show vmin and vmax in plotting window
+    clipedge : boolean
+        True to derive a square bounding box around non-Nan values.
+        False to use show full image.  Overridden by xrange, yrange.
+    pad : int
+        Padding in pixels around edges if clipedge=True
     **kwargs :
         Additional arguments including vmin, vmax, colormap normalization
     '''
 
-    # Plot all galaxies by default
-    if gallist is None:
-        gallist = list(np.unique(edgetab['Name']))
+    if gallist is None and columnlist is None:
+        raise TypeError('Either gallist or columnlist must be provided!')
+    if isinstance(gallist, str):
+        gallist = [gallist]
+    if isinstance(columnlist, str):
+        columnlist = [columnlist]
 
-    pages = int(np.ceil(float(len(gallist)) / (nx*ny)))
+    # Plot mode: multiple galaxies or multiple columns
+    if columnlist is not None and len(columnlist) == 1:
+        mode = 'onecol'
+        # Plot all galaxies by default
+        if gallist is None:
+            gallist = list(np.unique(edgetab['Name']))
+        print('Plotting column',columnlist[0],'for',len(gallist),'galaxies')
+        pagelist = gallist
+    elif gallist is not None and len(gallist) == 1:
+        mode = 'onegal'
+        # Plot all non-coordinate columns by default
+        if columnlist is None:
+            columnlist = edgetab.colnames
+            for key in ['Name', 'ix', 'iy', 'ra_abs', 'dec_abs', 'ra_off', 'dec_off']:
+                if key in columnlist:
+                    columnlist.remove(key)
+        print('Plotting',len(columnlist),'columns for galaxy',gallist[0])
+        pagelist = columnlist
+    else:
+        raise ValueError('Specify either one galaxy or one column to plot')
+
+    # Get default axis limits
+    pages = int(np.ceil(float(len(pagelist)) / (nx*ny)))
     if pdfname is not None:
         pp = PdfPages(pdfname)
 
     for num in range(0,pages):
         aa = nx*ny*num
         bb = nx*ny+aa
-        thispage = gallist[aa:bb]
-        fig = plt.figure(figsize=(20,14))
+        thispage = pagelist[aa:bb]
+        fig = plt.figure(figsize=(18,14))
         print('Plotting', thispage[0], 'to', thispage[-1])
 
         for i in range(0,len(thispage)):
-            gname = thispage[i]
-            ax = plt.subplot(ny,nx,i+1)
-            galtab = edgetab['Name'] == gname
-
-            if plotstyle == 'dot':
-                if blank is not None:
-                    img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
-                                               edgetab[galtab]['iy'],
-                                               edgetab[galtab][column], 
-                                               blank=blank[galtab], 
-                                               dotsize=dotsize, cmap=cmap, 
-                                               axes=ax, **kwargs)
-                else:
-                    img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
-                                               edgetab[galtab]['iy'],
-                                               edgetab[galtab][column],
-                                               dotsize=dotsize, cmap=cmap, 
-                                               axes=ax, **kwargs)
+            if mode == 'onecol':
+                gname = thispage[i]
+                column = columnlist[0]
+                label = gname
             else:
-                if blank is not None:
-                    img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
-                                                  edgetab[galtab]['iy'],
-                                                  edgetab[galtab][column], 
-                                                  blank=blank[galtab], 
-                                                  cmap=cmap, axes=ax, **kwargs)        
-                else:
-                    img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
-                                                  edgetab[galtab]['iy'],
-                                                  edgetab[galtab][column],
-                                                  cmap=cmap, axes=ax, **kwargs)        
-
+                gname = gallist[0]
+                column = thispage[i]
+                label = column
+            ax = plt.subplot(ny,nx,i+1)
+            galtab = (edgetab['Name'] == gname)
+            if blank is not None:
+                galblank = blank[galtab]
+            else:
+                galblank = None
+            if plotstyle == 'dot':
+                img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
+                                            edgetab[galtab]['iy'],
+                                            edgetab[galtab][column], 
+                                            blank=galblank, clipedge=clipedge,
+                                            pad=pad, dotsize=dotsize, cmap=cmap, 
+                                            axes=ax, **kwargs)
+            else:
+                img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
+                                            edgetab[galtab]['iy'],
+                                            edgetab[galtab][column], 
+                                            blank=galblank, clipedge=clipedge,
+                                            pad=pad, cmap=cmap, axes=ax, **kwargs)        
             if xrange is None:
                 ax.set_xlim(xlims)
                 if i == 0:
-                    print("Default x limits used:",xlims)
+                    print(label, "Default x limits used:",xlims)
             else:
                 ax.set_xlim(xrange)
             if yrange is None:
                 ax.set_ylim(ylims)
                 if i == 0:
-                    print("Default y limits used:",ylims)
+                    print(label, "Default y limits used:",ylims)
             else:
                 ax.set_ylim(yrange)
-
             ax.set_aspect('equal')
             ax.xaxis.set_ticks([])
             ax.yaxis.set_ticks([])
-            plt.text(0.04,0.9,gname,ha='left',va='center',transform=ax.transAxes,
+            plt.text(0.04,0.92,label,ha='left',va='center',transform=ax.transAxes,
                bbox=dict(facecolor='white', edgecolor='none', pad=1))
+            if vshow:
+                vminmax = img.get_clim()
+                if vminmax[1] < 1:
+                    labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
+                else:
+                    labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
+                plt.text(0.04,0.07,labelstr,ha='left',va='center',
+                    transform=ax.transAxes, bbox=dict(facecolor='none',edgecolor='none'))
         fig.subplots_adjust(hspace=0.05)
         fig.subplots_adjust(wspace=0.05)
         if pdfname is not None:
@@ -308,6 +385,7 @@ def gridplot(edgetab=None, gallist=None, column='flux_Halpha_rg',
             plt.close()
         else:
             plt.show()
+
     if pdfname is not None:
         d = pp.infodict()
         d['Title'] = 'EDGE Gallery'
