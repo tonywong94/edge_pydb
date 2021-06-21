@@ -31,7 +31,7 @@ except OSError as _err:
     # _config = {}
 
 
-def _walkthrough(dir=_ROOT, max_depth=-1):
+def _walkthrough(dir=_ROOT, max_depth=2):
     retval = {}
     dir = _os.path.abspath(dir)
     base_depth = dir.rstrip(_os.path.sep).count(_os.path.sep)
