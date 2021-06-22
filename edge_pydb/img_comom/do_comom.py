@@ -13,8 +13,8 @@ from edge_pydb.fitsextract import fitsextract
 
 
 def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13'],
-             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], hexgrid=False, 
-             allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv'):
+             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.3, 
+             hexgrid=False, allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv'):
     """
     Extract 2D molecular line data into an HDF5 database.  This script assumes
     standardized naming conventions, for example:
@@ -36,6 +36,8 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
         How different lines are identified in the FITS file names
     msktyp : list of str
         The types of masks to include.  Each mask is a separate path in the HDF5 file.
+    alphaco : float
+        CO to H2 conversion factor, in Msol/pc2/(K km/s).  Default=4.3
     hexgrid : boolean
         True to sample on a hexagonal grid (experimental)
     allpix : boolean
@@ -114,10 +116,10 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                             galtab.add_column(newcol)
                 # Add the H2 column density, with and without deprojection
                 if line == '12':
-                    sigmol = msd_co(galtab['mom0_12'], name='sigmol')
-                    e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol')
-                    sigmol_fo = msd_co(galtab['mom0_12']*np.cos(np.radians(adopt_incl)), name='sigmol_fo')
-                    e_sigmol_fo = msd_co(galtab['e_mom0_12']*np.cos(np.radians(adopt_incl)), name='e_sigmol_fo')
+                    sigmol = msd_co(galtab['mom0_12'], name='sigmol', alphaco=alphaco)
+                    e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol', alphaco=alphaco)
+                    sigmol_fo = msd_co(galtab['mom0_12']*np.cos(np.radians(adopt_incl)), name='sigmol_fo', alphaco=alphaco)
+                    e_sigmol_fo = msd_co(galtab['e_mom0_12']*np.cos(np.radians(adopt_incl)), name='e_sigmol_fo', alphaco=alphaco)
                     galtab.add_columns([sigmol, e_sigmol, sigmol_fo, e_sigmol_fo])
             tablelist.append(galtab)
 
@@ -161,11 +163,11 @@ if __name__ == "__main__":
     do_comom(gallist=gallist, hexgrid=True, outname='edge_hex')
     # EDGE125 allpix data
     do_comom(gallist=gallist, outname='edge_allpix', allpix=True)
-    # ACA galaxies, native resolution
-#     gallist = [os.path.basename(file).split('.')[0] for file in 
-#                sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
-#     do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
-#             linelbl=['co21'], msktyp=['dil'], fitsdir='acadata', 
-#             ortpar='edge_aca_leda.csv')
-    
+    # ACA galaxies, native resolution, using alphaco=6.1 instead of 4.3
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
+    do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
+            linelbl=['co21'], alphaco=6.1, msktyp=['dil'], fitsdir='acadata', 
+            ortpar='edge_aca_leda.csv')
+
 
