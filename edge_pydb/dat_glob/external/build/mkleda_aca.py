@@ -25,6 +25,7 @@ if list == 'edge' or list == 'alma':
     t['name'] = t['name'].astype('|S15')
 elif list == 'edge_aca':
     t = Table.read(list+'_ledaout.txt',format='csv',delimiter=',')
+    t['objname'] = t['objname'].astype('<U15')
     t.rename_column('objname','name')
 
 # Rename the LEDA columns
@@ -73,13 +74,14 @@ if list == 'edge_aca':
     renames = {
                 'PGC073143' : 'MCG-01-01-012',
                 'PGC070084' : 'VV488NED02',
-                'UGC11680' : 'UGC11680NED02'
+                'PGC066150' : 'UGC11680NED02'
               }
 t.add_index('Name')
 for key in renames.keys():
     t.loc[key]['Name']=renames[key]
 
-
+t.sort('Name')
+    
 # Calculated columns
 t['ledaD25'] = 0.1*10**t['logd25']
 t['ledaD25'].unit = 'arcmin'
@@ -113,6 +115,7 @@ t['ledaHIflux'].format='.2f'
 
 # Descriptions
 t['Name'].description = 'Galaxy Name'
+#t['Name'].format= str.format('3s')
 
 t['ledaRA'].unit = 'hourangle'
 t['ledaRA'].description = 'RA J2000 from LEDA /al2000/'
