@@ -363,7 +363,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
 
 
 
-def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
+def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     '''
     Adds BPT classification to the flux_elines table. BPT==-1 means in the
     star-forming region of the diagram.  An additional column SF_BPT is
@@ -378,6 +378,8 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         suffix for selected column names, e.g. '_rg' or '_sm'
     name : string
         name of the output column
+    sf : boolean
+        True to calculate the SF_BPT column using Halpha EW.
     prob : boolean
         True to calculate the BPT probabilities as an additional column
     grid_size : float
@@ -390,7 +392,6 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     flux_oiii = fluxtab['flux_[OIII]5007'+ext]
     flux_ha   = fluxtab['flux_Halpha'+ext]
     flux_hb   = fluxtab['flux_Hbeta'+ext]
-    ew_ha     = fluxtab['EW_Halpha'+ext]
 
     good = (flux_nii>1e-5) & (flux_oiii>1e-5) & (flux_ha>1e-5) & (flux_hb>1e-5)
     n2ha = np.full(len(flux_nii), np.nan)
@@ -401,9 +402,12 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
     BPT = bpt_region(n2ha, o3hb, good)
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
-    bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
-    bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='?',
-                description='True if star forming (BPT=-1 and EW_Ha>6)')
+    if sf:
+        ew_ha = fluxtab['EW_Halpha'+ext]
+        bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
+        bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='?',
+                    description='True if star forming (BPT=-1 and EW_Ha>6)')
+
     if prob:
         BPT_prob = np.full(len(n2ha), np.nan)
         eN2 = fluxtab['e_flux_[NII]6583'+ext]
@@ -434,9 +438,13 @@ def bpt_type(fluxtab, ext='', name='BPT', prob=False, grid_size=5):
         for i in np.where(BPT == SEYFERT)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], SEYFERT, grid_size)
         prob_col = Column(BPT_prob, name='p_'+name, dtype='f4', description='BPT probability')
+
+    if sf and prob:
         return bpt_col, bpt_sfcol, prob_col
-    else:
+    elif sf:
         return bpt_col, bpt_sfcol
+    else:
+        return bpt_col
 
 
 # Metallicity derived from Marino+13 calibration.

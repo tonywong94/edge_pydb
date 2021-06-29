@@ -23,7 +23,8 @@
 # - {name: W4SFR, unit: solMass / yr, datatype: float64, description: SFR from W4lum using Catalan-Torrecilla+14 calibration}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2019-08-31'}
+# - {date: '2021-06-28'}
+# - {comments: WISE photometry from Bitsakis}
 # schema: astropy-2.0
 Name,W1,eW1,W2,eW2,W3,eW3,W4,eW4,W1lum,W2lum,W3lum,W4lum,W4SFR
 ARP220,9.496,15.01,9.02,14.278,4.559,11.261,0.576,6.802,43.5025,43.2996,43.9673,44.6841,101.45519809

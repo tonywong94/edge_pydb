@@ -28,7 +28,7 @@ def getvwidth(fname=None):
 
 linelist = ['co', '13co']
 lbl      = ['co', 'cott']
-base     = 'e20'
+base     = 'E20'
 altbase  = 'e20'
 
 # Initialize the table
