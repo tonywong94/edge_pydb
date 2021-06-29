@@ -242,7 +242,7 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
 def gridplot(edgetab=None, gallist=None, columnlist=None, 
             xrange=None, yrange=None, blank=None, plotstyle='image',
             cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, 
-            vshow=False, clipedge=True, pad=5, **kwargs):
+            vshow=False, clipedge=False, pad=5, verbose=False, **kwargs):
     '''
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
@@ -323,7 +323,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         bb = nx*ny+aa
         thispage = pagelist[aa:bb]
         fig = plt.figure(figsize=(18,14))
-        print('Plotting', thispage[0], 'to', thispage[-1])
+        if not verbose:
+            print('Plotting', thispage[0], 'to', thispage[-1])
 
         for i in range(0,len(thispage)):
             if mode == 'onecol':
@@ -334,6 +335,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                 gname = gallist[0]
                 column = thispage[i]
                 label = column
+            if verbose:
+                print('Plotting', thispage[i])
             ax = plt.subplot(ny,nx,i+1)
             galtab = (edgetab['Name'] == gname)
             if blank is not None:

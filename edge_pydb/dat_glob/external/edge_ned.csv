@@ -1,7 +1,7 @@
 # %ECSV 0.9
 # ---
 # datatype:
-# - {name: Name, datatype: string}
+# - {name: Name, datatype: string, description: Galaxy Name}
 # - {name: nedRA, unit: deg, datatype: float64, description: J2000 RA from NED}
 # - {name: nedDE, unit: deg, datatype: float64, description: J2000 DEC from NED}
 # - {name: nedVopt, unit: km / s, datatype: int64, description: cz from NED}
@@ -10,7 +10,8 @@
 # - {name: nedMinDia, unit: arcmin, datatype: float64, description: NED Basic Data minor axis diameter}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2020-05-31'}
+# - {date: '2021-06-28'}
+# - {comments: Galaxy coordinates and diameters from NED}
 # schema: astropy-2.0
 Name,nedRA,nedDE,nedVopt,nedz,nedMajDia,nedMinDia
 ARP220,233.73854,23.50314,5434,0.018126,1.5,1.2

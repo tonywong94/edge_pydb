@@ -10,7 +10,8 @@
 # - {name: nsaAz, unit: mag, datatype: float64, description: Galactic extinction in z from Schlegel+ 97}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2019-08-31'}
+# - {date: '2021-06-28'}
+# - {comments: Galaxy Parameters from NASA-Sloan Atlas}
 # schema: astropy-2.0
 Name,nsaZdist,nsaAu,nsaAg,nsaAr,nsaAi,nsaAz
 ARP220,0.0188555,0.420428,0.414849,0.261436,0.192362,0.139517

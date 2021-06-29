@@ -389,6 +389,5 @@ if __name__ == "__main__":
                sorted(glob.glob('aca_packed/*.Pipe3D.cube.fits.gz'))]
     do_califa(gallist=gallist, outname='edge_aca', seq='natv', linelbl='co21', 
     		califa_natv='aca_packed', califa_smo='aca_conv9', comom='../img_comom/acadata', 
-    		nfiles=1, ortpar='edge_aca_leda.csv', distpar='edge_aca_leda.csv', 
-            distcol='ledaDistMpc')
+    		nfiles=1)
 

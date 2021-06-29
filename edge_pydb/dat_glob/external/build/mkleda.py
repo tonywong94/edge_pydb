@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-from astropy.table import Table, join
+from astropy.table import Table, vstack
 import numpy as np
 from datetime import datetime
 #import numpy.ma as ma
 
-#list = 'alma'
-list = 'edge'
+all_list = ['edge', 'edge_aca']
 
 def phot_inc(axratio, ttype):
     q = axratio  # minor/major axis ratio
@@ -18,11 +17,7 @@ def phot_inc(axratio, ttype):
     inc = np.degrees(np.arccos( np.sqrt((q**2-q0**2)/(1-q0**2)) ))  # Hubble 1926ApJ....64..321H
     return inc
     
-# Process the output from HyperLEDA
-t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
-t['name'] = t['name'].astype('|S15')
-
-# Rename the LEDA columns
+# Dict for renaming the LEDA columns
 colnames = {
             'name' : 'Name',
             'al2000' : 'ledaRA',
@@ -44,122 +39,161 @@ colnames = {
             'vvir' : 'ledaVvir',
             'modz' : 'ledaModz'
            }
-for key in colnames.keys():
-    t.rename_column(key, colnames[key])
 
-# Some CALIFA names were unrecognized by LEDA and had to be manually substituted
-if list == 'edge':
-    renames = {
-               'NGC4211A' : 'NGC4211NED02',
-               'NGC6027E' : 'NGC6027',
-               'PGC029708' : 'UGC05498NED01',
-               'UGC04299' : 'IC2247'
-              }
-if list == 'alma':
-    renames = {
-               'PGC000312' : 'IC1528',
-               'PGC072803' : 'NGC7783NED01',
-               'PGC002029' : 'UGC00335NED02',
-               'PGC066150' : 'UGC11680NED02',
-               'NGC7237' : 'UGC11958',
-               'PGC070084' : 'VV488NED02'
-              }
-t.add_index('Name')
-for key in renames.keys():
-    t.loc[key]['Name']=renames[key]
+tablist = []
 
+for list in all_list:
+    print('Working on',list)
+    # Process the output from HyperLEDA
+    if list == 'edge' or list == 'alma':
+        t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
+        t['name'] = t['name'].astype('|S15')
+        t.remove_columns(['objname'])
+    elif list == 'edge_aca':
+        t = Table.read(list+'_ledaout.txt',format='csv',delimiter=',')
+        t = Table(t, masked=True, copy=False)
+        t['objname'] = t['objname'].astype('<U15')
+        t.rename_column('objname','name')
 
-# Calculated columns
-t['ledaD25'] = 0.1*10**t['logd25']
-t['ledaD25'].unit = 'arcmin'
-t['ledaD25'].description = 'Apparent B diameter from LEDA /logd25/ linearized'
-t['ledaD25'].format='.2f'
+    for key in colnames.keys():
+        t.rename_column(key, colnames[key])
 
-t['ledaAxrat'] = 10**(-t['logr25'])
-t['ledaAxrat'].description = 'Minor to major axis ratio from LEDA /logr25/ linearized' 
-t['ledaAxrat'].format='.4f'
+    # Some CALIFA names were unrecognized by LEDA and had to be manually substituted
+    if list == 'edge':
+        renames = {
+                   # LEDAname : CALIFAname
+                   'NGC4211A' : 'NGC4211NED02',
+                   'NGC6027E' : 'NGC6027',
+                   'PGC029708' : 'UGC05498NED01',
+                   'UGC04299' : 'IC2247'
+                  }
+    if list == 'alma':
+        renames = {
+                   'PGC000312' : 'IC1528',
+                   'PGC072803' : 'NGC7783NED01',
+                   'PGC002029' : 'UGC00335NED02',
+                   'PGC066150' : 'UGC11680NED02',
+                   'NGC7237' : 'UGC11958',
+                   'PGC070084' : 'VV488NED02'
+                  }
+    if list == 'edge_aca':
+        renames = {
+                    'PGC073143' : 'MCG-01-01-012',
+                    'PGC070084' : 'VV488NED02',
+                    'PGC066150' : 'UGC11680NED02'
+                  }
+    t.add_index('Name')
+    for key in renames.keys():
+        t.loc[key]['Name']=renames[key]
 
-# Override the bad axis ratio for NGC 3687 in LEDA (Dmitry Makarov, priv comm, 29may2020).
-# Use values from SDSS-III DR12 (2015ApJS..219...12A)
-t.loc['NGC3687']['ledaAxrat'] = 10**(0.815-0.916)
-t.loc['NGC3687']['ledaPA'] = 167.1
+    # Calculated columns
+    t['ledaD25'] = 0.1*10**t['logd25']
+    t['ledaD25'].unit = 'arcmin'
+    t['ledaD25'].description = 'Apparent B diameter from LEDA /logd25/ linearized'
+    t['ledaD25'].format='.2f'
 
-t['ledaAxIncl'] = phot_inc(t['ledaAxrat'],t['ledaType'])
-t['ledaAxIncl'].unit = 'deg'
-t['ledaAxIncl'].description = 'Inclination estimated from LEDA axratio using Bottinelli+83' 
-t['ledaAxIncl'].format='.1f'
+    t['ledaAxrat'] = 10**(-t['logr25'])
+    t['ledaAxrat'].description = 'Minor to major axis ratio from LEDA /logr25/ linearized' 
+    t['ledaAxrat'].format='.4f'
 
-t['ledaDistMpc'] = 10**(0.2*(t['ledaModz']-25))
-t['ledaDistMpc'].unit = 'Mpc'
-t['ledaDistMpc'].description = 'Luminosity distance in Mpc corresponding to ledaModz' 
-t['ledaDistMpc'].format='.2f'
+    # Override the bad axis ratio of logr25=0.46 for NGC 3687 in LEDA 
+    # (Dmitry Makarov, priv comm, 29may2020).
+    # Use values from SDSS-III DR12 (2015ApJS..219...12A)
+    if list == 'edge':
+        t.loc['NGC3687']['ledaAxrat'] = 10**(0.815-0.916)
+        t.loc['NGC3687']['ledaPA'] = 167.1
 
-t['ledaHIflux'] = 10**(-0.4*(t['m21']-17.4))
-t['ledaHIflux'].unit = 'Jy km / s'
-t['ledaHIflux'].description = '21cm flux from LEDA /m21/ linearized' 
-t['ledaHIflux'].format='.2f'
+    t['ledaAxIncl'] = phot_inc(t['ledaAxrat'],t['ledaType'])
+    t['ledaAxIncl'].unit = 'deg'
+    t['ledaAxIncl'].description = 'Inclination estimated from LEDA axratio using Bottinelli+83' 
+    t['ledaAxIncl'].format='.1f'
 
-# Descriptions
-t['Name'].description = 'Galaxy Name'
+    t['ledaDistMpc'] = 10**(0.2*(t['ledaModz']-25))
+    t['ledaDistMpc'].unit = 'Mpc'
+    t['ledaDistMpc'].description = 'Luminosity distance in Mpc corresponding to ledaModz' 
+    t['ledaDistMpc'].format='.2f'
 
-t['ledaRA'].unit = 'hourangle'
-t['ledaRA'].description = 'RA J2000 from LEDA /al2000/'
+    t['ledaHIflux'] = 10**(-0.4*(t['m21']-17.4))
+    t['ledaHIflux'].unit = 'Jy km / s'
+    t['ledaHIflux'].description = '21cm flux from LEDA /m21/ linearized' 
+    t['ledaHIflux'].format='.2f'
 
-t['ledaDE'].unit = 'deg'
-t['ledaDE'].description = 'DEC J2000 from LEDA /de2000/' 
+    # Descriptions
+    t['Name'].description = 'Galaxy Name'
 
-t['ledaA_Bgal'].unit = 'mag'
-t['ledaA_Bgal'].description = 'Galactic A_B from LEDA /ag/'
+    t['ledaRA'].unit = 'hourangle'
+    t['ledaRA'].description = 'RA J2000 from LEDA /al2000/'
 
-t['ledaType'].description = 'Morphological type from LEDA /t/'
+    t['ledaDE'].unit = 'deg'
+    t['ledaDE'].description = 'DEC J2000 from LEDA /de2000/' 
 
-t['ledaPA'].unit = 'deg'
-t['ledaPA'].description = 'PA from LEDA /pa/, N to E' 
+    t['ledaA_Bgal'].unit = 'mag'
+    t['ledaA_Bgal'].description = 'Galactic A_B from LEDA /ag/'
 
-t['ledaIncl'].unit = 'deg'
-t['ledaIncl'].description = 'Morph inclination from LEDA /incl/' 
+    t['ledaType'].description = 'Morphological type from LEDA /t/'
 
-t['ledaVrad'].unit = 'km / s'
-t['ledaVrad'].description = 'cz from mean data from LEDA /v/' 
+    t['ledaPA'].unit = 'deg'
+    t['ledaPA'].description = 'PA from LEDA /pa/, N to E' 
 
-t['ledaVmaxg'].unit = 'km / s'
-t['ledaVmaxg'].description = 'HI max v_rot uncorrected for incl from LEDA /vmaxg/' 
+    t['ledaIncl'].unit = 'deg'
+    t['ledaIncl'].description = 'Morph inclination from LEDA /incl/' 
 
-t['ledaVrot'].unit = 'km / s'
-t['ledaVrot'].description = 'HI max v_rot corrected for incl from LEDA /vrot/' 
+    t['ledaVrad'].unit = 'km / s'
+    t['ledaVrad'].description = 'cz from mean data from LEDA /v/' 
 
-t['ledaMorph'].description = 'Hubble type from LEDA /type/' 
-t['ledaBar'].description = 'B = bar present from LEDA /bar/' 
-t['ledaRing'].description = 'R = ring present from LEDA /ring/' 
-t['ledaMultiple'].description = 'M = multiple system from LEDA /multiple/' 
+    t['ledaVmaxg'].unit = 'km / s'
+    t['ledaVmaxg'].description = 'HI max v_rot uncorrected for incl from LEDA /vmaxg/' 
 
-t['ledaBt'].unit = 'mag'
-t['ledaBt'].description = 'Apparent B total magnitude from LEDA /bt/' 
+    t['ledaVrot'].unit = 'km / s'
+    t['ledaVrot'].description = 'HI max v_rot corrected for incl from LEDA /vrot/' 
 
-t['ledaIt'].unit = 'mag'
-t['ledaIt'].description = 'Apparent I total magnitude from LEDA /it/' 
+    t['ledaMorph'].description = 'Hubble type from LEDA /type/' 
+    t['ledaBar'].description = 'B = bar present from LEDA /bar/' 
+    t['ledaRing'].description = 'R = ring present from LEDA /ring/' 
+    t['ledaMultiple'].description = 'M = multiple system from LEDA /multiple/' 
 
-t['ledaFIR'].unit = 'mag'
-t['ledaFIR'].description = 'FIR flux as magnitude from LEDA /mfir/' 
+    t['ledaBt'].unit = 'mag'
+    t['ledaBt'].description = 'Apparent B total magnitude from LEDA /bt/' 
 
-t['ledaVvir'].unit = 'km / s'
-t['ledaVvir'].description = 'Virgo infall corrected cz from LEDA /vvir/' 
+    t['ledaIt'].unit = 'mag'
+    t['ledaIt'].description = 'Apparent I total magnitude from LEDA /it/' 
 
-t['ledaModz'].unit = 'mag'
-t['ledaModz'].description = 'Dist modulus from LEDA /modz/ based on /vvir/' 
+    t['ledaFIR'].unit = 'mag'
+    t['ledaFIR'].description = 'FIR flux as magnitude from LEDA /mfir/' 
 
-# Fill in missing PA values using 2MASS XSC
-badind = t['ledaPA'].mask.nonzero()[0]
-print(badind)
-# Should be NGC447, NGC2487, NGC5394, NGC 5784, NGC5953, NGC6125
-newpa = [15, 50, 30, 40, 65, 50]
-for i, idx in enumerate(badind):
-    print('Setting PA for {} to {}'.format(t['Name'][idx],newpa[i]))
-    t['ledaPA'][idx] = newpa[i]
+    t['ledaVvir'].unit = 'km / s'
+    t['ledaVvir'].description = 'Virgo infall corrected cz from LEDA /vvir/' 
 
-t.remove_columns(['objname', 'logd25', 'logr25', 'e_logr25', 'm21'])
-t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
-print(t.meta)
-t.write(list+'_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
+    t['ledaModz'].unit = 'mag'
+    t['ledaModz'].description = 'Dist modulus from LEDA /modz/ based on /vvir/' 
+
+    # Fill in missing PA values using 2MASS XSC
+    badind = t['ledaPA'].mask.nonzero()[0]
+    print('Indices with missing PA:',badind)
+    if list == 'edge':
+        # Should be NGC447, NGC2487, NGC5394, NGC 5784, NGC5953, NGC6125
+        newpa = [15, 50, 30, 40, 65, 50]
+        for i, idx in enumerate(badind):
+            print('Setting PA for {} to {}'.format(t['Name'][idx],newpa[i]))
+            t['ledaPA'][idx] = newpa[i]        
+    elif list == 'edge_aca':
+        # Should be UGC11680NED02
+        newpa = [-25]
+        for i, idx in enumerate(badind):
+            print('Setting PA for {} to {}'.format(t['Name'][idx],newpa[i]))
+            t['ledaPA'][idx] = newpa[i]        
+
+    t.remove_columns(['logd25','logr25','e_logr25','m21'])
+    t.pprint()
+    tablist.append(t)
+
+if len(tablist) > 0:
+    alltab = vstack(tablist)
+alltab.add_index('Name')
+alltab.sort('Name')
+alltab.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+alltab.meta['comments'] = ('Galaxy Parameters from HyperLEDA')
+print(alltab.meta)
+alltab.write('edge_leda.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 
 
