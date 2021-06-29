@@ -1,21 +1,20 @@
 - [edge_bbpars_smo7.csv](#edge_bbpars_smo7csv)
 - [edge_rfpars.csv](#edge_rfparscsv)
-- [edge_hiflux.csv](#edge_hifluxcsv)
+- [edge_rdist17.csv](#edge_rdist17csv)
 - [edge_jampars.csv](#edge_jamparscsv)
 - [edge_bbpars_natv.csv](#edge_bbpars_natvcsv)
+- [edge_califa.csv](#edge_califacsv)
 - [edge_coflux_natv.csv](#edge_coflux_natvcsv)
+- [edge_hiflux.csv](#edge_hifluxcsv)
 - [edge_coobs_DE.csv](#edge_coobs_DEcsv)
 - [edge_coflux_e20.csv](#edge_coflux_e20csv)
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
 - [edge_coobs_E.csv](#edge_coobs_Ecsv)
 - [edge_coobs_D.csv](#edge_coobs_Dcsv)
-- [edge_aca_leda.csv](#edge_aca_ledacsv)
 - [edge_wise.csv](#edge_wisecsv)
 - [edge_nsa.csv](#edge_nsacsv)
 - [edge_ned.csv](#edge_nedcsv)
-- [edge_rdist.csv](#edge_rdistcsv)
 - [edge_leda.csv](#edge_ledacsv)
-- [edge_califa.csv](#edge_califacsv)
 - [rf_CO_natv.csv](#rf_CO_natvcsv)
 - [rf_HA_smo6.csv](#rf_HA_smo6csv)
 - [rf_CO_smo6.csv](#rf_CO_smo6csv)
@@ -74,24 +73,31 @@ date: '2019-10-13'
 | rfKinRA | hourangle | float64 |   | RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA+rfKinXoff |
 | rfKinDecl | deg | float64 |   | Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE+rfKinYoff |
 
-## [edge_hiflux.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_hiflux.csv)
+## [edge_rdist17.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_rdist17.csv)
 
 
+
+date: '2021-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| Name |   | string |   | Galaxy Name |
-| Refcode |   | string |   | Ref Code for spectrum |
-| Vsys | km / s | float32 |   | 'Vsys from LEDA, optical barycentric' |
-| Deltav | km / s | float32 |   | Velocity channel width |
-| Robust_rms | mJy | float32 |   | rms noise from mad_std over noise region |
-| RefInt | Jy km / s | float32 |   | integrated HI flux over fixed window of +/- 600.0 |
-| RefUnc | Jy km / s | float32 |   | uncertainty in RefInt |
-| SigInt | Jy km / s | float32 |   | integrated HI flux over get_signal_range window |
-| SigUnc | Jy km / s | float32 |   | uncertainty in SigInt |
-| SigVmin | km / s | float32 |   | signal start from get_signal_range |
-| SigVmax | km / s | float32 |   | signal end from get_signal_range |
-| BadFlag |   | bool |   | True for poor signal |
+| Name |   | string |   |   |
+| rdScaleMol | kpc | float64 |   | Exponential scale length for CO disk derived by filling in undetected values in annulii with 1-sigma |
+| rdeScaleMol | kpc | float64 |   | Statistical error from fit to exponential scale length |
+| rdScaleMolHi | kpc | float64 |   | Upper limit to exponential scale length by filling in annuli with 2-sigma values |
+| rdScaleMolLo | kpc | float64 |   | Lower limit to exponential scale length by filling in annulii with zeros |
+| rdNormMol | solMass / pc2 | float64 |   | 'Normalization of CO exponential disk profile, i.e. density at R=0' |
+| rdeNormMol | solMass / pc2 | float64 |   | Error in normalization of CO exponential disk profile |
+| rdScaleSt | kpc | float64 |   | Exponential scale length for the mass of the stellar disk |
+| rdeScaleSt | kpc | float64 |   | Formal error in stellar scale length fit |
+| rdNormSt | solMass / pc2 | float64 |   | 'Normalization of stellar exponential disk profile, i.e. density at R=0' |
+| rdeNormSt | solMass / pc2 | float64 |   | Formal error in stellar disk normalization |
+| rdR50Mol | kpc | float64 |   | Radius enclosing 50% of the molecular mass |
+| rdeR50Mol | kpc | float64 |   | 'Error in radius enclosing 50% of the molecular mass, including beam size' |
+| rdR50St | kpc | float64 |   | Radius enclosing 50% of the stellar mass |
+| rdeR50St | kpc | float64 |   | 'Error in radius enclosing 50% of the stellar mass, including beam size' |
+| rdScaleSFR | kpc | float64 |   | Exponential scale length for SFR from extinction corrected Ha |
+| rdeScaleSFR | kpc | float64 |   | Error in exponential scale length for SFR from extinction corrected Ha |
 
 ## [edge_jampars.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_jampars.csv)
 
@@ -125,6 +131,59 @@ Global fit parameters from Bbarolo on natv CO data
 | bbKinInc | deg | float64 | .2f | Inclination determined by Bbarolo |
 | bbKinPA | arcsec | float64 | .2f | Position angle E from N determined by Bbarolo |
 | bbMask |   | string |   | Identifier for cube mask |
+
+## [edge_califa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/califa/edge_califa.csv)
+
+Galaxy properties determined from CALIFA
+
+date: '2021-06-29'
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| ID |   | int64 |   | CALIFA ID |
+| Name |   | string |   | CALIFA Name |
+| caMass | dex(solMass) | float64 |   | Stellar mass from col 149 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caeMass | dex(solMass) | float64 |   | Error in stellar mass from col 150 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caSFR | dex(solMass / yr) | float64 |   | SFR from col 151 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caeSFR | dex(solMass / yr) | float64 |   | Error in SFR from col 152 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caOH | dex | float64 |   | Oxygen abundance as 12+log(O/H) from col 153 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caeOH | dex | float64 |   | Error in oxygen abundance from col 154 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caAvgas | mag | float64 |   | Nebular extinction as Av from col 155 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caeAvgas | mag | float64 |   | Error in nebular extinction from col 156 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caAvstars | mag | float64 |   | Stellar extinction as Av from col 157 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| caeAvstars | mag | float64 |   | Error in stellar extinction from col 158 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
+| Su | mag | float64 |   | SDSS u magnitude from col 4 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| Sg | mag | float64 |   | SDSS g magnitude from col 8 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| Sr | mag | float64 |   | SDSS r magnitude from col 12 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| Si | mag | float64 |   | SDSS i magnitude from col 16 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| caB | mag | float64 |   | B magnitude from col 20 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| caV | mag | float64 |   | V magnitude from col 24 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| caR | mag | float64 |   | R magnitude from col 28 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
+| caRe | arcsec | float64 |   | Equivalent radius Re from col 34 in get_mag_cubes_v2.2.csv |
+| caeRe | arcsec | float64 |   | Error in equivalent radius from col 35 in get_mag_cubes_v2.2.csv |
+| caEllipticity |   | float64 |   | Ellipticity sqrt(1-b^2/a^2) from col 38 in get_mag_cubes_v2.2.csv |
+| caPA | deg | float64 |   | PA from col 39 in get_mag_cubes_v2.2.csv |
+| caR50 | arcsec | float64 |   | R50 from col 40 in get_mag_cubes_v2.2.csv |
+| caeR50 | arcsec | float64 |   | Error in R50 from col 41 in get_mag_cubes_v2.2.csv |
+| caR90 | arcsec | float64 |   | R90 from col 42 in get_mag_cubes_v2.2.csv |
+| caeR90 | arcsec | float64 |   | Error in R90 from col 43 in get_mag_cubes_v2.2.csv |
+| caOH_O3N2 | dex | float64 |   | O3N2-based metallicity from <OH_O3N2> col 4 in get_proc_elines_CALIFA.csv |
+| caZgas |   | float64 |   | 'Redshift for gas lines, from <z_gas> col 14 in get_proc_elines_CALIFA.csv' |
+| caZstars |   | float64 |   | 'Redshift for stars, from <z_stars> col 15 in get_proc_elines_CALIFA.csv' |
+| caAge | dex(Gyr) | float64 |   | Mean stellar age from <log_age_mean_LW> col 37 in get_proc_elines_CALIFA.csv |
+| caeAge | dex(Gyr) | float64 |   | Error in mean stellar age from <s_log_age_mean_LW> col 38 in get_proc_elines_CALIFA.csv |
+| caFHa | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, from <log_F_Ha> column 145 in get_proc_elines_CALIFA.csv' |
+| caFHacorr | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, extinction corrected, from <log_F_Ha_cor> column 146 in get_proc_elines_CALIFA.csv' |
+| caLHacorr | dex(erg / s) | float64 |   | 'Log of Halpha luminosity, extinction corrected, from <log_L_Ha_cor> column 147 in get_proc_elines_CALIFA.csv' |
+| caMstars | dex(solMass) | float64 |   | 'Log of stellar mass, from column 73 log_Mass in get_proc_elines_CALIFA.csv' |
+| caDistMpc | Mpc | float64 |   | 'Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73' |
+| caDistP3d | Mpc | float64 |   | Luminosity distance in Mpc from <DL> column 129 in get_proc_elines_CALIFA.csv |
+| caFlgWav5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V500 |
+| caFlgWav12 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V1200 |
+| caFlgReg5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V500 |
+| caFlgReg12 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V1200 |
+| caFlgImg5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V500 |
+| caFlgImg12 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V1200 |
 
 ## [edge_coflux_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_natv.csv)
 
@@ -171,6 +230,25 @@ date: '2020-06-28'
 | cottSNRmax_natv |   | float64 | .3f | Maximum SNR of 13co in natv cube |
 | cottSNR4pix_natv |   | float64 | .3f | Number of XY pixels with 13co peak Tb > 4 sigma |
 | cottSNR5pix_natv |   | float64 | .3f | Number of XY pixels with 13co peak Tb > 5 sigma |
+
+## [edge_hiflux.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_hiflux.csv)
+
+
+
+| name | unit | datatype | format | description |
+|---|---|---|---|---|
+| Name |   | string |   | Galaxy Name |
+| Refcode |   | string |   | Ref Code for spectrum |
+| Vsys | km / s | float32 |   | 'Vsys from LEDA, optical barycentric' |
+| Deltav | km / s | float32 |   | Velocity channel width |
+| Robust_rms | mJy | float32 |   | rms noise from mad_std over noise region |
+| RefInt | Jy km / s | float32 |   | integrated HI flux over fixed window of +/- 600.0 |
+| RefUnc | Jy km / s | float32 |   | uncertainty in RefInt |
+| SigInt | Jy km / s | float32 |   | integrated HI flux over get_signal_range window |
+| SigUnc | Jy km / s | float32 |   | uncertainty in SigInt |
+| SigVmin | km / s | float32 |   | signal start from get_signal_range |
+| SigVmax | km / s | float32 |   | signal end from get_signal_range |
+| BadFlag |   | bool |   | True for poor signal |
 
 ## [edge_coobs_DE.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coobs_DE.csv)
 
@@ -325,44 +403,11 @@ date: '2020-06-01'
 | coSNRpeak |   | float64 |   | Peak brightness in SNR units |
 | ImagingDate |   | string |   | Date of imaging |
 
-## [edge_aca_leda.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_aca_leda.csv)
-
-
-
-date: '2021-06-08'
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| Name |   | string |   | Galaxy Name |
-| ledaRA | hourangle | float64 |   | RA J2000 from LEDA /al2000/ |
-| ledaDE | deg | float64 |   | DEC J2000 from LEDA /de2000/ |
-| ledaMorph |   | string |   | Hubble type from LEDA /type/ |
-| ledaBar |   | string |   | B = bar present from LEDA /bar/ |
-| ledaRing |   | string |   | R = ring present from LEDA /ring/ |
-| ledaMultiple |   | int64 |   | M = multiple system from LEDA /multiple/ |
-| ledaType |   | float64 |   | Morphological type from LEDA /t/ |
-| ledaPA | deg | float64 |   | 'PA from LEDA /pa/, N to E' |
-| ledaBt | mag | float64 |   | Apparent B total magnitude from LEDA /bt/ |
-| ledaIt | mag | float64 |   | Apparent I total magnitude from LEDA /it/ |
-| ledaVmaxg | km / s | float64 |   | HI max v_rot uncorrected for incl from LEDA /vmaxg/ |
-| ledaFIR | mag | int64 |   | FIR flux as magnitude from LEDA /mfir/ |
-| ledaVrad | km / s | float64 |   | cz from mean data from LEDA /v/ |
-| ledaA_Bgal | mag | float64 |   | Galactic A_B from LEDA /ag/ |
-| ledaIncl | deg | float64 |   | Morph inclination from LEDA /incl/ |
-| ledaVrot | km / s | float64 |   | HI max v_rot corrected for incl from LEDA /vrot/ |
-| ledaVvir | km / s | float64 |   | Virgo infall corrected cz from LEDA /vvir/ |
-| ledaModz | mag | float64 |   | Dist modulus from LEDA /modz/ based on /vvir/ |
-| ledaD25 | arcmin | float64 | .2f | Apparent B diameter from LEDA /logd25/ linearized |
-| ledaAxrat |   | float64 | .4f | Minor to major axis ratio from LEDA /logr25/ linearized |
-| ledaAxIncl | deg | float64 | .1f | Inclination estimated from LEDA axratio using Bottinelli+83 |
-| ledaDistMpc | Mpc | float64 | .2f | Luminosity distance in Mpc corresponding to ledaModz |
-| ledaHIflux | Jy km / s | float64 | .2f | 21cm flux from LEDA /m21/ linearized |
-
 ## [edge_wise.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_wise.csv)
 
+WISE photometry from Bitsakis
 
-
-date: '2019-08-31'
+date: '2021-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -383,9 +428,9 @@ date: '2019-08-31'
 
 ## [edge_nsa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_nsa.csv)
 
+Galaxy Parameters from NASA-Sloan Atlas
 
-
-date: '2019-08-31'
+date: '2021-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -399,13 +444,13 @@ date: '2019-08-31'
 
 ## [edge_ned.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_ned.csv)
 
+Galaxy coordinates and diameters from NED
 
-
-date: '2020-05-31'
+date: '2021-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
-| Name |   | string |   |   |
+| Name |   | string |   | Galaxy Name |
 | nedRA | deg | float64 |   | J2000 RA from NED |
 | nedDE | deg | float64 |   | J2000 DEC from NED |
 | nedVopt | km / s | int64 |   | cz from NED |
@@ -413,37 +458,11 @@ date: '2020-05-31'
 | nedMajDia | arcmin | float64 |   | NED Basic Data major axis diameter |
 | nedMinDia | arcmin | float64 |   | NED Basic Data minor axis diameter |
 
-## [edge_rdist.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_rdist.csv)
-
-
-
-date: '2019-08-31'
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| Name |   | string |   |   |
-| rdScaleMol | kpc | float64 |   | Exponential scale length for CO disk derived by filling in undetected values in annulii with 1-sigma |
-| rdeScaleMol | kpc | float64 |   | Statistical error from fit to exponential scale length |
-| rdScaleMolHi | kpc | float64 |   | Upper limit to exponential scale length by filling in annuli with 2-sigma values |
-| rdScaleMolLo | kpc | float64 |   | Lower limit to exponential scale length by filling in annulii with zeros |
-| rdNormMol | solMass / pc2 | float64 |   | 'Normalization of CO exponential disk profile, i.e. density at R=0' |
-| rdeNormMol | solMass / pc2 | float64 |   | Error in normalization of CO exponential disk profile |
-| rdScaleSt | kpc | float64 |   | Exponential scale length for the mass of the stellar disk |
-| rdeScaleSt | kpc | float64 |   | Formal error in stellar scale length fit |
-| rdNormSt | solMass / pc2 | float64 |   | 'Normalization of stellar exponential disk profile, i.e. density at R=0' |
-| rdeNormSt | solMass / pc2 | float64 |   | Formal error in stellar disk normalization |
-| rdR50Mol | kpc | float64 |   | Radius enclosing 50% of the molecular mass |
-| rdeR50Mol | kpc | float64 |   | 'Error in radius enclosing 50% of the molecular mass, including beam size' |
-| rdR50St | kpc | float64 |   | Radius enclosing 50% of the stellar mass |
-| rdeR50St | kpc | float64 |   | 'Error in radius enclosing 50% of the stellar mass, including beam size' |
-| rdScaleSFR | kpc | float64 |   | Exponential scale length for SFR from extinction corrected Ha |
-| rdeScaleSFR | kpc | float64 |   | Error in exponential scale length for SFR from extinction corrected Ha |
-
 ## [edge_leda.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_leda.csv)
 
+Galaxy Parameters from HyperLEDA
 
-
-date: '2020-06-02'
+date: '2021-06-28'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -471,58 +490,6 @@ date: '2020-06-02'
 | ledaAxIncl | deg | float64 | .1f | Inclination estimated from LEDA axratio using Bottinelli+83 |
 | ledaDistMpc | Mpc | float64 | .2f | Luminosity distance in Mpc corresponding to ledaModz |
 | ledaHIflux | Jy km / s | float64 | .2f | 21cm flux from LEDA /m21/ linearized |
-
-## [edge_califa.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/external/edge_califa.csv)
-
-
-
-date: '2019-08-31'
-
-| name | unit | datatype | format | description |
-|---|---|---|---|---|
-| Name |   | string |   |   |
-| caMass | dex(solMass) | float64 |   | Stellar mass from col 149 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeMass | dex(solMass) | float64 |   | Error in stellar mass from col 150 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caSFR | dex(solMass / yr) | float64 |   | SFR from col 151 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeSFR | dex(solMass / yr) | float64 |   | Error in SFR from col 152 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caOH | dex | float64 |   | Oxygen abundance as 12+log(O/H) from col 153 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeOH | dex | float64 |   | Error in oxygen abundance from col 154 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caAvgas | mag | float64 |   | Nebular extinction as Av from col 155 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeAvgas | mag | float64 |   | Error in nebular extinction from col 156 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caAvstars | mag | float64 |   | Stellar extinction as Av from col 157 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeAvstars | mag | float64 |   | Error in stellar extinction from col 158 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| Su | mag | float64 |   | SDSS u magnitude from col 4 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| Sg | mag | float64 |   | SDSS g magnitude from col 8 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| Sr | mag | float64 |   | SDSS r magnitude from col 12 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| Si | mag | float64 |   | SDSS i magnitude from col 16 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| caB | mag | float64 |   | B magnitude from col 20 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| caV | mag | float64 |   | V magnitude from col 24 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| caR | mag | float64 |   | R magnitude from col 28 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
-| caRe | arcsec | float64 |   | Equivalent radius Re from col 34 in get_mag_cubes_v2.2.csv |
-| caeRe | arcsec | float64 |   | Error in equivalent radius from col 35 in get_mag_cubes_v2.2.csv |
-| caEllipticity |   | float64 |   | Ellipticity sqrt(1-b^2/a^2) from col 38 in get_mag_cubes_v2.2.csv |
-| caPA | deg | float64 |   | PA from col 39 in get_mag_cubes_v2.2.csv |
-| caR50 | arcsec | float64 |   | R50 from col 40 in get_mag_cubes_v2.2.csv |
-| caeR50 | arcsec | float64 |   | Error in R50 from col 41 in get_mag_cubes_v2.2.csv |
-| caR90 | arcsec | float64 |   | R90 from col 42 in get_mag_cubes_v2.2.csv |
-| caeR90 | arcsec | float64 |   | Error in R90 from col 43 in get_mag_cubes_v2.2.csv |
-| caOH_O3N2 | dex | float64 |   | O3N2-based metallicity from <OH_O3N2> col 4 in get_proc_elines_CALIFA.csv |
-| caZgas |   | float64 |   | 'Redshift for gas lines, from <z_gas> col 14 in get_proc_elines_CALIFA.csv' |
-| caZstars |   | float64 |   | 'Redshift for stars, from <z_stars> col 15 in get_proc_elines_CALIFA.csv' |
-| caAge | dex(Gyr) | float64 |   | Mean stellar age from <log_age_mean_LW> col 37 in get_proc_elines_CALIFA.csv |
-| caeAge | dex(Gyr) | float64 |   | Error in mean stellar age from <s_log_age_mean_LW> col 38 in get_proc_elines_CALIFA.csv |
-| caFHa | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, from <log_F_Ha> column 145 in get_proc_elines_CALIFA.csv' |
-| caFHacorr | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, extinction corrected, from <log_F_Ha_cor> column 146 in get_proc_elines_CALIFA.csv' |
-| caLHacorr | dex(erg / s) | float64 |   | 'Log of Halpha luminosity, extinction corrected, from <log_L_Ha_cor> column 147 in get_proc_elines_CALIFA.csv' |
-| caMstars | dex(solMass) | float64 |   | 'Log of stellar mass, from column 73 log_Mass in get_proc_elines_CALIFA.csv' |
-| caDistMpc | Mpc | float64 |   | 'Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73' |
-| caDistP3d | Mpc | float64 |   | Luminosity distance in Mpc from get_proc_elines_CALIFA.csv |
-| caFlgWav5 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V500 |
-| caFlgReg5 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V500 |
-| caFlgImg5 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V500 |
-| caFlgWav12 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V1200 |
-| caFlgReg12 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V1200 |
-| caFlgImg12 |   | int64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V1200 |
 
 ## [rf_CO_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_CO_natv.csv)
 

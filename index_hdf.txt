@@ -3,7 +3,7 @@ path: ELINES_rg
 <Table length=1849>
       name        dtype          unit        format                 description                  n_bad
 ---------------- ------- ------------------- ------ -------------------------------------------- -----
-            Name bytes10                                                             Galaxy Name     0
+            Name  bytes7                                                             Galaxy Name     0
               ix   int32                                      0-based pixel index in x direction     0
               iy   int32                                      0-based pixel index in y direction     0
           ra_abs float32                 deg    .6f                              sample ra coord     0
@@ -48,7 +48,7 @@ path: ELINES_sm
 <Table length=1849>
       name        dtype          unit        format                 description                  n_bad
 ---------------- ------- ------------------- ------ -------------------------------------------- -----
-            Name bytes10                                                             Galaxy Name     0
+            Name  bytes7                                                             Galaxy Name     0
               ix   int32                                      0-based pixel index in x direction     0
               iy   int32                                      0-based pixel index in y direction     0
           ra_abs float32                 deg    .6f                              sample ra coord     0
@@ -93,7 +93,7 @@ path: SFH_rg
 <Table length=1849>
           name            dtype    unit   format                 description                  n_bad
 ------------------------ ------- -------- ------ -------------------------------------------- -----
-                    Name bytes10                                                  Galaxy Name     0
+                    Name  bytes7                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
                   ra_abs float32      deg    .6f                              sample ra coord     0
@@ -186,7 +186,7 @@ path: SFH_sm
 <Table length=1849>
           name            dtype    unit   format                 description                  n_bad
 ------------------------ ------- -------- ------ -------------------------------------------- -----
-                    Name bytes10                                                  Galaxy Name     0
+                    Name  bytes7                                                  Galaxy Name     0
                       ix   int32                           0-based pixel index in x direction     0
                       iy   int32                           0-based pixel index in y direction     0
                   ra_abs float32      deg    .6f                              sample ra coord     0
@@ -279,7 +279,7 @@ path: SSP_rg
 <Table length=1849>
        name        dtype              unit             format                          description                           n_bad
 ----------------- ------- ---------------------------- ------ -------------------------------------------------------------- -----
-             Name bytes10                                                                                        Galaxy Name     0
+             Name  bytes7                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
            ra_abs float32                          deg    .6f                                                sample ra coord     0
@@ -317,7 +317,7 @@ path: SSP_sm
 <Table length=1849>
        name        dtype              unit             format                          description                           n_bad
 ----------------- ------- ---------------------------- ------ -------------------------------------------------------------- -----
-             Name bytes10                                                                                        Galaxy Name     0
+             Name  bytes7                                                                                        Galaxy Name     0
                ix   int32                                                                 0-based pixel index in x direction     0
                iy   int32                                                                 0-based pixel index in y direction     0
            ra_abs float32                          deg    .6f                                                sample ra coord     0
@@ -355,7 +355,7 @@ path: flux_elines_rg
 <Table length=1849>
          name          dtype          unit        format                     description                     n_bad
 --------------------- ------- ------------------- ------ --------------------------------------------------- -----
-                 Name bytes10                                                                    Galaxy Name     0
+                 Name  bytes7                                                                    Galaxy Name     0
                    ix   int32                                             0-based pixel index in x direction     0
                    iy   int32                                             0-based pixel index in y direction     0
                ra_abs float32                 deg    .6f                                     sample ra coord     0
@@ -465,7 +465,7 @@ path: flux_elines_sm
 <Table length=1849>
          name          dtype          unit        format                     description                     n_bad
 --------------------- ------- ------------------- ------ --------------------------------------------------- -----
-                 Name bytes10                                                                    Galaxy Name     0
+                 Name  bytes7                                                                    Galaxy Name     0
                    ix   int32                                             0-based pixel index in x direction     0
                    iy   int32                                             0-based pixel index in y direction     0
                ra_abs float32                 deg    .6f                                     sample ra coord     0
@@ -575,7 +575,7 @@ path: indices_rg
 <Table length=1849>
       name       dtype    unit   format            description             n_bad
 --------------- ------- -------- ------ ---------------------------------- -----
-           Name bytes10                                        Galaxy Name     0
+           Name  bytes7                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
          ra_abs float32      deg    .6f                    sample ra coord     0
@@ -608,7 +608,7 @@ path: indices_sm
 <Table length=1849>
       name       dtype    unit   format            description             n_bad
 --------------- ------- -------- ------ ---------------------------------- -----
-           Name bytes10                                        Galaxy Name     0
+           Name  bytes7                                        Galaxy Name     0
              ix   int32                 0-based pixel index in x direction     0
              iy   int32                 0-based pixel index in y direction     0
          ra_abs float32      deg    .6f                    sample ra coord     0
@@ -668,7 +668,7 @@ path: dil
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
-       Name bytes10                                                                     Galaxy Name     0
+       Name  bytes7                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
      ra_abs float32           deg    .6f                                            sample ra coord     0
@@ -701,7 +701,7 @@ path: smo
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
-       Name bytes10                                                                     Galaxy Name     0
+       Name  bytes7                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
      ra_abs float32           deg    .6f                                            sample ra coord     0
@@ -732,7 +732,7 @@ path: str
 <Table length=1849>
     name     dtype       unit     format                        description                         n_bad
 ----------- ------- ------------- ------ ---------------------------------------------------------- -----
-       Name bytes10                                                                     Galaxy Name     0
+       Name  bytes7                                                                     Galaxy Name     0
          ix   int32                                              0-based pixel index in x direction     0
          iy   int32                                              0-based pixel index in y direction     0
      ra_abs float32           deg    .6f                                            sample ra coord     0
