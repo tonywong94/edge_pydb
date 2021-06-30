@@ -141,56 +141,60 @@ def interpolate_neighbor(point, bound, step_size=0):
             i += 1
     flag = False
     for k in range(len(tmp)): 
-        cord = tmp[k]
-        if bound[0][0] <= cord[0] <= bound[1][0] and bound[0][1] <= cord[1] <= bound[1][1]:
+        coord = tmp[k]
+        if bound[0][0] <= coord[0] <= bound[1][0] and bound[0][1] <= coord[1] <= bound[1][1]:
             if not flag:
-#                 retval.append(cord)
-                retval = np.reshape(cord, (-1, 2))
+#                 retval.append(coord)
+                retval = np.reshape(coord, (-1, 2))
                 flag = True
             else:
-                retval = np.concatenate((retval, np.reshape(cord, (-1, 2))))
+                retval = np.concatenate((retval, np.reshape(coord, (-1, 2))))
     return retval
 
 # note that if useing numba, there might be an error caused by mixed use of float32 and float64
 # when casting float64 to float32, memory can overflow.
 @njit(parallel=True)
 def interpolate_all_points(tab, datapoint, bound, header):
-    sampled_tab = np.zeros((datapoint.shape[0], len(header)))
+    sampled_tab = np.zeros((datapoint.shape[0], len(header)), dtype=np.float32)
     for j in prange(datapoint.shape[0]):
-        cord = datapoint[j]
-        inter = interpolate_neighbor(cord, bound)
-        weight_arr = []
-        for point in inter:
-            cur = tab[(tab['ix'] == point[0]) & (tab['iy']==point[1])] 
-            if ~np.isnan(cur.view(np.float32)[-1]):
-                distance = np.linalg.norm(point - cord)
-                if distance == 0:
-                    weight_arr.append(-1)
-                else:
-                    weight_arr.append(1. / distance)
+        coord = datapoint[j]
+        inter = interpolate_neighbor(coord, bound)
+        weight_arr = np.zeros(inter.shape[0])
+        on_original_pix = False
+        idx = 0 
+        for i, point in enumerate(inter):
+            cur = tab[(tab['ix'] == point[0]) & (tab['iy']==point[1])]
+            distance = np.linalg.norm(point - coord)
+            if distance == 0:
+                idx = i
+                on_original_pix = True
+                break
             else:
-                weight_arr.append(0.)
-        w = np.array(weight_arr)
-        # w = np.array([np.linalg.norm(point - cord) for point in inter])
-        idx = np.where(w == -1)[0]
-        if idx.size > 0:
-            # at the exact point
-            inter = np.reshape(inter[idx], (-1, 2))
-            w = np.ones(len(inter))
-        if np.sum(w) == 0:
-            row = np.full(len(header[2:]), np.nan)
+                weight_arr[i] = 1. / distance
+        # use a weight for each column
+        if on_original_pix:
+            row = tab[(tab['ix'] == inter[idx][0]) & (tab['iy']==inter[idx][1])]
         else:
+            w = np.ones((len(weight_arr), len(header[2:])))
+            for i in np.arange(len(weight_arr)):
+                w[i, :] *= np.float32(weight_arr[i] / np.sum(weight_arr))
             row = np.zeros(len(header[2:]))
-            for i in range(inter.shape[0]):
-                if w[i] == 0:
-                    # stop the propagation of some Nan(s)
-                    continue
+            for i in np.arange(inter.shape[0]):
+                # talking about the Nans in the paper
                 cur = tab[(tab['ix'] == inter[i][0]) & (tab['iy']==inter[i][1])]
-                row += w[i]/np.sum(w)*cur.view(np.float32)[2:]
-   
-        #             row += w[i]/np.sum(w)*np.array(tmp)
-        sampled_tab[j, :2] = cord
+                row =  np.sum([row, w[i, :] * cur.view(np.float32)[2:]], axis=0)
+        sampled_tab[j, :2] = coord
+        if type(row[0]) is np.void:
+            row = np.array([np.float32(row[0][i]) for i in np.arange(2, len(row[0]))])
         sampled_tab[j, 2:] = row
+#         for i in range(len(header[2:])):
+#             if type(row[i]) is np.void:
+#                 row = row[0]
+#             # some edge cases
+#             if row[i] == 0:
+#                 sampled_tab[j, 2+i] = np.nan
+#             else:
+#                 sampled_tab[j, 2+i] = row[i]
     return sampled_tab
 
 # @jit
