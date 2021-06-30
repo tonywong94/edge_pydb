@@ -101,6 +101,7 @@ def load_config(src, readonly=False):
     read the config from a file
     '''
     _fp = open(src, 'r')
+    global _config
     if readonly:
         _config = _json.load(_fp)
     else:
