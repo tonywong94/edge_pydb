@@ -6,6 +6,7 @@ dist/
 *.egg-info
 test/
 build.sh
+build
 *.json
 *.pdf
 edge_pydb/img_cocube/fitsdata
