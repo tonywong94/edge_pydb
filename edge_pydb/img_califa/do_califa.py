@@ -381,13 +381,14 @@ if __name__ == "__main__":
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/[A-Z]*.SSP.cube.fits.gz'))]
     do_califa(gallist=gallist, outname='edge')
-    do_califa(gallist=gallist, hexgrid=True, outname='edge_hex')
-    # EDGE125 allpix data
+    # EDGE125 hexgrid
+    do_califa(gallist=gallist, outname='edge_hex', hexgrid=True)
+    # EDGE125 allpix
     do_califa(gallist=gallist, outname='edge_allpix', allpix=True)
     # ACA galaxies, native resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('aca_packed/*.Pipe3D.cube.fits.gz'))]
-    do_califa(gallist=gallist, outname='edge_aca', seq='natv', linelbl='co21', 
-    		califa_natv='aca_packed', califa_smo='aca_conv9', comom='../img_comom/acadata', 
-    		nfiles=1)
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('aca_packed/*.Pipe3D.cube.fits.gz'))]
+#     do_califa(gallist=gallist, outname='edge_aca', seq='natv', linelbl='co21', 
+#     		califa_natv='aca_packed', califa_smo='aca_conv9', comom='../img_comom/acadata', 
+#     		nfiles=1)
 

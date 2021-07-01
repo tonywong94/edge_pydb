@@ -160,14 +160,15 @@ if __name__ == "__main__":
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
     do_comom(gallist=gallist, outname='edge')
-    do_comom(gallist=gallist, hexgrid=True, outname='edge_hex')
-    # EDGE125 allpix data
+    # EDGE125 hexgrid
+    do_comom(gallist=gallist, outname='edge_hex', hexgrid=True)
+    # EDGE125 allpix
     do_comom(gallist=gallist, outname='edge_allpix', allpix=True)
     # ACA galaxies, native resolution, using alphaco=6.1 instead of 4.3
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
-            linelbl=['co21'], alphaco=6.1, msktyp=['dil'], fitsdir='acadata', 
-            ortpar='edge_aca_leda.csv')
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
+#             linelbl=['co21'], alphaco=6.1, msktyp=['dil'], fitsdir='acadata', 
+#             ortpar='edge_aca_leda.csv')
 
 
