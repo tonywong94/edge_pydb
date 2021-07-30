@@ -26,9 +26,9 @@ with open('get_mag_cubes_v2.2.csv', 'r') as infile:
                     preamble = False
                 outfile.write(line)
 
-# 823 galaxies; this already has the header row
-with open('get_proc_elines_CALIFA.all_good.csv', 'r') as infile:
-    with open('get_proc_elines_CALIFA.all_good.fixheader.csv', 'w') as outfile:
+# 1096 galaxies; this already has the header row
+with open('get_proc_elines_CALIFA.csv', 'r') as infile:
+    with open('get_proc_elines_CALIFA.fixheader.csv', 'w') as outfile:
         for line in infile:
             if line.startswith('# HEADER '):
                 hdrs = line.replace("# HEADER |","").split()
@@ -48,7 +48,7 @@ with open('get_proc_elines_CALIFA.all_good.csv', 'r') as infile:
                 print('There are {} columns in the new header.'.format(len(uniquehdr)))
                 # --- Problem 2: The OH_S_ALL_error column is corrupted because the
                 # comma separating it from the next column was omitted.  Remove it from
-                # the header.
+                # the header.  Note this results in 'NH_Re_fit_R' column being corrupted.
                 uniquehdr.remove('OH_S_ALL_error')
                 outfile.write(",".join(uniquehdr)+'\n')
             elif line[0] != '#':
@@ -78,7 +78,7 @@ with open('Pipe3D_NSA_CALIFA-DR3_candidates.csv', 'r') as infile:
 # Open csv tables                
 pipe3d_candidates = Table.read('Pipe3D_NSA_CALIFA-DR3_candidates.fixheader.csv',format='ascii.csv')
 get_mag_cubes = Table.read('get_mag_cubes_v2.2.fixheader.csv',format='ascii.csv')
-get_proc_elines = Table.read('get_proc_elines_CALIFA.all_good.fixheader.csv',format='ascii.csv')
+get_proc_elines = Table.read('get_proc_elines_CALIFA.fixheader.csv',format='ascii.csv')
 
 # Quality control flags
 tq5 = Table.read('QCflags_std_V500_DR3.csv', format='ascii.csv', 
@@ -232,7 +232,8 @@ t['caMstars'].description = 'Log of stellar mass, from column 73 log_Mass in get
 t['caDistMpc'].unit = 'Mpc'
 t['caDistMpc'].description = 'Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73'
 t['caDistP3d'].unit = 'cm'
-t['caDistP3d'] = t['caDistP3d'].to(u.Mpc)
+#t['caDistP3d'] = t['caDistP3d'].to(u.Mpc)
+t['caDistP3d'].convert_unit_to('Mpc')
 t['caDistP3d'].description = 'Luminosity distance in Mpc from <DL> column 129 in get_proc_elines_CALIFA.csv'
 
 

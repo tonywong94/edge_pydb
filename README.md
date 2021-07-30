@@ -30,6 +30,8 @@ You will then need to load this file whenever you start the package:
 
     edgeutil.load_config('config.json')
 
+## Merging in large data sets
+
 The Github package only contains data for a single galaxy (NGC 4047), for demonstration and testing purposes.  Larger data files can be downloaded as ZIP archives from Box.  It is recommended that you unpack additional files into a single directory that is easily accessible on your file system, and not inside your Python libraries (`site-packages` area).  Here is the suggested way to incorporate these into your runtime environment:
 
 Leave the git directory in which this README is located.  (This ensures that the package runs from your `site-packages` area and not the current directory.)  Open an iPython shell and type:
@@ -62,7 +64,7 @@ loads the three specified columns only from the CSV file.
 
 will merge a sub-table from `edge_leda.csv` into `ctrpos`.  We must select the `Name` column from both tables for the join to work.
 
-    comom = EdgeTable('NGC4047.comom_smo7.hdf5', path='smo')
+    comom = EdgeTable('NGC4047.2d_smo7.hdf5', path='comom_smo')
 
 loads an HDF5 file.  The path must be given, otherwise a listing of available paths is provided.
 
@@ -72,11 +74,13 @@ A `demo_notebk` folder provides examples of accessing and plotting database valu
 
 Detailed listings of the HDF5 files are provided in [index_hdf.txt](https://github.com/tonywong94/edge_pydb/blob/master/index_hdf.txt) at the top level.  Note that each HDF5 file can bundle several tables or "paths," and only one path can be read into `EdgeTable` at a time.
 
-- **[label].pipe3d.hdf5**: These are CALIFA data products from Pipe3D.  As described in [Sanchez et al. (2016a)](http://adsabs.harvard.edu/abs/2016RMxAA..52..171S), there are five collections of images, bundled as `ELINES`, `SFH`, `SSP`, `flux_elines`, and `indices`.  Each collection can be found in two separate Pipe3D runs, one performed on the native resolution CALIFA data, regridded to match the CARMA spatial grid (with 1" pixels), and another performed on the smoothed CALIFA data, matched to the 7" CARMA resolution (and also on the same spatial grid).  Thus you will find an `ELINES_rg` table as well as an `ELINES_sm` table with identical structure and data size; this yields 10 paths in total.  Being resolution matched, the `_sm` products are recommended when making comparisons with the CO data.
+- **[label].pipe3d.hdf5**: These are CALIFA data products from Pipe3D.  As described in [Sanchez et al. (2016a)](http://adsabs.harvard.edu/abs/2016RMxAA..52..171S), there are five collections of images, bundled as `ELINES`, `SFH`, `SSP`, `flux_elines`, and `indices`.  Pixels are sampled from the original astrometric grid of CALIFA DR3.
 
-- **[label].comom_smo7.hdf5**, **[label].cocube_smo7.hdf5**: These are the CARMA CO moment maps and data cubes.  All are at a resolution of 7 arcsec (FWHM Gaussian beam).  Moment maps were generated using three different methods (`str`, `dil`, `smo`), with each method being a separate table (path) within the HDF5 file.  The straight (`str`) moment maps are generated without masking and have very poor signal-to-noise.  To reject noise, the dilated (`dil`) moment maps use a dilated mask that starts at a high significance contour (3.5&sigma; or greater in two consecutive channels) and expands to a surrounding 2&sigma; contour.  The smoothed (`smo`) moment maps use a mask that is obtained by smoothing the cube spatially (to 14") before constructing a dilated mask.  For most purposes the dilated masks produce the best results.
+- **[label].2d_smo7.hdf5**: These contain the CARMA CO moment maps and the matched CALIFA data.  All are at a resolution of 7 arcsec (FWHM Gaussian beam).  CO moment maps were generated using three different methods (`str`, `dil`, `smo`), with each method being a separate table (path) within the HDF5 file.  The straight (`str`) moment maps are generated without masking and have very poor signal-to-noise.  To reject noise, the dilated (`dil`) moment maps use a dilated mask that starts at a high significance contour (3.5&sigma; or greater in two consecutive channels) and expands to a surrounding 2&sigma; contour.  The smoothed (`smo`) moment maps use a mask that is obtained by smoothing the cube spatially (to 14") before constructing a dilated mask.  For most purposes the dilated masks produce the best results.  For the CALIFA data, which are found in separate tables named `ELINES_sm` etc., a separate run of Pipe3D has been performed on the smoothed CALIFA data, matched to the 7" CARMA resolution.
 
-Available datasets will expand over time, but current values for [label] include 'edge' (which uses a square sampling grid spaced by 3", sufficient for Nyquist sampling the CARMA beam) and 'edge_allpix' (all pixel values saved, resulting in much longer tables).
+- **[label].cocube_smo7.hdf5**: These contain the CARMA CO data cubes and mask cubes, at a resolution of 7 arcsec (FWHM Gaussian beam).
+
+Available datasets will expand over time, but current values for [label] include `edge_carma` (which uses a square sampling grid spaced by 3", sufficient for Nyquist sampling the CARMA beam) and `edge_carma_allpix` (all pixel values saved, resulting in much longer tables).
 
 ## References
 
