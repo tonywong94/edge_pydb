@@ -14,7 +14,8 @@ from edge_pydb.fitsextract import fitsextract
 
 def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13'],
              linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.3, 
-             hexgrid=False, allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv'):
+             hexgrid=False, allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv',
+             append=False, overwrite=True):
     """
     Extract 2D molecular line data into an HDF5 database.  This script assumes
     standardized naming conventions, for example:
@@ -46,6 +47,11 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
         Path to the directory where FITS files reside
     ortpar : filename
         Name of the EdgeTable which has LEDA orientation parameters for the sample
+    append : boolean
+        True to append to an existing file.  Default is False (create/overwrite).
+    overwrite : boolean
+        True to overwrite existing tables.  Default is True (replace the table
+        but do not delete other tables in the file).
     """
     if allpix:
         stride = [1,1,1]
@@ -116,11 +122,13 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                             galtab.add_column(newcol)
                 # Add the H2 column density, with and without deprojection
                 if line == '12':
+                    cosi = Column([np.cos(np.radians(adopt_incl))]*len(galtab), name='cosi', 
+                            description='factor to deproject to face-on using ledaAxIncl', dtype='f4')
                     sigmol = msd_co(galtab['mom0_12'], name='sigmol', alphaco=alphaco)
                     e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol', alphaco=alphaco)
-                    sigmol_fo = msd_co(galtab['mom0_12']*np.cos(np.radians(adopt_incl)), name='sigmol_fo', alphaco=alphaco)
-                    e_sigmol_fo = msd_co(galtab['e_mom0_12']*np.cos(np.radians(adopt_incl)), name='e_sigmol_fo', alphaco=alphaco)
-                    galtab.add_columns([sigmol, e_sigmol, sigmol_fo, e_sigmol_fo])
+                    #sigmol_fo = msd_co(galtab['mom0_12']*np.cos(np.radians(adopt_incl)), name='sigmol_fo', alphaco=alphaco)
+                    #e_sigmol_fo = msd_co(galtab['e_mom0_12']*np.cos(np.radians(adopt_incl)), name='e_sigmol_fo', alphaco=alphaco)
+                    galtab.add_columns([sigmol, e_sigmol, cosi])
             tablelist.append(galtab)
 
         if len(tablelist) > 0:
@@ -138,17 +146,17 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                 if line == '12':
                     t_merge['sigmol'].description = 'apparent H2+He surf density not deprojected'
                     t_merge['e_sigmol'].description = 'error in sigmol not deprojected'
-                    t_merge['sigmol_fo'].description = 'H2+He surf density deprojected to face-on using ledaAxIncl'
-                    t_merge['e_sigmol_fo'].description = 'error in sigmol deprojected to face-on'
+                    #t_merge['sigmol_fo'].description = 'H2+He surf density deprojected to face-on using ledaAxIncl'
+                    #t_merge['e_sigmol_fo'].description = 'error in sigmol deprojected to face-on'
             t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')   
             print(t_merge[20:50])
 
         if i_msk == 0:
-            t_merge.write(outname+'.comom_'+seq+'.hdf5', path=msk, overwrite=True, 
-                    serialize_meta=True, compression=True)
+            t_merge.write(outname+'.2d_'+seq+'.hdf5', path='comom_'+msk, append=append,
+                    overwrite=overwrite, serialize_meta=True, compression=True)
         else:
-            t_merge.write(outname+'.comom_'+seq+'.hdf5', path=msk, append=True, 
-                    serialize_meta=True, compression=True)
+            t_merge.write(outname+'.2d_'+seq+'.hdf5', path='comom_'+msk, append=True, 
+                    overwrite=overwrite, serialize_meta=True, compression=True)
     return
 
 
@@ -159,16 +167,17 @@ if __name__ == "__main__":
     # All EDGE125 galaxies
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge')
+    do_comom(gallist=gallist, outname='edge_carma')
     # EDGE125 hexgrid
-    do_comom(gallist=gallist, outname='edge_hex', hexgrid=True)
+    #do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
     # EDGE125 allpix
-    do_comom(gallist=gallist, outname='edge_allpix', allpix=True)
+    do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
     # ACA galaxies, native resolution, using alphaco=6.1 instead of 4.3
-#     gallist = [os.path.basename(file).split('.')[0] for file in 
-#                sorted(glob.glob('acadata/*.co21.natv_dil.snrpk.fits.gz'))]
-#     do_comom(gallist=gallist, outname='edge_aca', seq='natv', lines=['12'],
-#             linelbl=['co21'], alphaco=6.1, msktyp=['dil'], fitsdir='acadata', 
-#             ortpar='edge_aca_leda.csv')
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('acadata/*.CO.smo9_dil.snrpk.fits.gz'))]
+    do_comom(gallist=gallist, outname='edge_aca', seq='smo9', lines=['12'],
+             linelbl=['CO'], alphaco=6.1, fitsdir='acadata')
+    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo9', lines=['12'],
+             linelbl=['CO'], alphaco=6.1, fitsdir='acadata', allpix=True)
 
 
