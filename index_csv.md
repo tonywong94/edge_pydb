@@ -7,7 +7,7 @@
 - [edge_coflux_natv.csv](#edge_coflux_natvcsv)
 - [edge_hiflux.csv](#edge_hifluxcsv)
 - [edge_coobs_DE.csv](#edge_coobs_DEcsv)
-- [edge_coflux_e20.csv](#edge_coflux_e20csv)
+- [edge_coflux_E20.csv](#edge_coflux_E20csv)
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
 - [edge_coobs_E.csv](#edge_coobs_Ecsv)
 - [edge_coobs_D.csv](#edge_coobs_Dcsv)
@@ -136,7 +136,7 @@ Global fit parameters from Bbarolo on natv CO data
 
 Galaxy properties determined from CALIFA
 
-date: '2021-06-29'
+date: '2021-07-30'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -273,7 +273,7 @@ date: '2020-06-01'
 | coSNRpeak_20 |   | float64 |   | Peak brightness at 20 km/s in SNR units |
 | ImagingDate_20 |   | string |   | Date of 20 km/s imaging |
 
-## [edge_coflux_e20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_e20.csv)
+## [edge_coflux_E20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_E20.csv)
 
 
 
