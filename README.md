@@ -44,6 +44,7 @@ The Github package only contains data for a single galaxy (NGC 4047), for demons
 
 Leave the git directory in which this README is located.  (This ensures that the package runs from your `site-packages` area and not the current directory.)  Open an iPython shell and type:
 
+    import edge_pydb.util as edgeutil
     edgeutil.listfiles(values=True)
 
 This should show only the Github data installed in `site-packages`.  Now suppose the additional data files are in a folder called `pybase`.  Then
