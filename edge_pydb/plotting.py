@@ -343,44 +343,45 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                 galblank = blank[galtab]
             else:
                 galblank = None
-            if plotstyle == 'dot':
-                img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
-                                            edgetab[galtab]['iy'],
-                                            edgetab[galtab][column], 
-                                            blank=galblank, clipedge=clipedge,
-                                            pad=pad, dotsize=dotsize, cmap=cmap, 
-                                            axes=ax, **kwargs)
-            else:
-                img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
-                                            edgetab[galtab]['iy'],
-                                            edgetab[galtab][column], 
-                                            blank=galblank, clipedge=clipedge,
-                                            pad=pad, cmap=cmap, axes=ax, **kwargs)        
-            if xrange is None:
-                ax.set_xlim(xlims)
-                if i == 0:
-                    print(label, "Default x limits used:",xlims)
-            else:
-                ax.set_xlim(xrange)
-            if yrange is None:
-                ax.set_ylim(ylims)
-                if i == 0:
-                    print(label, "Default y limits used:",ylims)
-            else:
-                ax.set_ylim(yrange)
+            if not np.isnan(edgetab[galtab][column]).all():
+                if plotstyle == 'dot':
+                    img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
+                                                edgetab[galtab]['iy'],
+                                                edgetab[galtab][column], 
+                                                blank=galblank, clipedge=clipedge,
+                                                pad=pad, dotsize=dotsize, cmap=cmap, 
+                                                axes=ax, **kwargs)
+                else:
+                    img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
+                                                edgetab[galtab]['iy'],
+                                                edgetab[galtab][column], 
+                                                blank=galblank, clipedge=clipedge,
+                                                pad=pad, cmap=cmap, axes=ax, **kwargs)        
+                if xrange is None:
+                    ax.set_xlim(xlims)
+                    if i == 0:
+                        print(label, "Default x limits used:",xlims)
+                else:
+                    ax.set_xlim(xrange)
+                if yrange is None:
+                    ax.set_ylim(ylims)
+                    if i == 0:
+                        print(label, "Default y limits used:",ylims)
+                else:
+                    ax.set_ylim(yrange)
+                if vshow:
+                    vminmax = img.get_clim()
+                    if vminmax[1] < 1:
+                        labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
+                    else:
+                        labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
+                    plt.text(0.04,0.07,labelstr,ha='left',va='center',
+                        transform=ax.transAxes, bbox=dict(facecolor='none',edgecolor='none'))
             ax.set_aspect('equal')
             ax.xaxis.set_ticks([])
             ax.yaxis.set_ticks([])
             plt.text(0.04,0.92,label,ha='left',va='center',transform=ax.transAxes,
                bbox=dict(facecolor='white', edgecolor='none', pad=1))
-            if vshow:
-                vminmax = img.get_clim()
-                if vminmax[1] < 1:
-                    labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
-                else:
-                    labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
-                plt.text(0.04,0.07,labelstr,ha='left',va='center',
-                    transform=ax.transAxes, bbox=dict(facecolor='none',edgecolor='none'))
         fig.subplots_adjust(hspace=0.05)
         fig.subplots_adjust(wspace=0.05)
         if pdfname is not None:
