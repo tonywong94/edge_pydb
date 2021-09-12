@@ -477,11 +477,11 @@ def plotgallery(hdf_files=None, scale='auto', basedir='.'):
     return
 
 
-if __name__ == "__main__":
-    pipe3d = ['edge_carma_allpix.pipe3d.hdf5', 'edge_aca_allpix.pipe3d.hdf5']
-    matched = ['edge_carma_allpix.2d_smo7.hdf5',
-               'edge_aca_allpix.2d_smo9.hdf5']
-    plotgallery(hdf_files=pipe3d+matched, scale='auto',
-                basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
-    plotgallery(hdf_files=matched, scale='perc',
-                basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
+# if __name__ == "__main__":
+#     pipe3d = ['edge_carma_allpix.pipe3d.hdf5', 'edge_aca_allpix.pipe3d.hdf5']
+#     matched = ['edge_carma_allpix.2d_smo7.hdf5',
+#                'edge_aca_allpix.2d_smo9.hdf5']
+#     plotgallery(hdf_files=pipe3d+matched, scale='auto',
+#                 basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
+#     plotgallery(hdf_files=matched, scale='perc',
+#                 basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
