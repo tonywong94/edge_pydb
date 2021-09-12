@@ -116,7 +116,9 @@ def hex_grid(ref, sidelen, bound, starting_angle, precision):
             not_repeated[i] = True
     if precision != 0:
         grid = np.around(grid, precision)
-    return grid[cut][not_repeated]
+    grid_cut_not_repeated = grid[cut][not_repeated]
+    # sort the result arrays based on ix, iy
+    return grid_cut_not_repeated[np.lexsort((grid_cut_not_repeated[:, 1], grid_cut_not_repeated[:, 0]))]
 
 @jit
 def interpolate_neighbor(point, bound, step_size=0):

@@ -1,3 +1,9 @@
+from edge_pydb.plotting import gridplot as _gridplot
+from matplotlib.colors import Normalize as _Normalize
+import numpy as _np
+from astropy.table import Table as _Table
+import astropy as _astropy
+import sys
 import os as _os
 import json as _json
 import shutil as _shutil
@@ -56,7 +62,6 @@ if not _config:
 
 if not _runtime:
     _fp.close()
-
 
 
 # update the files
@@ -147,7 +152,8 @@ def fetch(names):
         retval = []
         for name in names:
             if name not in _config.keys():
-                raise FileNotFoundError("Cannot find the specified file: %s" % name)
+                raise FileNotFoundError(
+                    "Cannot find the specified file: %s" % name)
             # if dir:
             #     dirpath = _os.path.abspath(_os.path.dirname(name))
             #     if dirpath not in retval:
@@ -157,7 +163,8 @@ def fetch(names):
         return retval
     else:
         if names not in _config.keys():
-            raise FileNotFoundError("Cannot find the specified file: %s" % names)
+            raise FileNotFoundError(
+                "Cannot find the specified file: %s" % names)
         # if dir:
         #     return _os.path.abspath(_os.path.dirname(names))
         else:
@@ -260,8 +267,221 @@ def add_from_dir(src, dest='', copy=True, overwrite=False, max_depth=-1):
     else:
         print("WARNING! The location of this file will be saved runtime only")
 
+
 def getPath(file):
     '''get the hdf5 path'''
     h5f = _h5py.File(fetch(file), 'r')
     return [key for key in h5f.keys() if "__table_column_meta__" not in key]
 
+
+def md_generate(csv_output, h5_output):
+    """Generate markdown file for csv and txt for hdf5"""
+    csvfiles = open(csv_output, 'w')
+    h5files = open(h5_output, 'w')
+    files = listfiles()
+    title = ""
+    for file in files:
+        if file.endswith(".csv"):
+            title += "- [" + file + "]" + "(#" + file.replace('.', '') + ")\n"
+    csvfiles.write(title + "\n\n")
+    for file in files:
+        other_info = ""
+        if file.endswith(".csv"):
+            # print(file)
+            # check the ecsv valid
+            with open(fetch(file), 'r') as fp:
+                lines = fp.readlines()
+                if "ECSV" in lines[0]:
+                    print("Working on {}".format(file))
+                    name = "## {}\n\n".format(file)
+                    comment = ""
+                    header = "| name | unit | datatype | format | description |\n|---|---|---|---|---|\n"
+                    to_print = header
+                    aux = []
+                    for i in range(len(lines)):
+                        line = lines[i]
+                        second_line = ""
+                        if "# - {" not in line:
+                            continue
+                        if line[-2] != "}" and line[-1] == "\n":
+                            line = line + " "
+                            second_line = lines[i+1][5:-2]
+                            i += 1
+                        params = line_proc(line, aux, 4)
+                        output = [" " for j in range(5)]
+                        for param in params:
+                            if param[0] == "name":
+                                output[0] = param[1]
+                            elif param[0] == "unit":
+                                output[1] = param[1]
+                            elif param[0] == "datatype":
+                                output[2] = param[1]
+                            elif param[0] == "format":
+                                output[3] = param[1]
+                            elif param[0] == "description":
+                                output[4] = param[1] + second_line
+                            elif param[0] == "comments":
+                                comment = param[1]
+                            else:
+                                other_info = param[0] + ": " + param[1]
+                        if output[0] != " ":
+                            to_print += "| {} | {} | {} | {} | {} |\n"\
+                                .format(output[0], output[1], output[2], output[3], output[4])
+                    if other_info:
+                        other_info += "\n\n"
+                    csvfiles.write(name + comment + "\n\n" +
+                                   other_info + to_print + "\n")
+        elif file.endswith(".hdf5"):
+            # h5files.write("{}\n".format(file))
+            for path in getPath(file):
+                h5files.write("filename: {}\npath: {}\n".format(file, path))
+                tab = _Table.read(fetch(file), path=path)
+                _astropy.table.info.table_info(tab, out=h5files)
+                h5files.write("\n")
+            h5files.write("\n")
+    csvfiles.close()
+    h5files.close()
+
+
+def line_proc(line, other, val):
+    cp = line[5:-2]
+    newline = cp.split(", ", val)
+    params = []
+    for i in range(len(newline)):
+        seg = newline[i]
+        if "description: " in seg:
+            i += 1
+            while i < len(newline):
+                seg += ", " + newline[i]
+                i += 1
+
+        tmp = seg.split(": ", 2)
+        if len(tmp) == 2:
+            params.append((tmp[0], tmp[1]))
+        else:
+            other += tmp
+    return params
+
+
+def add_url(file, root_url="https://github.com/tonywong94/edge_pydb/blob/master"):
+    with open(file, 'r') as fp:
+        lines = fp.readlines()
+    for i in range(len(lines)):
+        if "##" in lines[i]:
+            fname = lines[i].rstrip().split(' ')[1]
+            url = root_url
+            substr = fetch(fname).split('/')
+            flag = False
+            for j in range(len(substr)):
+                if substr[j] == 'edge_pydb' and ('edge_pydb' not in substr[j+1:-1]):
+                    flag = True
+                if flag:
+                    url += '/' + substr[j]
+            lines[i] = "## [{}]({})\n".format(fname, url.rstrip())
+    with open(file, 'w') as fp:
+        fp.writelines(lines)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        csv_files = input("csv output file (*.md): ")
+        h5_files = input("h5 output file (*.txt): ")
+    else:
+        csv_files = sys.argv[1]
+        h5_files = sys.argv[2]
+    md_generate(csv_files, h5_files)
+    add_url(csv_files)
+
+
+def plotgallery(hdf_files=None, scale='auto', basedir='.'):
+    '''
+    Make multi-page gridplots for all galaxies in all available HDF5 files.
+
+    === Parameters ===
+    hdf_files : list of str
+        Names of HDF5 files, should be available via EdgeTable.  Default is
+        to process all available HDF5 files with 'edge' in the filename but
+        not 'cocube'.
+    scale : str
+        'auto' (default) uses a jet (rainbow) colormap normalized to each galaxy
+            individually.
+        'perc' uses a gist_ncar_r colormap ranging from 1st to 99th percentile
+            over all galaxies in the plotted column.
+    basedir : str
+        The directory into which to write the files.
+    '''
+
+    # Get the list of available files
+    if hdf_files is None:
+        hdf_files = listfiles(contain='hdf')
+        print('Files to be processed:\n{}'.format(hdf_files))
+    elif isinstance(hdf_files, str):
+        hdf_files = [hdf_files]
+
+    # Loop over files
+    for dofile in hdf_files:
+        if 'edge' not in dofile:
+            continue
+        if 'cocube' in dofile:
+            continue
+        if 'allpix' in dofile:
+            impad = 8
+            dotpad = 12
+        else:
+            impad = 4
+            dotpad = 8
+        if 'carma' in dofile:
+            nx = 7
+            ny = 6
+        else:
+            nx = 4
+            ny = 3
+        # Loop over paths within each file
+        paths = getPath(dofile)
+        print('\nPaths in {}:\n{}'.format(dofile, paths))
+        for dopath in paths:
+            tab = _Table.read(fetch(dofile), path=dopath)
+            print('\nWorking on {}'.format(dopath))
+            for j in range(9, len(tab.colnames)):
+                if tab.colnames[j] == 'cosi':
+                    continue
+                if scale == 'perc':
+                    vmin = _np.nanpercentile(
+                        tab[tab.colnames[j]], 1, interpolation='nearest')
+                    vmax = _np.nanpercentile(
+                        tab[tab.colnames[j]], 99, interpolation='nearest')
+                    if vmax == vmin:
+                        vmax = vmin + 1
+                    print('\n{} has vmin={} and vmax={}'.format(
+                        tab.colnames[j], vmin, vmax))
+                    norm = _Normalize(vmin=vmin, vmax=vmax)
+                    cm = 'nipy_spectral'
+                    outfile = _os.path.join(
+                        basedir, dofile, dopath, tab.colnames[j]+'_perc.pdf')
+                else:
+                    print('')
+                    norm = None
+                    cm = 'jet'
+                    outfile = _os.path.join(
+                        basedir, dofile, dopath, tab.colnames[j]+'_auto.pdf')
+                if not _os.path.isdir(_os.path.join(basedir, dofile, dopath)):
+                    _os.makedirs(_os.path.join(basedir, dofile, dopath))
+                if 'hex' in dofile:
+                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
+                              plotstyle='dot', clipedge=True, pad=dotpad, nx=nx, ny=ny,
+                              cmap=cm, norm=norm, pdfname=outfile)
+                else:
+                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
+                              plotstyle='image', clipedge=True, pad=impad, nx=nx, ny=ny,
+                              cmap=cm, norm=norm, pdfname=outfile)
+    return
+
+
+if __name__ == "__main__":
+    pipe3d = ['edge_carma_allpix.pipe3d.hdf5', 'edge_aca_allpix.pipe3d.hdf5']
+    matched = ['edge_carma_allpix.2d_smo7.hdf5',
+               'edge_aca_allpix.2d_smo9.hdf5']
+    plotgallery(hdf_files=pipe3d+matched, scale='auto',
+                basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
+    plotgallery(hdf_files=matched, scale='perc',
+                basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
