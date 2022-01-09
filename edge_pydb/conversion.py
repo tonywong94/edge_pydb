@@ -447,10 +447,6 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
         return bpt_col
 
 
-# Metallicity derived from Marino+13 calibration.
-# use method='o3n2' or method='n2'
-# Require star-forming in BPT diagram.
-# Input is a flux_elines table.
 def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     '''
     Adds gas-phase metallicity from Marino+13 calibration to flux_elines table.
@@ -475,14 +471,22 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     O3F = fluxtab['flux_[OIII]5007'+ext]
     HaF = fluxtab['flux_Halpha'+ext]
     HbF = fluxtab['flux_Hbeta'+ext]
-    BPT_sf = fluxtab['SF_BPT'+ext]
+    #BPT_sf = fluxtab['SF_BPT'+ext]
 
     if method == 'o3n2':
-        good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0) & BPT_sf
+        good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
     elif method == 'n2':
-        good = (N2F>0) & (HaF>0) & BPT_sf
+        good = (N2F>0) & (HaF>0)
     else:
         raise Exception('Method {} is not recognized'.format(method))
+    
+    # Require SF in BPT.
+    if 'SF_BPT'+ext in fluxtab.colnames:
+        BPT_sf = fluxtab['SF_BPT'+ext]
+        good = good & BPT_sf
+    else:
+        print('ZOH_M13 warning: The SF_BPT{} column is missing'.format(ext))
+
     nelt = len(N2F)
 
     if err == False:

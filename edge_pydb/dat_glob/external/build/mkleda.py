@@ -50,8 +50,10 @@ for list in all_list:
         t['name'] = t['name'].astype('|S15')
         t.remove_columns(['objname'])
     elif list == 'edge_aca':
-        t = Table.read(list+'_ledaout.txt',format='csv',delimiter=',')
+        #t = Table.read(list+'_ledaout.txt',format='csv',delimiter=',')
+        t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
         t = Table(t, masked=True, copy=False)
+        t.remove_columns(['name'])
         t['objname'] = t['objname'].astype('<U15')
         t.rename_column('objname','name')
 
@@ -78,9 +80,20 @@ for list in all_list:
                   }
     if list == 'edge_aca':
         renames = {
+                    'PGC069310' : 'CGCG429-012',
+                    'PGC000312' : 'IC1528',
                     'PGC073143' : 'MCG-01-01-012',
-                    'PGC070084' : 'VV488NED02',
-                    'PGC066150' : 'UGC11680NED02'
+                    'PGC011767' : 'MCG-01-09-006',
+                    'PGC013426' : 'MCG-01-10-015',
+                    'PGC013535' : 'MCG-01-10-019',
+                    'PGC065095' : 'MCG-01-52-012',
+                    'PGC001841' : 'MCG-02-02-030',
+                    'PGC064373' : 'MCG-02-51-004',
+                    'UGC12463'  : 'NGC7559B',
+                    'PGC072803' : 'NGC7783NED01',
+                    'PGC002029' : 'UGC00335NED02',
+                    'PGC066150' : 'UGC11680NED02',
+                    'PGC070084' : 'VV488NED02'
                   }
     t.add_index('Name')
     for key in renames.keys():
@@ -90,11 +103,11 @@ for list in all_list:
     t['ledaD25'] = 0.1*10**t['logd25']
     t['ledaD25'].unit = 'arcmin'
     t['ledaD25'].description = 'Apparent B diameter from LEDA /logd25/ linearized'
-    t['ledaD25'].format='.2f'
+    t['ledaD25'].info.format='.2f'
 
     t['ledaAxrat'] = 10**(-t['logr25'])
     t['ledaAxrat'].description = 'Minor to major axis ratio from LEDA /logr25/ linearized' 
-    t['ledaAxrat'].format='.4f'
+    t['ledaAxrat'].info.format='.4f'
 
     # Override the bad axis ratio of logr25=0.46 for NGC 3687 in LEDA 
     # (Dmitry Makarov, priv comm, 29may2020).
@@ -106,17 +119,17 @@ for list in all_list:
     t['ledaAxIncl'] = phot_inc(t['ledaAxrat'],t['ledaType'])
     t['ledaAxIncl'].unit = 'deg'
     t['ledaAxIncl'].description = 'Inclination estimated from LEDA axratio using Bottinelli+83' 
-    t['ledaAxIncl'].format='.1f'
+    t['ledaAxIncl'].info.format='.1f'
 
     t['ledaDistMpc'] = 10**(0.2*(t['ledaModz']-25))
     t['ledaDistMpc'].unit = 'Mpc'
     t['ledaDistMpc'].description = 'Luminosity distance in Mpc corresponding to ledaModz' 
-    t['ledaDistMpc'].format='.2f'
+    t['ledaDistMpc'].info.format='.2f'
 
     t['ledaHIflux'] = 10**(-0.4*(t['m21']-17.4))
     t['ledaHIflux'].unit = 'Jy km / s'
     t['ledaHIflux'].description = '21cm flux from LEDA /m21/ linearized' 
-    t['ledaHIflux'].format='.2f'
+    t['ledaHIflux'].info.format='.2f'
 
     # Descriptions
     t['Name'].description = 'Galaxy Name'
@@ -177,11 +190,12 @@ for list in all_list:
             print('Setting PA for {} to {}'.format(t['Name'][idx],newpa[i]))
             t['ledaPA'][idx] = newpa[i]        
     elif list == 'edge_aca':
-        # Should be UGC11680NED02
-        newpa = [-25]
+        # Should be NGC0776, NGC0930, NGC1026, NGC1349, NGC1666,
+        # NGC4816, NGC4841A, NGC5957, NGC7559B, NGC7625, UGC11680NED02
+        newpa = -25
         for i, idx in enumerate(badind):
-            print('Setting PA for {} to {}'.format(t['Name'][idx],newpa[i]))
-            t['ledaPA'][idx] = newpa[i]        
+            print('Setting PA for {} to {}'.format(t['Name'][idx],newpa))
+            t['ledaPA'][idx] = newpa
 
     t.remove_columns(['logd25','logr25','e_logr25','m21'])
     t.pprint()

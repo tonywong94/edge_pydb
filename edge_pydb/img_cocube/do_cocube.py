@@ -126,6 +126,6 @@ if __name__ == "__main__":
     # All EDGE125 galaxies
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7msk.K.fits'))]
-    do_cocube(gallist=gallist, outname='edge')
+    do_cocube(gallist=gallist, outname='edge_carma')
     # EDGE125 allpix data
-    do_cocube(gallist=gallist, outname='edge_allpix', allpix=True)
+    do_cocube(gallist=gallist, outname='edge_carma_allpix', allpix=True)

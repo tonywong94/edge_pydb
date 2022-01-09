@@ -247,8 +247,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     # Remove NaN rows if desired
     if not keepnan:
         if not pseudo:
-            # newtab = tab[~np.isnan(tab[cname])]
-            newtab = tab[~np.isnan(tab)]
+            newtab = tab[~np.isnan(tab[col_lbl])]
+            #newtab = tab[~np.isnan(tab)]
             tab = newtab
         else:
             df = tab.to_pandas()
