@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 
+#change log
+# 2022-01-14 : RCL : added names keyword to Table.read in line 27 to fix ValueError
+
 from astropy.table import Table
 import numpy as np
 from datetime import datetime
 
-infile = "EDGE_COparameters_20191004.csv"
-head_start = 21  # previously 18
-dat_start = 22   # previously 19
+infile = "EDGE_COparameters_20220113.csv"
+head_start = 20  # previously 21
+dat_start = 21   # previously 22
 
 # Get header names from top of file
 headnames = {}
@@ -21,7 +24,7 @@ for key in headnames:
     print(key)
 
 # Get data, add 'rf' string before column names
-t = Table.read(infile, format='ascii.csv', header_start=head_start, data_start=dat_start)
+t = Table.read(infile, format='ascii.csv', header_start=head_start, data_start=dat_start,names=headnames)
 t.pprint()
 for cname in t.colnames:
     t[cname].description = headnames[cname]
@@ -48,4 +51,3 @@ for extracol in ['ledaRA','ledaDE']:
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 print(t.meta)
 t.write('edge_rfpars.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
-
