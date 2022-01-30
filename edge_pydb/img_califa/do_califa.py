@@ -304,14 +304,12 @@ if __name__ == "__main__":
 #     do_califa(gallist=gallist, outfile='../img_comom/edge_carma_hex.2d_smo7.hdf5', 
 #               fitsdir='fits_smo7_edge', comomdir='../img_comom/fitsdata', 
 #               ext='_sm', nsm=3, hexgrid=True, append=True)
-    # ACA galaxies, 9" resolution
+    # ACA galaxies, 12" resolution
     gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fits_smo9_aca/[A-Z]*.SSP.cube.fits.gz'))]
-    do_califa(gallist=gallist, outfile='edge_aca_allpix.pipe3d.hdf5', 
-              fitsdir='fits_natv_aca', append=False, allpix=True)
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo9.hdf5', 
-              colabel='CO.smo9', comomdir='../img_comom/acadata', fitsdir='fits_smo9_aca', 
-              ext='_sm', nsm=4, append=True)
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo9.hdf5',
-              colabel='CO.smo9', comomdir='../img_comom/acadata', fitsdir='fits_smo9_aca', 
-              ext='_sm', nsm=4, append=True, allpix=True)
+               sorted(glob.glob('fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
+    do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo12.hdf5', 
+              colabel='co21.smo12', comomdir='../img_comom/aca12', 
+              fitsdir='fits_smo12_aca', ext='_sm', append=True)
+    do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo12.hdf5',
+              colabel='co21.smo12', comomdir='../img_comom/aca12', 
+              fitsdir='fits_smo12_aca', ext='_sm', append=True, allpix=True)

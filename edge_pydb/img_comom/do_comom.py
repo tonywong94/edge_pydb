@@ -164,19 +164,21 @@ if __name__ == "__main__":
     # NGC4047 only
     do_comom(outname='NGC4047')
     do_comom(hexgrid=True, outname='NGC4047_hex')
-    # All EDGE125 galaxies
+    # All EDGE125 galaxies, 7" resolution
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
     do_comom(gallist=gallist, outname='edge_carma')
     do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
     # EDGE125 hexgrid
-    #do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
-    # ACA galaxies, native resolution, using alphaco=6.1 instead of 4.3
+    # do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
+    #
+    # ACA galaxies, 12" resolution, using alphaco=6.1 instead of 4.3
     gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('acadata/*.CO.smo9_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_aca', seq='smo9', lines=['12'],
-             linelbl=['CO'], alphaco=6.1, fitsdir='acadata')
-    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo9', lines=['12'],
-             linelbl=['CO'], alphaco=6.1, fitsdir='acadata', allpix=True)
-
+               sorted(glob.glob('aca12/*_dil.snrpk.fits.gz'))]
+    print(gallist)
+    do_comom(gallist=gallist, outname='edge_aca', seq='smo12', lines=['12'],
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12')
+    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12', 
+             allpix=True)
 
