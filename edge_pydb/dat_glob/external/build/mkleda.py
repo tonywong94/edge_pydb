@@ -93,6 +93,7 @@ for list in all_list:
                     'PGC072803' : 'NGC7783NED01',
                     'PGC002029' : 'UGC00335NED02',
                     'PGC066150' : 'UGC11680NED02',
+                    'NGC7237'   : 'UGC11958',
                     'PGC070084' : 'VV488NED02'
                   }
     t.add_index('Name')
