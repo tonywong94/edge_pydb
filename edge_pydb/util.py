@@ -393,20 +393,30 @@ if __name__ == "__main__":
     add_url(csv_files)
 
 
-def plotgallery(hdf_files=None, scale='auto', basedir='.'):
+def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8, 
+                minperc=1, maxperc=99, basedir='.'):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
     === Parameters ===
     hdf_files : list of str
         Names of HDF5 files, should be available via EdgeTable.  Default is
-        to process all available HDF5 files with 'edge' in the filename but
-        not 'cocube'.
+        to process all available HDF5 files except with 'cocube' in the filename.
     scale : str
         'auto' (default) uses a jet (rainbow) colormap normalized to each galaxy
             individually.
         'perc' uses a gist_ncar_r colormap ranging from 1st to 99th percentile
             over all galaxies in the plotted column.
+    nx : int
+        number of subplots in horizontal direction
+    ny : int
+        number of subplots in vertical direction
+    pad : int
+        Padding in pixels around edges of bounding box
+    minperc : float
+        Minimum percentile for scale='perc'.  Default is 1%.
+    maxperc : float
+        Maximum percentile for scale='perc'.  Default is 99%.
     basedir : str
         The directory into which to write the files.
     '''
@@ -420,22 +430,8 @@ def plotgallery(hdf_files=None, scale='auto', basedir='.'):
 
     # Loop over files
     for dofile in hdf_files:
-        if 'edge' not in dofile:
-            continue
         if 'cocube' in dofile:
             continue
-        if 'allpix' in dofile:
-            impad = 8
-            dotpad = 12
-        else:
-            impad = 4
-            dotpad = 8
-        if 'carma' in dofile:
-            nx = 7
-            ny = 6
-        else:
-            nx = 4
-            ny = 3
         # Loop over paths within each file
         paths = getPath(dofile)
         print('\nPaths in {}:\n{}'.format(dofile, paths))
@@ -447,9 +443,9 @@ def plotgallery(hdf_files=None, scale='auto', basedir='.'):
                     continue
                 if scale == 'perc':
                     vmin = _np.nanpercentile(
-                        tab[tab.colnames[j]], 1, interpolation='nearest')
+                        tab[tab.colnames[j]], minperc, interpolation='nearest')
                     vmax = _np.nanpercentile(
-                        tab[tab.colnames[j]], 99, interpolation='nearest')
+                        tab[tab.colnames[j]], maxperc, interpolation='nearest')
                     if vmax == vmin:
                         vmax = vmin + 1
                     print('\n{} has vmin={} and vmax={}'.format(
@@ -468,11 +464,11 @@ def plotgallery(hdf_files=None, scale='auto', basedir='.'):
                     _os.makedirs(_os.path.join(basedir, dofile, dopath))
                 if 'hex' in dofile:
                     _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
-                              plotstyle='dot', clipedge=True, pad=dotpad, nx=nx, ny=ny,
+                              plotstyle='dot', clipedge=True, pad=pad, nx=nx, ny=ny,
                               cmap=cm, norm=norm, pdfname=outfile)
                 else:
                     _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
-                              plotstyle='image', clipedge=True, pad=impad, nx=nx, ny=ny,
+                              plotstyle='image', clipedge=True, pad=pad, nx=nx, ny=ny,
                               cmap=cm, norm=norm, pdfname=outfile)
     return
 

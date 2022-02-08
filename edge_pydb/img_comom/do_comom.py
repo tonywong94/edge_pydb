@@ -162,13 +162,13 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
 
 if __name__ == "__main__":
     # NGC4047 only
-    do_comom(outname='NGC4047')
-    do_comom(hexgrid=True, outname='NGC4047_hex')
-    # All EDGE125 galaxies, 7" resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_carma')
-    do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
+#     do_comom(outname='NGC4047')
+#     do_comom(hexgrid=True, outname='NGC4047_hex')
+#     # All EDGE125 galaxies, 7" resolution
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_carma')
+#     do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
     # EDGE125 hexgrid
     # do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
     #
