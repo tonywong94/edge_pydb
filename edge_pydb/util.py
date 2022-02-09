@@ -394,7 +394,7 @@ if __name__ == "__main__":
 
 
 def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8, 
-                minperc=1, maxperc=99, basedir='.'):
+                minperc=1, maxperc=99, paths=None, basedir='.'):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
@@ -417,6 +417,8 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
         Minimum percentile for scale='perc'.  Default is 1%.
     maxperc : float
         Maximum percentile for scale='perc'.  Default is 99%.
+    paths: list of str
+        Names of paths (subtables) to plot.  Default is to plot all.
     basedir : str
         The directory into which to write the files.
     '''
@@ -433,8 +435,9 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
         if 'cocube' in dofile:
             continue
         # Loop over paths within each file
-        paths = getPath(dofile)
-        print('\nPaths in {}:\n{}'.format(dofile, paths))
+        if paths is None:
+            paths = getPath(dofile)
+            print('\nPaths in {}:\n{}'.format(dofile, paths))
         for dopath in paths:
             tab = _Table.read(fetch(dofile), path=dopath)
             print('\nWorking on {}'.format(dopath))
