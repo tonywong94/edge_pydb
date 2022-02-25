@@ -36,7 +36,7 @@ To uninstall you may use
 
 but note that the `_config.json` will not be removed, so to fully uninstall you will need to delete the `edge_pydb` directory manually using (e.g.):
 
-    rm -r ~/Library/Python/3.7/lib/python/site-packages/edge_pydb/
+    rm -r ~/Library/Python/3.9/lib/python/site-packages/edge_pydb/
 
 ## Merging in large data sets
 

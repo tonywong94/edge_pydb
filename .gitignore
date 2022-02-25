@@ -1,6 +1,6 @@
 .ipynb_checkpoints/
 edge*.hdf5
-do*.log
+do_*.log
 __pycache__/
 /dist/
 /build/
