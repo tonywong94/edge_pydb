@@ -103,4 +103,4 @@ For more information about EDGE:
 
 If you use this package in a publication please also cite:
 
-- Wong et al. (2021), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies," in prep.
+- Wong et al. (2022), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies," in prep.

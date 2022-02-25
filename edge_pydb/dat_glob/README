@@ -42,3 +42,8 @@ obs/edge_coobs_DE.csv
     Responsible: TW
     Observational parameters of the CARMA data
     Generated from de20_obs.csv using proc_coobs.py
+
+obs/edge_hiflux.csv
+    Responsible: TW
+    Integrated HI fluxes, mostly from NED spectra
+
