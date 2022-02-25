@@ -1,11 +1,20 @@
 from edge_pydb import conversion, fitsextract, plotting, util
 from astropy.table import Table as _Table
 from astropy.table import join as _join
-import h5py as _h5py
+
+
+'''
+Definition of the EdgeTable class.
+An EdgeTable is a regular AstroPy table in either ECSV or HDF5 format.
+For an HDF5 table, the Path must be specified, otherwise a list of available Paths
+is provided.
+Keyword 'cols' allows a subset of available columns to be read in.
+'''
+
 
 class EdgeTable(_Table):
-    def __init__(self, file='', path='', cols=None, data=None, masked=None, names=None, dtype=None,
-                 meta=None, copy=True, rows=None, copy_indices=True,
+    def __init__(self, file='', path='', cols=None, data=None, masked=None, names=None, 
+                 dtype=None, meta=None, copy=True, rows=None, copy_indices=True,
                  **kwargs):
         super().__init__(masked=masked)
         if file:
@@ -18,11 +27,7 @@ class EdgeTable(_Table):
                 self.read(file, path)
             else:
                 # no path specified with hdf5 file
-                # f = _h5py.File(util.fetch(file), 'r')
                 print('Paths in',file,':\n', util.getPath(file))
-#         else:
-#             print("Choose from the following files to read:")
-#             util.listfiles(printing=True)
         if cols:
             data = []
             for i in cols:
@@ -63,7 +68,5 @@ class EdgeTable(_Table):
                 the second table data type is neither EdgeTable nor astropy table.')
         # update the data
         self.__dict__.update(self.table.__dict__)
-
-
 
 

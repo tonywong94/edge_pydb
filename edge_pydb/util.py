@@ -382,15 +382,11 @@ def add_url(file, root_url="https://github.com/tonywong94/edge_pydb/blob/master"
         fp.writelines(lines)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        csv_files = input("csv output file (*.md): ")
-        h5_files = input("h5 output file (*.txt): ")
-    else:
-        csv_files = sys.argv[1]
-        h5_files = sys.argv[2]
-    md_generate(csv_files, h5_files)
-    add_url(csv_files)
+def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', add_url=True):
+    md_generate(csv_out, h5_out)
+    if add_url:
+        add_url(csv_out)
+    return
 
 
 def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8, 
@@ -475,12 +471,3 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
                               cmap=cm, norm=norm, pdfname=outfile)
     return
 
-
-# if __name__ == "__main__":
-#     pipe3d = ['edge_carma_allpix.pipe3d.hdf5', 'edge_aca_allpix.pipe3d.hdf5']
-#     matched = ['edge_carma_allpix.2d_smo7.hdf5',
-#                'edge_aca_allpix.2d_smo9.hdf5']
-#     plotgallery(hdf_files=pipe3d+matched, scale='auto',
-#                 basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')
-#     plotgallery(hdf_files=matched, scale='perc',
-#                 basedir='/Volumes/Scratch2/tonywong/EDGE/gallery/')

@@ -16,10 +16,13 @@ except (ImportError, ModuleNotFoundError) as error:
 except Exception as exception: 
     print(exception.__class__.__name__ + ": " + str(exception))
 
+
+# BPT codes are defined here
 STAR_FORMING = -1
-INTERMEDIATE = 0
-LINER = 1
-SEYFERT = 2
+INTERMEDIATE =  0
+LINER        =  1
+SEYFERT      =  2
+
 
 def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
     '''
@@ -111,8 +114,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     with extinction estimates and corrections (if flux_hb is provided).
     Note that both e_flux_ha and e_flux_hb have to be not None
     in order to propagate the error.  Otherwise the SFR is computed
-    without dust correction (if flux_hb=None) or without error
-    estimation. 
+    without dust correction (if flux_hb=None) or without error estimation. 
 
     === Parameters ===
     flux_ha : astropy.table.Column
@@ -128,7 +130,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     column : boolean
         True to return astropy Column objects, otherwise return arrays
     imf : string
-        'salpeter' to scale by 1.51 (default uses Kroupa IMF)
+        'salpeter' to scale result by 1.51 (default uses Kroupa IMF)
 
     === Returns ===
     several columns depending on input (see code)
@@ -236,7 +238,7 @@ def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
         The name of the output Column, if input is a Column
 
     === Returns ===
-    numpy.array or astropy.table.Column
+    numpy.array or astropy.table.Column, depending on input
     '''
     # Assume Mpc units if not given
     try:
@@ -313,9 +315,9 @@ def bpt_region(n2ha, o3hb, good=True):
     # Seyfert: above Kewley line and above Cid Fernandes line
     seyfert = (~sf) & (~inter) & (~liner) & good
     retval = np.full_like(n2ha, fill_value=np.nan)
-    retval[sf] = STAR_FORMING
-    retval[inter] = INTERMEDIATE
-    retval[liner] = LINER
+    retval[sf]      = STAR_FORMING
+    retval[inter]   = INTERMEDIATE
+    retval[liner]   = LINER
     retval[seyfert] = SEYFERT
     return retval
 
@@ -334,7 +336,7 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     bpt_type : float
         BPT type to measure prob for, -1=SF, 0=intermediate, 1=LINER, 2=Seyfert
     grid_size : float
-        The size of the square grid where normal dist constructed
+        The number of grid points placed between +/- one sigma of the mean
     
     === Returns ===
     probability that measurement is in the specified region
@@ -362,7 +364,6 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     return ndimage.sum(normal_prob * 1/total, grid, index=bpt_type)
 
 
-
 def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     '''
     Adds BPT classification to the flux_elines table. BPT==-1 means in the
@@ -379,14 +380,21 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     name : string
         name of the output column
     sf : boolean
-        True to calculate the SF_BPT column using Halpha EW.
+        True to also calculate the SF_BPT column using Halpha EW.
     prob : boolean
-        True to calculate the BPT probabilities as an additional column
+        True to also calculate the BPT probabilities as an additional column
     grid_size : float
         The size of the square grid where BPT probabilities constructed
     
     === Returns ===
-    two or three astropy.table.Column [BPT, SF_BPT, p_BPT]
+    if sf==False and prob==False:
+        one astropy.table.Column [BPT]
+    if sf==False and prob==True:
+        two astropy.table.Column [BPT, p_BPT]
+    if sf==True and prob==False:
+        two astropy.table.Column [BPT, SF_BPT]
+    if sf==True and prob==True:
+        three astropy.table.Column [BPT, SF_BPT, p_BPT]
     '''
     flux_nii  = fluxtab['flux_[NII]6583'+ext]
     flux_oiii = fluxtab['flux_[OIII]5007'+ext]
@@ -443,6 +451,8 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
         return bpt_col, bpt_sfcol, prob_col
     elif sf:
         return bpt_col, bpt_sfcol
+    elif prob:
+        return bpt_col, prob_col
     else:
         return bpt_col
 
@@ -465,13 +475,15 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
         True to calculate uncertainty as an additional column
     
     === Returns ===
-    one or two astropy.table.Column [ZOH, e_ZOH]
+    if err==False:
+        astropy.table.Column ZOH
+    if err==True:
+        two astropy.table.Column [ZOH, e_ZOH]
     '''
     N2F = fluxtab['flux_[NII]6583'+ext]
     O3F = fluxtab['flux_[OIII]5007'+ext]
     HaF = fluxtab['flux_Halpha'+ext]
     HbF = fluxtab['flux_Hbeta'+ext]
-    #BPT_sf = fluxtab['SF_BPT'+ext]
 
     if method == 'o3n2':
         good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
@@ -480,7 +492,7 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     else:
         raise Exception('Method {} is not recognized'.format(method))
     
-    # Require SF in BPT.
+    # Require SF in BPT if available.
     if 'SF_BPT'+ext in fluxtab.colnames:
         BPT_sf = fluxtab['SF_BPT'+ext]
         good = good & BPT_sf

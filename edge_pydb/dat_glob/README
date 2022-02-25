@@ -1,23 +1,44 @@
-derived/edge_bbpars.csv
+Global parameter tables (one entry per galaxy)
+----------------------------------------------
+
+califa/edge_califa.csv
     Responsible: TW
-    Generated from Bbarolo ringlog2.txt files using bbout.py
+    Galaxy parameters derived from the CALIFA survey
+
+derived/edge_bbpars_smo7.csv
+    Responsible: TW
+    Kinematic disk paramaters from Bbarolo
+
+derived/edge_jampars.csv
+    Responsible: TW
+    Galaxy Parameters from Table 1 of 2018MNRAS.477..254L
+
+derived/edge_rdist17.csv
+    Responsible: AB
+    Radial distributions and scale lengths from 2017ApJ...846..159B
 
 derived/edge_rfpars.csv
     Responsible: RL
-    Generated from EDGE_COparameters.csv using becca2ecsv.py
+    CO rotation curve parameters from 2018ApJ...860...92L
 
-external/edge_califa.csv
-+external/edge_leda.csv
-+external/edge_nsa.csv
-+external/edge_wise.csv
-+external/edge_rdist.csv
-    Responsible: AB
-    Generated from DETableFinal.csv using mktables.py
-
-obs/edge_coflux.csv
+external/edge_leda.csv
     Responsible: TW
-    Generated from data using cofluxtab.py
+    Galaxy parameters from LEDA
 
-obs/edge_coobs.csv
+external/edge_ned.csv
     Responsible: TW
-    Generated from de20_obs.csv using coobstab.py
+    Galaxy coordinates and parameters from NED
+
+external/edge_wise.csv
+    Responsible: RL
+    Corrected WISE photometry from Bitsakis (2019MNRAS.483..370B)
+
+obs/edge_coflux_smo7.csv
+    Responsible: TW
+    Integrated CO fluxes using various masking methods
+    Generated from FITS data using cofluxtab_smo7.py
+
+obs/edge_coobs_DE.csv
+    Responsible: TW
+    Observational parameters of the CARMA data
+    Generated from de20_obs.csv using proc_coobs.py

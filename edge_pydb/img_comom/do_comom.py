@@ -162,23 +162,32 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
 
 if __name__ == "__main__":
     # NGC4047 only
-#     do_comom(outname='NGC4047')
-#     do_comom(hexgrid=True, outname='NGC4047_hex')
-#     # All EDGE125 galaxies, 7" resolution
-#     gallist = [os.path.basename(file).split('.')[0] for file in 
-#                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
-#     do_comom(gallist=gallist, outname='edge_carma')
-#     do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
+    do_comom(outname='NGC4047')
+    do_comom(hexgrid=True, outname='NGC4047_hex')
+
+    # All EDGE125 galaxies, 7" resolution
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
+    do_comom(gallist=gallist, outname='edge_carma')
+    do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
     # EDGE125 hexgrid
-    # do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
-    #
+    do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
+    
     # ACA galaxies, 12" resolution, using alphaco=6.1 instead of 4.3
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('aca12/*_dil.snrpk.fits.gz'))]
-    print(gallist)
     do_comom(gallist=gallist, outname='edge_aca', seq='smo12', lines=['12'],
              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12')
     do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12', 
+             allpix=True)
+
+    # ACA galaxies, 9" resolution
+    gallist = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('aca9/*_dil.snrpk.fits.gz'))]
+    do_comom(gallist=gallist, outname='edge_aca', seq='smo9', lines=['12'],
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9')
+    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo9', lines=['12'],
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9', 
              allpix=True)
 

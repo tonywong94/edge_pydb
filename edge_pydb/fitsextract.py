@@ -155,6 +155,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             ra_gc = w.wcs.crval[0]
         if dec_gc is None:
             dec_gc = w.wcs.crval[1]
+        if not (inc>0):
+            inc = 0.
         r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
         col_r = Column(r, name='rad_arc', dtype='f4', unit='arcsec', format='.3f',
             description='radius based on {}'.format(ortlabel))
@@ -219,8 +221,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             if len(xy) < len(tab):
                 newtab = tab[xy]
                 tab = newtab
-    else:
-        # print(f'reference pix is {wfix.wcs.crpix[:2]}')
+    else:   # for hexgrid
         if iscube and not pseudo:
             iz_data = []
             tab_length = 0
@@ -228,9 +229,10 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             for iz in zlist:
                 if len(tab[tab['iz'] == iz]) == 0:
                     continue
-                sample = hex_sampler(tab[tab['iz'] == iz], sidelen, keepref, wfix.wcs.crpix[:2] - 1., 
-                                        w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
-                                        starting_angle, precision, hexgrid_output)
+                sample = hex_sampler(tab[tab['iz'] == iz], sidelen, keepref, 
+                                     wfix.wcs.crpix[:2]-1, w.wcs.crval[0], 
+                                     w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
+                                     starting_angle, precision, hexgrid_output)
                 iz_data.append(sample)
                 sample['iz'] = iz
                 tab_length += len(sample)
@@ -240,15 +242,15 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
                 tab[init:(init+len(tabs))] = tabs
                 init += len(tabs)
         else:
-            sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2] - 1., 
-                                    w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, pa, inc,
-                                    starting_angle, precision, hexgrid_output)
+            sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2]-1, 
+                                 w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, 
+                                 pa, inc, starting_angle, precision, hexgrid_output)
             tab = sample
+
     # Remove NaN rows if desired
     if not keepnan:
         if not pseudo:
             newtab = tab[~np.isnan(tab[col_lbl])]
-            #newtab = tab[~np.isnan(tab)]
             tab = newtab
         else:
             df = tab.to_pandas()
