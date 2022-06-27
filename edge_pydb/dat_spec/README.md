@@ -1,1 +1,1 @@
-These spectra are in Jy units.
+These are integrated CO spectra from CARMA, in Jy units.

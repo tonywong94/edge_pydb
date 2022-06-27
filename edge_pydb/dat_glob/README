@@ -5,6 +5,7 @@ califa/edge_califa.csv
     Responsible: TW
     Galaxy parameters derived from the CALIFA survey
 
+derived/edge_bbpars_natv.csv
 derived/edge_bbpars_smo7.csv
     Responsible: TW
     Kinematic disk paramaters from Bbarolo
@@ -29,19 +30,27 @@ external/edge_ned.csv
     Responsible: TW
     Galaxy coordinates and parameters from NED
 
+external/edge_nsa.csv
+    Responsible: TW
+    Galaxy parameters from NASA Sloan Atlas
+
 external/edge_wise.csv
     Responsible: RL
     Corrected WISE photometry from Bitsakis (2019MNRAS.483..370B)
 
 obs/edge_coflux_smo7.csv
+obs/edge_coflux_natv.csv
+obs/edge_coflux_E20.csv
     Responsible: TW
     Integrated CO fluxes using various masking methods
-    Generated from FITS data using cofluxtab_smo7.py
+    Generated from FITS data using cofluxtab_*.py
 
+obs/edge_coobs_D.csv
+obs/edge_coobs_E.csv
 obs/edge_coobs_DE.csv
     Responsible: TW
     Observational parameters of the CARMA data
-    Generated from de20_obs.csv using proc_coobs.py
+    Generated using proc_coobs.py
 
 obs/edge_hiflux.csv
     Responsible: TW

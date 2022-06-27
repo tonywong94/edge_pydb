@@ -8,7 +8,7 @@ from scipy import ndimage
 from scipy.stats import multivariate_normal as ndNormal
 
 try:
-    from uncertainties import unumpy, umath
+    import uncertainties.unumpy as unp
 except (ImportError, ModuleNotFoundError) as error:
     print(error.__class__.__name__ + ": " + str(error))
     print("Could not import uncertainties package, \
@@ -27,7 +27,7 @@ SEYFERT      =  2
 def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
     '''
     Returns galactocentric polar coordinates (radius in arcsec, 
-    azimuthal angle in degrees from receding majaxis).
+    azimuthal angle in degrees from receding major axis).
 
     === Parameters ===
     ra : float or numpy.array
@@ -77,7 +77,7 @@ def uarray_to_list(target):
     retval[0] -> nominal values
     retval[1] -> standard deviation
     '''
-    return [unumpy.nominal_values(target), unumpy.std_devs(target)]
+    return [unp.nominal_values(target), unp.std_devs(target)]
 
 
 def get_AHa(flux_ha, flux_hb, log10):
@@ -112,7 +112,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     '''
     Convert Halpha intensity to SFR surface density, optionally
     with extinction estimates and corrections (if flux_hb is provided).
-    Note that both e_flux_ha and e_flux_hb have to be not None
+    Note that both e_flux_ha and e_flux_hb must not be None
     in order to propagate the error.  Otherwise the SFR is computed
     without dust correction (if flux_hb=None) or without error estimation. 
 
@@ -145,7 +145,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
 
     # Case with error estimation
     if e_flux_ha is not None:
-        u_flux_ha = unumpy.uarray(flux_ha, e_flux_ha)
+        u_flux_ha = unp.uarray(flux_ha, e_flux_ha)
         sig_sfr = (lumcon * 4*np.pi * u_flux_ha * sterad).to(u.solMass/(u.pc**2*u.Gyr))
         if flux_hb is None:   # no Balmer decrement
             sig_sfr_out = uarray_to_list(sig_sfr.value)
@@ -159,10 +159,9 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
         else:   # with Balmer decrement
             if e_flux_hb is None:
                 e_flux_hb = np.zeros_like(flux_hb)
-            u_flux_hb = unumpy.uarray(flux_hb, e_flux_hb)
-            A_Ha = get_AHa(u_flux_ha, u_flux_hb, unumpy.log10)
+            u_flux_hb = unp.uarray(flux_hb, e_flux_hb)
+            A_Ha = get_AHa(u_flux_ha, u_flux_hb, unp.log10)
             sig_sfr = sig_sfr * 10**(0.4*A_Ha)
-            # * sig_sfr is a astropy Quantity, and A_Ha is still a Column
             sig_sfr_out = uarray_to_list(sig_sfr.value)
             A_Ha_out = uarray_to_list(A_Ha.data)
             if column:
@@ -211,7 +210,7 @@ def msd_co(sb_co, alphaco=4.3, name='sigmol'):
         The name of the output Column, if input is a Column
 
     === Returns ===
-    numpy.array or astropy.table.Column
+    numpy.array or astropy.table.Column, matching input
     '''
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
     sig_mol = (convfac*sb_co).to(u.solMass/u.pc**2)
@@ -324,9 +323,10 @@ def bpt_region(n2ha, o3hb, good=True):
 
 def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     '''
-    Calculate the probability that a measurement with uncertainty is in a particular
-    region of the BPT diagram.  This is done by constructing a grid and measuring the
-    normalized Gaussian area within the chosen BPT region.
+    Calculate the probability that a measurement with uncertainty is in a 
+    particular region of the BPT diagram, as specified by the parameter bpt_type.  
+    This is done by constructing a grid and measuring the normalized Gaussian 
+    area within the chosen BPT region.
 
     === Parameters ===
     n2ha_u : ufloat
@@ -341,10 +341,10 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     === Returns ===
     probability that measurement is in the specified region
     '''
-    x = unumpy.nominal_values(n2ha_u)
-    y = unumpy.nominal_values(o3hb_u)
-    x_std = unumpy.std_devs(n2ha_u)
-    y_std = unumpy.std_devs(o3hb_u)
+    x = unp.nominal_values(n2ha_u)
+    y = unp.nominal_values(o3hb_u)
+    x_std = unp.std_devs(n2ha_u)
+    y_std = unp.std_devs(o3hb_u)
     x_arr, y_arr = np.meshgrid( np.linspace(x - x_std, x + x_std, grid_size),
                                 np.linspace(y - y_std, y + y_std, grid_size) )
     pos = np.dstack((x_arr, y_arr))
@@ -368,7 +368,7 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     '''
     Adds BPT classification to the flux_elines table. BPT==-1 means in the
     star-forming region of the diagram.  An additional column SF_BPT is
-    True when BPT==-1 and Halpha EW > 6. 
+    set to True when BPT==-1 and Halpha EW > 6. 
     This function should be run before ZOH_M13.
     For more information see Husemann et al. (2013A&A...549A..87H) Figure 7.
 
@@ -423,16 +423,16 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
         eHa = fluxtab['e_flux_Halpha'+ext]
         eHb = fluxtab['e_flux_Hbeta'+ext]
         print("Calculating the probability")
-        Ha_u = unumpy.uarray(np.array(flux_ha), np.array(eHa))
-        Hb_u = unumpy.uarray(np.array(flux_hb), np.array(eHb))
-        N2_u = unumpy.uarray(np.array(flux_nii), np.array(eN2))
-        O3_u = unumpy.uarray(np.array(flux_oiii), np.array(eO3))
-        t1 = [unumpy.log10(N2_u[good][i]) - unumpy.log10(Ha_u[good][i]) for i in range(len(Ha_u[good]))]
-        t2 = [unumpy.log10(O3_u[good][i]) - unumpy.log10(Hb_u[good][i]) for i in range(len(Hb_u[good]))]
-        n2ha_u = unumpy.uarray(np.full(len(Ha_u), np.nan), np.full(len(Ha_u), np.nan))
-        o3hb_u = unumpy.uarray(np.full(len(Hb_u), np.nan), np.full(len(Hb_u), np.nan))
-        n2ha_u[good] = unumpy.uarray(unumpy.nominal_values(t1), unumpy.std_devs(t1))
-        o3hb_u[good] = unumpy.uarray(unumpy.nominal_values(t2), unumpy.std_devs(t2)) 
+        Ha_u = unp.uarray(np.array(flux_ha), np.array(eHa))
+        Hb_u = unp.uarray(np.array(flux_hb), np.array(eHb))
+        N2_u = unp.uarray(np.array(flux_nii), np.array(eN2))
+        O3_u = unp.uarray(np.array(flux_oiii), np.array(eO3))
+        t1 = [unp.log10(N2_u[good][i]) - unp.log10(Ha_u[good][i]) for i in range(len(Ha_u[good]))]
+        t2 = [unp.log10(O3_u[good][i]) - unp.log10(Hb_u[good][i]) for i in range(len(Hb_u[good]))]
+        n2ha_u = unp.uarray(np.full(len(Ha_u), np.nan), np.full(len(Ha_u), np.nan))
+        o3hb_u = unp.uarray(np.full(len(Hb_u), np.nan), np.full(len(Hb_u), np.nan))
+        n2ha_u[good] = unp.uarray(unp.nominal_values(t1), unp.std_devs(t1))
+        o3hb_u[good] = unp.uarray(unp.nominal_values(t2), unp.std_devs(t2)) 
         print("Working on SFR")
         for i in np.where(BPT == STAR_FORMING)[0]:
             BPT_prob[i] = bpt_prob(n2ha_u[i], o3hb_u[i], STAR_FORMING, grid_size)
@@ -508,9 +508,6 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
         N2 = np.full(nelt, np.nan)
         N2[good] = np.log10(N2F[good]) - np.log10(HaF[good])                   
     else:
-        from uncertainties import ufloat
-        import uncertainties.unumpy as unp 
-
         uN2F = unp.uarray(N2F, fluxtab['e_flux_[NII]6583'+ext])
         uO3F = unp.uarray(O3F, fluxtab['e_flux_[OIII]5007'+ext])
         uHaF = unp.uarray(HaF, fluxtab['e_flux_Halpha'+ext])

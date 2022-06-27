@@ -1,0 +1,1 @@
+The CALIFA image database with generation script are placed here.  The script can run on the CALIFA data only (append=False) or can regrid the CALIFA data to match the CARMA grid and append the results to an existing CARMA 2D database (append=True and comomdir given).  See the end of the script for examples.

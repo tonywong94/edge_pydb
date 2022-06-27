@@ -1,10 +1,10 @@
 import os
 import datetime
 import numpy as np
-from scipy import stats
-from matplotlib.patches import Circle
-from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
+from scipy import stats
+from matplotlib.patches import Circle, Ellipse
+from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
 from edge_pydb.conversion import kewley01, kauffm03, cidfer10
 
@@ -92,10 +92,10 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
         x = xarr
         y = yarr
     if yval == 'median':
-        stat = lambda y: np.nanmedian(y)
+        stat  = lambda y: np.nanmedian(y)
         estat = lambda y: stats.iqr(y, scale='normal', nan_policy='omit')
     else:
-        stat = lambda y: np.nanmean(y)
+        stat  = lambda y: np.nanmean(y)
         estat = lambda y: np.nanstd(y)
     if bins > 0:
         ymean, xbinedge, _ = stats.binned_statistic(x, y,
@@ -407,8 +407,6 @@ def plot_uncertainty_ellipse(xval_n, xval_s, yval_n, yval_s, indices, x_arr, sav
     indices : indices of the list of coordinates to plot with
     save_to: file to save the plot to, optional
     '''
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Ellipse
     plt.figure(figsize=(8,8))
     ax = plt.gca()
     for i in indices:

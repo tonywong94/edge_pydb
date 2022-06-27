@@ -21,14 +21,14 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     Parameters
     ----------
     input : str or `~numpy.ndarray`
-        The input data to reproject. This can be:
+        The input image or cube to turn into a table. This can be:
             * The name of a FITS file
             * A numpy array (in which case header must be separately given)
     header : `~astropy.io.fits.Header` object
         Header corresponding to the input array.  Must be provided if the
         input is a numpy array.
     stride : tuple of ints, optional
-        step size to select pixels along each axis.  Axes are ordered using
+        Step size to select pixels along each axis.  Axes are ordered using
         the FITS convention, not numpy convention (i.e. velaxis last).
         Default is [1,1,1] to keep all pixels.
         Note: stride in z is ignored for pseudocubes.
@@ -274,7 +274,7 @@ def getlabels(product):
         units[0:2] = ['km/s', 'Angstrom']
         units[2:]  = ['10^-16 erg cm^-2 s^-1']*(nz-2)
     elif product == 'flux_elines':
-        # We only select the bright lines that were in ELINES
+        # We only select the bright lines that are also in ELINES
         nz = 408
         flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
         nline = len(flux)
