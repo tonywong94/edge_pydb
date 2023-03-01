@@ -3,7 +3,7 @@
 from astropy.table import Table, vstack, join
 import numpy as np
 from datetime import datetime
-from astroquery.ned import Ned
+from astroquery.ipac.ned import Ned
 
 import warnings
 warnings.filterwarnings('ignore')

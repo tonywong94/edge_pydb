@@ -107,8 +107,8 @@ ca_qc = join(tq5, tq12, keys='Name', join_type='left', table_names=['V500','V120
 
 # Create the V500 sample
 t = Table()
-t['ID']   = tq5['CALIFAID'][tq5['FLAG_RELEASE']==1]
-t['Name'] = tq5['Name'][tq5['FLAG_RELEASE']==1]
+t['ID']   = tq5['CALIFAID'] #[tq5['FLAG_RELEASE']==1]
+t['Name'] = tq5['Name'] #[tq5['FLAG_RELEASE']==1]
 t['ID'].description = 'CALIFA ID'
 t['Name'].description = 'CALIFA Name'
 print(t)

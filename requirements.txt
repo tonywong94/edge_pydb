@@ -1,8 +1,0 @@
-numpy
-scipy
-astropy
-radio_beam
-matplotlib
-requests
-h5py
-uncertainties

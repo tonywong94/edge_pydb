@@ -98,9 +98,9 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
     ndim  = len(data.shape)
     iscube = (ndim > 2 and data.shape[ndim-3] > 1)
     if 'CTYPE3' in hdr.keys():
-    	pseudo = (hdr['CTYPE3'] == '')
+        pseudo = (hdr['CTYPE3'] == '')
     else:
-    	pseudo = False
+        pseudo = False
 
     # Create the coordinate columns.  First case is for PPV cubes.
     if iscube and not pseudo:
@@ -245,6 +245,10 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             sample = hex_sampler(tab, sidelen, keepref, wfix.wcs.crpix[:2]-1, 
                                  w.wcs.crval[0], w.wcs.crval[1], ra_gc, dec_gc, 
                                  pa, inc, starting_angle, precision, hexgrid_output)
+            # Copy over the column descriptions
+            if len(tab.columns) == len(sample.columns):
+                for i in range(len(sample.columns)):
+                    sample.columns[i].description = tab.columns[i].description
             tab = sample
 
     # Remove NaN rows if desired
@@ -317,22 +321,29 @@ def getlabels(product):
         lbl = albl + elbl
         units = ['Angstrom']*len(lbl)
     elif product == 'SFH':
-        # We only select the age bins
         nz = 398
-        z_age = list(range(156,195))
-        n_age = len(z_age)
-        z_err = list(range(355,394))
-        n_err = len(z_err)
-        zsel  = z_age + z_err
-        ages  = ['0.0010', '0.0030', '0.0040', '0.0056', '0.0089', '0.0100',
-                 '0.0126', '0.0141', '0.0178', '0.0199', '0.0251', '0.0316',
-                 '0.0398', '0.0562', '0.0630', '0.0631', '0.0708', '0.1000',
-                 '0.1122', '0.1259', '0.1585', '0.1995', '0.2818', '0.3548',
-                 '0.5012', '0.7079', '0.8913', '1.1220', '1.2589', '1.4125',
-                 '1.9953', '2.5119', '3.5481', '4.4668', '6.3096', '7.9433', 
-                 '10.000', '12.5893', '14.1254']
-        albl = ['lumfrac_age_'+age for age in ages]
-        elbl = ['e_lumfrac_age_'+age for age in ages]
+        zsel = range(nz)
+        albl = []
+        elbl = []
+        # Note ages are in string rather than float order!
+        ages = ['0.0010', '0.0040', '0.0030', '0.0056', '0.0089', '0.0126', '0.0141', 
+                '0.0178', '0.0199', '0.0100', '0.0251', '0.0316', '0.0398', '0.0562', 
+                '0.0631', '0.0630', '0.0708', '0.1122', '0.1259', '0.1585', '0.1995', 
+                '0.1000', '0.2818', '0.3548', '0.5012', '0.7079', '0.8913','10.0000', 
+                '1.1220','12.5893', '1.2589','14.1254', '1.4125', '1.9953', '2.5119', 
+                '3.5481', '4.4668', '6.3096', '7.9433']
+        mets = ['0.0037', '0.0076', '0.0190', '0.0315']
+        for age in ages:
+            for met in mets:
+                albl.append('lumfrac_age_'+age+'_met_'+met)
+                elbl.append('e_lumfrac_age_'+age+'_met_'+met)
+        ages_sort = sorted(ages,key=lambda x: float(x))
+        for age in ages_sort:
+            albl.append('lumfrac_age_'+age)
+            elbl.append('e_lumfrac_age_'+age)
+        for met in mets:
+            albl.append('lumfrac_met_'+met)
+            elbl.append('e_lumfrac_met_'+met)
         lbl  = albl + elbl
         units = ['fraction']*len(lbl)
     elif product == 'SSP':

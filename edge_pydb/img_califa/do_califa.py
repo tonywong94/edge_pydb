@@ -8,7 +8,7 @@ import glob
 import os
 import numpy as np
 from astropy import units as u
-from astropy.table import Table, Column, join, vstack
+from astropy.table import Table, Column, join, vstack, hstack
 from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.convolution import convolve
@@ -17,6 +17,7 @@ from reproject import reproject_interp
 from edge_pydb import EdgeTable
 from edge_pydb.conversion import stmass_pc2, sfr_ha, ZOH_M13, bpt_type, get_AHa
 from edge_pydb.fitsextract import fitsextract, getlabels
+from pyFIT3D.modelling.stellar import SSPModels
 np.seterr(divide='ignore', invalid='ignore')
 
 def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], 
@@ -76,6 +77,9 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
     else:
         stride = [3,3,1]
 
+    if len(gallist) == 0:
+        raise RuntimeError('Error: gallist is empty!')
+
     # cuts for when to apply BD correction
     hacut = 0.06    # 1e-16 erg / (cm2 s)
     hbcut = 0.04    # 1e-16 erg / (cm2 s)
@@ -109,10 +113,13 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
         default_len = len(zsel)
         tlist = []
 
-        if len(gallist) == 0:
-            raise RuntimeError('Error: gallist is empty!')
+        if prod == 'SFH':
+            # Required file for SFH lum to mass conversion
+            models = SSPModels('gsd01_156.fits')
+            print('Number of model steps:',models.n_models)
+            nlumcols = models.n_models
 
-        for gal in gallist:
+        for i_gal, gal in enumerate(gallist):
             print('\nWorking on galaxy {} product {} nsel={}'.format(
                 gal, prod, nsel))
 
@@ -190,6 +197,7 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                     zsel = list(zsel) + [nz, nz+1]
                 if len(units) == default_len:
                     units += ['10^-16 erg cm^-2 s^-1', '10^-16 erg cm^-2 s^-1']
+
             if i_prod == 0:
                 print("RA, DEC, PA, INC:",orttbl.loc[gal]['ledaRA'],
                       orttbl.loc[gal]['ledaDE'], orttbl.loc[gal]['ledaPA'],
@@ -261,6 +269,45 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                     zoh0, zoherr0 = ZOH_M13(tab0, ext=ext, name='ZOH'+ext, err=True)
                     tab0.add_columns([zoh0, zoherr0])
 
+            elif prod == 'SFH':
+                if i_gal == 0:
+                    f_young = []
+                # For star formation history also calculate mass fractions
+                # Multiply the luminosity fraction by M/L ratio and re-normalize
+                lumcols = Table(tab0.columns[9:nlumcols+9])
+                df_lum = lumcols.to_pandas()
+                df_mass = df_lum.multiply(models.mass_to_light, axis='columns')
+                df_norm = df_mass.divide(df_mass.sum(axis=1), axis='index')
+                df_norm.columns = [x.replace('lum','mass') for x in list(df_norm.columns)]
+                # Add aggregated mass fraction columns to table
+                agecols = [s.split('_')[2] for s in df_norm.columns.values]
+                metcols = [s.split('_')[4] for s in df_norm.columns.values]
+                df_age = df_norm.groupby(agecols, sort=False, axis=1).sum(min_count=1)
+                df_age = df_age.reindex(sorted(df_age.columns, key=float), axis=1)
+                df_age.columns = ['massfrac_age_'+x+ext for x in list(df_age.columns)]
+                # Total the mass fractions < 32 Myr for later SFR calculation
+                f_young.append(np.array(df_age[df_age.columns[:12]].sum(axis=1, 
+                                 min_count=1).astype(np.float32)))
+                df_met = df_norm.groupby(metcols, axis=1).sum(min_count=1)
+                df_met.columns = ['massfrac_met_'+x+ext for x in list(df_met.columns)]
+                naggcols = len(df_age.columns) + len(df_met.columns)
+                print('Number of aggregated columns:', naggcols)
+                t_mass_age = Table.from_pandas(df_age.astype(np.float32))
+                t_mass_met = Table.from_pandas(df_met.astype(np.float32))
+                indexcols  = Table(tab0.columns[:9])
+                lumaggcols = Table(tab0.columns[nlumcols+9:nlumcols+naggcols+9])
+                erraggcols = Table(tab0.columns[2*nlumcols+naggcols+9:])
+                tab0 = hstack([indexcols, lumaggcols, erraggcols,
+                               t_mass_age.filled(np.nan), 
+                               t_mass_met.filled(np.nan)], join_type='exact')
+                tab0.add_column(f_young[i_gal], name='f_young')
+                tab0['f_young'].description='total mass fraction < 32 Myr'
+                for i_col in range(naggcols):
+                    newname=lumaggcols.columns[i_col].name.replace('lum','mass')
+                    newdesc=lumaggcols.columns[i_col].description.replace('Luminosity','Mass')
+                    tab0[newname].description = newdesc
+                    tab0[newname].unit = 'fraction'
+
             elif prod == 'SSP':
                 # For stellar surface density we need distance
                 star0 = stmass_pc2(tab0['mass_ssp'+ext], dz=tab0['cont_dezon'+ext],
@@ -269,9 +316,20 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                                 dist=disttbl.loc[gal][distcol], name='sigstar_Avcor'+ext)
                 avstar0.description += ' dust corrected'
                 ferr0 = Column(abs(tab0['e_medflx_ssp'+ext]/tab0['medflx_ssp'+ext]), 
-                    name='fe_medflx'+ext, dtype='f4', unit='fraction',
-                    description='fractional error in continuum flux')
+                               name='fe_medflx'+ext, dtype='f4', unit='fraction',
+                               description='fractional error in continuum flux')
                 tab0.add_columns([star0, avstar0, ferr0])
+                # Add the SSP-based SFR if SFH was run
+                try:
+                    ssp_sfr = Column(f_young[i_gal] * star0 / (0.032*u.Gyr),
+                                name='sigsfr_ssp'+ext, dtype='f4',
+                                description='Sigma_SFR from < 32 Myr SSP')
+                    avssp_sfr = Column(f_young[i_gal] * avstar0 / (0.032*u.Gyr),
+                                name='sigsfr_Avcor_ssp'+ext, dtype='f4',
+                                description='Sigma_SFR Av-corrected from < 32 Myr SSP')
+                    tab0.add_columns([ssp_sfr, avssp_sfr])
+                except NameError:
+                    pass
 
             tlist.append(tab0)
 
@@ -331,11 +389,14 @@ if __name__ == "__main__":
               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True, allpix=True)
 
     # ACA galaxies, 9" resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fits_smo9_aca/[A-Z]*.SSP.cube.fits.gz'))]
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo9.hdf5', 
-              colabel='co21.smo9', comomdir='../img_comom/aca9', 
-              fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True)
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo9.hdf5',
-              colabel='co21.smo9', comomdir='../img_comom/aca9', 
-              fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True, allpix=True)
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('fits_smo9_aca/[A-Z]*.SSP.cube.fits.gz'))]
+#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo9.hdf5', 
+#               colabel='co21.smo9', comomdir='../img_comom/aca9', 
+#               fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True)
+#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo9.hdf5',
+#               colabel='co21.smo9', comomdir='../img_comom/aca9', 
+#               fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True, allpix=True)
+
+
+

@@ -173,21 +173,22 @@ if __name__ == "__main__":
     # EDGE125 hexgrid
     do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
     
-    # ACA galaxies, 12" resolution, using alphaco=6.1 instead of 4.3
+    # ACA galaxies, 12" resolution, using alphaco=6.6 instead of 4.3
+    # R21 = 0.65 (Leroy+22)
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('aca12/*_dil.snrpk.fits.gz'))]
     do_comom(gallist=gallist, outname='edge_aca', seq='smo12', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12')
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12')
     do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca12', 
+             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12', 
              allpix=True)
 
-    # ACA galaxies, 9" resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('aca9/*_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_aca', seq='smo9', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9')
-    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo9', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9', 
-             allpix=True)
+#     # ACA galaxies, 9" resolution
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('aca9/*_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_aca', seq='smo9', lines=['12'],
+#              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9')
+#     do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo9', lines=['12'],
+#              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.1, fitsdir='aca9', 
+#              allpix=True)
 
