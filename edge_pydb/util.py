@@ -274,7 +274,7 @@ def getPath(file):
     return [key for key in h5f.keys() if "__table_column_meta__" not in key]
 
 
-def md_generate(csv_output, h5_output):
+def md_generate(csv_output='index_csv.md', h5_output='index_hdf.txt'):
     """Generate markdown file for csv and txt for hdf5"""
     csvfiles = open(csv_output, 'w')
     h5files = open(h5_output, 'w')
@@ -363,7 +363,7 @@ def line_proc(line, other, val):
     return params
 
 
-def add_url(file, root_url="https://github.com/tonywong94/edge_pydb/blob/master"):
+def add_url(file='index_csv.md', root_url="https://github.com/tonywong94/edge_pydb/blob/master"):
     with open(file, 'r') as fp:
         lines = fp.readlines()
     for i in range(len(lines)):

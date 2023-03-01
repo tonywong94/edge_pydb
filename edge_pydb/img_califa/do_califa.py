@@ -188,8 +188,6 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                     hb_idx = 28
                     ha_idx = 45
                     col_lbl += ['flux_Hbeta_sm'+str(nsm)+ext, 'flux_Halpha_sm'+str(nsm)+ext]
-                    cahd['NAME408'] = ' Hbeta after {} pix smooth'.format(str(nsm))
-                    cahd['NAME409'] = ' Halpha after {} pix smooth'.format(str(nsm))
                 hb_conv = convolve(newim[hb_idx,:,:], kernel, preserve_nan=True)
                 ha_conv = convolve(newim[ha_idx,:,:], kernel, preserve_nan=True)
                 newim = np.concatenate((newim, hb_conv[np.newaxis], ha_conv[np.newaxis]))
@@ -219,6 +217,27 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                     prfx = ''
                 else:
                     prfx = 'flux_'
+                    # Provide labels for flux_elines columns
+                    for linecol in labels:
+                        if linecol.startswith('e_'):
+                            linetype = linecol.split('_')[1]
+                            linename = linecol.split('_')[2]
+                            prelbl = 'error in '
+                        else:
+                            linetype = linecol.split('_')[0]
+                            linename = linecol.split('_')[1]
+                            prelbl = ''
+                        if linetype == 'flux':
+                            suffix = 'intensity'
+                        elif linetype == 'vel':
+                            suffix = 'velocity'
+                        elif linetype == 'disp':
+                            suffix = 'velocity dispersion'
+                        elif linetype == 'EW':
+                            suffix = 'equivalent width'
+                        tab0[linecol+ext].description=prelbl+linename+' '+suffix
+                    tab0['flux_Hbeta_sm'+str(nsm)+ext].description='Hbeta intensity after {} pix smooth'.format(str(nsm))
+                    tab0['flux_Halpha_sm'+str(nsm)+ext].description='Halpha intensity after {} pix smooth'.format(str(nsm))
 
                 # sfr0 is SFR from Halpha without extinction correction
                 sfr0 = sfr_ha(tab0[prfx+'Halpha'+ext], imf='salpeter', 

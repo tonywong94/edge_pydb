@@ -7,7 +7,7 @@
 - [edge_coflux_natv.csv](#edge_coflux_natvcsv)
 - [edge_hiflux.csv](#edge_hifluxcsv)
 - [edge_coobs_DE.csv](#edge_coobs_DEcsv)
-- [edge_coflux_E20.csv](#edge_coflux_E20csv)
+- [edge_coflux_e20.csv](#edge_coflux_e20csv)
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
 - [edge_coobs_E.csv](#edge_coobs_Ecsv)
 - [edge_coobs_D.csv](#edge_coobs_Dcsv)
@@ -50,12 +50,12 @@ Global fit parameters from Bbarolo on smo7 CO data
 
 
 
-date: '2019-10-13'
+date: '2022-01-14'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | Name |   | string |   | standard EDGE-CALIFA galaxy name |
-| rfVsys | km / s | float64 |   | CO relativistic helocentric vsys (km/s); see VsysFlag for how this was derived |
+| rfVsys | km / s | float64 |   | 'CO relativistic helocentric vsys (km/s); see VsysFlag for how this was derived ' |
 | rfVsysFlag |   | int64 |   | how is Vsys derived; 0=CO kinematics; 1=Ha kinematics; 3=LEDA |
 | rfLSRK2helio | km / s | float64 |   | conversion from LSRK velocity to heliocentric velocity (km/s); V(helio)=V(LSRK)-LSRK2helio |
 | rfRflat | arcsec | float64 |   | the radius (arcsec) at which the rotation curve flattens from the Lelli+16 algorithm |
@@ -64,14 +64,14 @@ date: '2019-10-13'
 | rfVrotMaxLFlag |   | int64 |   | 0 = either rfeVrotMaxL\rfVrotMaxL > 10% rfeVrotMaxL>rfVrotMaxL rfeVrotmaxL=0 so rfRflat rfVrotMaxL and rfeVrotMaxL values are unreliable; 1 = rfRflat rfVrotMaxL and rfeVrotMaxL values are reliable |
 | rfVrotMax | km / s | float64 |   | the maximum CO rotation velocity (relativistic km/s) using median Vrot at radii larger than 12 arcsec as used in Levy+18 |
 | rfeVrotMax | km / s | float64 |   | the error in rfVrotMax using standard deviation of Vrot at radii larger than 12 arcsec as used in Levy+18 |
-| rfPA | deg | float64 |   | position angle (degrees) ranging from 0-365 degrees defined counterclockwise from North to approaching side of major axis; see PAFlag for how this was derived |
+| rfPA | deg | float64 |   | position angle (degrees) ranging from 0-365 degrees defined counterclockwise from North to receding side of major axis; see PAFlag for how this was derived; please note that Levy+2018 defined the PA from th |
 | rfPAFlag |   | int64 |   | this describes where the PA listed is from; 0=CO kinematics; 1=Ha kinematics; 2=outer optical isophotes; 3=LEDA |
 | rfInc | deg | float64 |   | inclination (degrees); see IncFlag for how this was derived |
 | rfIncFlag |   | int64 |   | this describes where the inclination listed is from; 0=CO kinematics; 1=Ha kinematics; 2=outer optical isophotes; 3=LEDA |
-| rfKinXoff | arcsec | float64 |   | offset of CO kinematic center from ledaRA (arcsec) |
-| rfKinYoff | arcsec | float64 |   | offset of CO kinematic center from ledaDec (arcsec) |
-| rfKinRA | hourangle | float64 |   | RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA+rfKinXoff |
-| rfKinDecl | deg | float64 |   | Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE+rfKinYoff |
+| rfKinXoff | arcsec | float64 |   | offset of CO kinematic center from ledaRA (arcsec); RA=ledaRA-xoff |
+| rfKinYoff | arcsec | float64 |   | offset of CO kinematic center from ledaDec (arcsec); Dec=ledaDE-yoff |
+| rfKinRA | hourangle | float64 |   | RA of kinematic center including rfKinXoff (J2000 hours); rfKinRA=ledaRA-rfKinXoff |
+| rfKinDecl | deg | float64 |   | Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE-rfKinYoff |
 
 ## [edge_rdist17.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/derived/edge_rdist17.csv)
 
@@ -136,22 +136,12 @@ Global fit parameters from Bbarolo on natv CO data
 
 Galaxy properties determined from CALIFA
 
-date: '2021-07-30'
+date: '2023-02-27'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | ID |   | int64 |   | CALIFA ID |
 | Name |   | string |   | CALIFA Name |
-| caMass | dex(solMass) | float64 |   | Stellar mass from col 149 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeMass | dex(solMass) | float64 |   | Error in stellar mass from col 150 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caSFR | dex(solMass / yr) | float64 |   | SFR from col 151 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeSFR | dex(solMass / yr) | float64 |   | Error in SFR from col 152 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caOH | dex | float64 |   | Oxygen abundance as 12+log(O/H) from col 153 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeOH | dex | float64 |   | Error in oxygen abundance from col 154 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caAvgas | mag | float64 |   | Nebular extinction as Av from col 155 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeAvgas | mag | float64 |   | Error in nebular extinction from col 156 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caAvstars | mag | float64 |   | Stellar extinction as Av from col 157 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
-| caeAvstars | mag | float64 |   | Error in stellar extinction from col 158 in Pipe3D_NSA_CALIFA-DR3_candidates.csv |
 | Su | mag | float64 |   | SDSS u magnitude from col 4 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
 | Sg | mag | float64 |   | SDSS g magnitude from col 8 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
 | Sr | mag | float64 |   | SDSS r magnitude from col 12 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction |
@@ -167,17 +157,24 @@ date: '2021-07-30'
 | caeR50 | arcsec | float64 |   | Error in R50 from col 41 in get_mag_cubes_v2.2.csv |
 | caR90 | arcsec | float64 |   | R90 from col 42 in get_mag_cubes_v2.2.csv |
 | caeR90 | arcsec | float64 |   | Error in R90 from col 43 in get_mag_cubes_v2.2.csv |
-| caOH_O3N2 | dex | float64 |   | O3N2-based metallicity from <OH_O3N2> col 4 in get_proc_elines_CALIFA.csv |
-| caZgas |   | float64 |   | 'Redshift for gas lines, from <z_gas> col 14 in get_proc_elines_CALIFA.csv' |
-| caZstars |   | float64 |   | 'Redshift for stars, from <z_stars> col 15 in get_proc_elines_CALIFA.csv' |
-| caAge | dex(Gyr) | float64 |   | Mean stellar age from <log_age_mean_LW> col 37 in get_proc_elines_CALIFA.csv |
-| caeAge | dex(Gyr) | float64 |   | Error in mean stellar age from <s_log_age_mean_LW> col 38 in get_proc_elines_CALIFA.csv |
-| caFHa | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, from <log_F_Ha> column 145 in get_proc_elines_CALIFA.csv' |
-| caFHacorr | dex(1e-16 erg / (cm2 s)) | float64 |   | 'Log of Halpha flux, extinction corrected, from <log_F_Ha_cor> column 146 in get_proc_elines_CALIFA.csv' |
-| caLHacorr | dex(erg / s) | float64 |   | 'Log of Halpha luminosity, extinction corrected, from <log_L_Ha_cor> column 147 in get_proc_elines_CALIFA.csv' |
-| caMstars | dex(solMass) | float64 |   | 'Log of stellar mass, from column 73 log_Mass in get_proc_elines_CALIFA.csv' |
+| caZgas |   | float64 |   | Redshift for gas lines from <z_gas> in get_proc_elines_CALIFA.csv |
+| caZstars |   | float64 |   | Redshift for stars from <z_stars> in get_proc_elines_CALIFA.csv |
+| caAge | dex(Gyr) | float64 |   | Mean stellar age from <log_age_mean_LW> in get_proc_elines_CALIFA.csv |
+| caeAge | dex(Gyr) | float64 |   | Error in mean stellar age from <s_log_age_mean_LW> in get_proc_elines_CALIFA.csv |
+| caFHa | dex(1e-16 erg / (cm2 s)) | float64 |   | Log of Halpha flux from <log_F_Ha> in get_proc_elines_CALIFA.csv |
+| caFHacorr | dex(1e-16 erg / (cm2 s)) | float64 |   | Log of extinction corrected Halpha flux from <log_F_Ha_cor> in get_proc_elines_CALIFA.csv |
+| caLHacorr | dex(erg / s) | float64 |   | Log of extinction corrected Halpha luminosity from <log_L_Ha_cor> in get_proc_elines_CALIFA.csv |
+| caMstars | dex(solMass) | float64 |   | Log of stellar mass from <log_Mass> in get_proc_elines_CALIFA.csv |
+| caeMstars | dex(solMass) | float64 |   | Error in log of stellar mass from <error_Mass> in get_proc_elines_CALIFA.csv |
+| caSFR | dex(solMass / yr) | float64 |   | SFR from <lSFR> in get_proc_elines_CALIFA.csv |
+| caOH | dex | float64 |   | Oxygen abundance as 12+log(O/H) from <OH_O3N2> in get_proc_elines_CALIFA.csv |
+| caeOH | dex | float64 |   | Error in oxygen abundance from <e_OH_O3N2> in get_proc_elines_CALIFA.csv |
+| caAvgas | mag | float64 |   | Nebular extinction as Av from <Av_gas_LW_Re> in get_proc_elines_CALIFA.csv |
+| caeAvgas | mag | float64 |   | Error in nebular extinction from <e_Av_gas_LW_Re> in get_proc_elines_CALIFA.csv |
+| caAvstars | mag | float64 |   | Stellar extinction as Av from <Av_ssp_stats_mean> in get_proc_elines_CALIFA.csv |
+| caeAvstars | mag | float64 |   | Error in stellar extinction <Av_ssp_stats_stddev> in get_proc_elines_CALIFA.csv |
+| caDistP3d | Mpc | float64 |   | Luminosity distance in Mpc from <DL> in get_proc_elines_CALIFA.csv |
 | caDistMpc | Mpc | float64 |   | 'Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73' |
-| caDistP3d | Mpc | float64 |   | Luminosity distance in Mpc from <DL> column 129 in get_proc_elines_CALIFA.csv |
 | caFlgWav5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V500 |
 | caFlgWav12 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for wavelength calibration V1200 |
 | caFlgReg5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for 2D registration rel to SDSS V500 |
@@ -273,7 +270,7 @@ date: '2020-06-01'
 | coSNRpeak_20 |   | float64 |   | Peak brightness at 20 km/s in SNR units |
 | ImagingDate_20 |   | string |   | Date of 20 km/s imaging |
 
-## [edge_coflux_E20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_E20.csv)
+## [edge_coflux_e20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_e20.csv)
 
 
 
@@ -462,11 +459,12 @@ date: '2021-06-28'
 
 Galaxy Parameters from HyperLEDA
 
-date: '2021-06-28'
+date: '2023-02-27'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
 | Name |   | string |   | Galaxy Name |
+| ledaName |   | string |   | Galaxy name as known by LEDA |
 | ledaRA | hourangle | float64 |   | RA J2000 from LEDA /al2000/ |
 | ledaDE | deg | float64 |   | DEC J2000 from LEDA /de2000/ |
 | ledaMorph |   | string |   | Hubble type from LEDA /type/ |
@@ -490,6 +488,7 @@ date: '2021-06-28'
 | ledaAxIncl | deg | float64 | .1f | Inclination estimated from LEDA axratio using Bottinelli+83 |
 | ledaDistMpc | Mpc | float64 | .2f | Luminosity distance in Mpc corresponding to ledaModz |
 | ledaHIflux | Jy km / s | float64 | .2f | 21cm flux from LEDA /m21/ linearized |
+| ID |   | int64 |   | CALIFA ID |
 
 ## [rf_CO_natv.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_prof/rotcur_levy/rf_CO_natv.csv)
 
