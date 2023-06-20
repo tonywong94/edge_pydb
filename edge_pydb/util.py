@@ -9,7 +9,7 @@ import json as _json
 import shutil as _shutil
 import requests as _requests
 import h5py as _h5py
-
+from astropy.visualization import PercentileInterval, ImageNormalize
 
 # Initial setup script to read the file location from config file
 _ROOT = _os.path.abspath(_os.path.dirname(__file__))
@@ -279,6 +279,7 @@ def md_generate(csv_output='index_csv.md', h5_output='index_hdf.txt'):
     csvfiles = open(csv_output, 'w')
     h5files = open(h5_output, 'w')
     files = listfiles()
+    files.sort()
     title = ""
     for file in files:
         if file.endswith(".csv"):
@@ -382,15 +383,15 @@ def add_url(file='index_csv.md', root_url="https://github.com/tonywong94/edge_py
         fp.writelines(lines)
 
 
-def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', add_url=True):
+def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', addurl=True):
     md_generate(csv_out, h5_out)
-    if add_url:
+    if addurl:
         add_url(csv_out)
     return
 
 
 def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8, 
-                minperc=1, maxperc=99, paths=None, basedir='.'):
+                pct=99, paths=None, basedir='.'):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
@@ -409,10 +410,8 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
         number of subplots in vertical direction
     pad : int
         Padding in pixels around edges of bounding box
-    minperc : float
-        Minimum percentile for scale='perc'.  Default is 1%.
-    maxperc : float
-        Maximum percentile for scale='perc'.  Default is 99%.
+    pct : float
+        Percentile for scale='perc'.  Default is 99%.
     paths: list of str
         Names of paths (subtables) to plot.  Default is to plot all.
     basedir : str
@@ -441,24 +440,27 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
                 if tab.colnames[j] == 'cosi':
                     continue
                 if scale == 'perc':
-                    vmin = _np.nanpercentile(
-                        tab[tab.colnames[j]], minperc, interpolation='nearest')
-                    vmax = _np.nanpercentile(
-                        tab[tab.colnames[j]], maxperc, interpolation='nearest')
-                    if vmax == vmin:
-                        vmax = vmin + 1
+                    vmin = _np.min(tab[tab.colnames[j]])
+                    vmax = _np.max(tab[tab.colnames[j]])
                     print('\n{} has vmin={} and vmax={}'.format(
                         tab.colnames[j], vmin, vmax))
-                    norm = _Normalize(vmin=vmin, vmax=vmax)
+                    if vmax == vmin:
+                        vmax = vmin + 1
+                        norm = _Normalize(vmin=vmin, vmax=vmax)
+                    else:
+                        norm = ImageNormalize(tab[tab.colnames[j]], 
+                                              interval=PercentileInterval(pct))
                     cm = 'nipy_spectral'
                     outfile = _os.path.join(
                         basedir, dofile, dopath, tab.colnames[j]+'_perc.pdf')
+                    use_pct = None
                 else:
                     print('')
                     norm = None
                     cm = 'jet'
                     outfile = _os.path.join(
                         basedir, dofile, dopath, tab.colnames[j]+'_auto.pdf')
+                    use_pct = pct
                 if not _os.path.isdir(_os.path.join(basedir, dofile, dopath)):
                     _os.makedirs(_os.path.join(basedir, dofile, dopath))
                 if 'hex' in dofile:
@@ -468,6 +470,6 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
                 else:
                     _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
                               plotstyle='image', clipedge=True, pad=pad, nx=nx, ny=ny,
-                              cmap=cm, norm=norm, pdfname=outfile)
+                              cmap=cm, norm=norm, pct=use_pct, pdfname=outfile)
     return
 

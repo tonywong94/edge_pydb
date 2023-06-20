@@ -43,6 +43,7 @@
 # delimiter: ','
 # meta: !!omap
 # - {date: '2020-06-09'}
+# - {comments: Integrated CO fluxes from e20 cubes}
 # schema: astropy-2.0
 Name,coRactr_e20,coDectr_e20,coCtrint_e20,coDvhel,coBmaj_e20,coBmin_e20,coBpa_e20,coNomask_e20,coeNomask_e20,coNomaskDv_e20,coDilated_e20,coeDilated_e20,coSmooth_e20,coeSmooth_e20,coSmoothDv_e20,coMask2d_e20,coeMask2d_e20,coSNRmax_e20,coSNR4pix_e20,coSNR5pix_e20,cottBmaj_e20,cottBmin_e20,cottBpa_e20,cottNomask_e20,cotteNomask_e20,cottNomaskDv_e20,cottDilated_e20,cotteDilated_e20,cottSmooth_e20,cotteSmooth_e20,cottSmoothDv_e20,cottMask2d_e20,cotteMask2d_e20,cottSNRmax_e20,cottSNR4pix_e20,cottSNR5pix_e20
 ARP220,233.7383,23.5037,374.232,-16.613,12.390,6.060,-66.500,300.050,47.410,1600.000,452.590,5.360,476.660,8.680,780.000,433.870,18.660,42.650,433.000,312.000,12.850,6.240,-65.800,-60.450,29.310,1600.000,nan,nan,nan,nan,nan,nan,nan,4.277,15.000,0.000

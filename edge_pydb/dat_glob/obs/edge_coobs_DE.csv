@@ -1,4 +1,4 @@
-# %ECSV 0.9
+# %ECSV 1.0
 # ---
 # datatype:
 # - {name: Name, datatype: string, description: Galaxy Name}
@@ -17,7 +17,8 @@
 # - {name: ImagingDate_20, datatype: string, description: Date of 20 km/s imaging}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2020-06-01'}
+# - {comments: Observational Parameters for CARMA D+E array cubes}
+# - {date: '2023-06-20'}
 # schema: astropy-2.0
 Name,coVsys,coDEobstim,coNpt,coDEbmaj,coDEbmin,coRMS_10,coTpk_10,coSNRpeak_10,ImagingDate_10,coRMS_20,coTpk_20,coSNRpeak_20,ImagingDate_20
 ARP220,5340.9,4.0,7,4.48,3.87,41.8,3472,83.03,02/14/16 05:15:10 CST,33.0,3461,104.75,06/09/16 07:03:55 CDT

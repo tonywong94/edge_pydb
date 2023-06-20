@@ -48,6 +48,7 @@ for extracol in ['ledaRA','ledaDE']:
     if extracol in t.colnames:
         t.remove_column(extracol)
 
+t.meta['comments'] = ('Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L')
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 print(t.meta)
 t.write('edge_rfpars.csv', format='ascii.ecsv', delimiter=',', overwrite=True)

@@ -1,4 +1,4 @@
-# %ECSV 0.9
+# %ECSV 1.0
 # ---
 # datatype:
 # - {name: Name, datatype: string}
@@ -27,7 +27,8 @@
 #     Ha}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2021-06-28'}
+# - {date: '2023-06-18'}
+# - {comments: Radial distribution parameters from Bolatto+ 2017ApJ...846..159B}
 # schema: astropy-2.0
 Name,rdScaleMol,rdeScaleMol,rdScaleMolHi,rdScaleMolLo,rdNormMol,rdeNormMol,rdScaleSt,rdeScaleSt,rdNormSt,rdeNormSt,rdR50Mol,rdeR50Mol,rdR50St,rdeR50St,rdScaleSFR,rdeScaleSFR
 ARP220,1.59,0.69,1.81,1.25,991.09,3.48,2.55,0.2,2314.26,1.27,1.34,0.23,3.23,0.07,1.24,0.79

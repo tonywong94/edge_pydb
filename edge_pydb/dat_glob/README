@@ -8,7 +8,7 @@ califa/edge_califa.csv
 derived/edge_bbpars_natv.csv
 derived/edge_bbpars_smo7.csv
     Responsible: TW
-    Kinematic disk paramaters from Bbarolo
+    Global fit paramaters from Bbarolo
 
 derived/edge_jampars.csv
     Responsible: TW
@@ -16,11 +16,11 @@ derived/edge_jampars.csv
 
 derived/edge_rdist17.csv
     Responsible: AB
-    Radial distributions and scale lengths from 2017ApJ...846..159B
+    Radial distribution parameters from Bolatto+ 2017ApJ...846..159B
 
 derived/edge_rfpars.csv
     Responsible: RL
-    CO rotation curve parameters from 2018ApJ...860...92L
+    Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L
 
 external/edge_leda.csv
     Responsible: TW
@@ -54,5 +54,5 @@ obs/edge_coobs_DE.csv
 
 obs/edge_hiflux.csv
     Responsible: TW
-    Integrated HI fluxes, mostly from NED spectra
+    Integrated HI fluxes from a combination of NED and GBT spectra
 

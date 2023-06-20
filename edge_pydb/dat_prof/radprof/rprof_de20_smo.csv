@@ -16,6 +16,9 @@
 # - {name: cumlum, unit: K km pc2 / s, datatype: float32, format: 10.4e, description: total CO luminosity within the given radius}
 # - {name: cummass, unit: solMass, datatype: float32, format: 10.4e, description: total molecular gas mass within the given radius}
 # delimiter: ','
+# meta: !!omap
+# - {comments: Radial CO profiles from smoothed-mask moment maps at native resolution}
+# - {date: '2019-07-16'}
 # schema: astropy-2.0
 Name,r_arcs,r_kpc,r_r25,npix,ngood,ico_avg,ico_rms,detlim,sigmol,cumlum,cummass
 ARP220,1.0,0.378,0.030,12,12,729.123,289.22577,14.972,3135.230,1.4394e+09,6.1894e+09

@@ -81,8 +81,8 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
         raise RuntimeError('Error: gallist is empty!')
 
     # cuts for when to apply BD correction
-    hacut = 0.06    # 1e-16 erg / (cm2 s)
-    hbcut = 0.04    # 1e-16 erg / (cm2 s)
+    hacut = 0.06    # 1e-16 erg / (cm2 s) - no longer used
+    hbcut = 0.04    # 1e-16 erg / (cm2 s) - no longer used
     ahalo = 0       # mag
     ahahi = 6       # mag
 
@@ -236,8 +236,10 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                         elif linetype == 'EW':
                             suffix = 'equivalent width'
                         tab0[linecol+ext].description=prelbl+linename+' '+suffix
-                    tab0['flux_Hbeta_sm'+str(nsm)+ext].description='Hbeta intensity after {} pix smooth'.format(str(nsm))
-                    tab0['flux_Halpha_sm'+str(nsm)+ext].description='Halpha intensity after {} pix smooth'.format(str(nsm))
+                    tab0['flux_Hbeta_sm'+str(nsm)+ext].description=\
+                         'Hbeta intensity after {} pix smooth'.format(str(nsm))
+                    tab0['flux_Halpha_sm'+str(nsm)+ext].description=\
+                         'Halpha intensity after {} pix smooth'.format(str(nsm))
 
                 # sfr0 is SFR from Halpha without extinction correction
                 sfr0 = sfr_ha(tab0[prfx+'Halpha'+ext], imf='salpeter', 
@@ -256,6 +258,12 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                             e_flux_hb=tab0['e_'+prfx+'Hbeta'+ext], 
                             imf='salpeter', 
                             name=prfx+'sigsfr_corr'+ext)
+                # For negative extinction we assume A=0
+                sfr_cor[A_Ha < ahalo]   = sfr0[A_Ha < ahalo]
+                e_sfr_cor[A_Ha < ahalo] = e_sfr0[A_Ha < ahalo]
+                # For high extinction we blank the value
+                sfr_cor[A_Ha > ahahi]   = np.nan
+                e_sfr_cor[A_Ha > ahahi] = np.nan
                 tab0.add_columns([sfr_cor, e_sfr_cor, A_Ha, e_A_Ha])
 
                 # Halpha extinction and SFR after smoothing and clipping
@@ -263,15 +271,13 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                             tab0[prfx+'Hbeta_sm'+str(nsm)+ext], np.log10), 
                             name=prfx+'AHa_smooth'+str(nsm)+ext, dtype='f4', unit='mag',
                             description='Ha extinction after {} pix smooth'.format(str(nsm)))
-                clip = ((tab0[prfx+'Halpha_sm'+str(nsm)+ext] < hacut) | 
-                        (tab0[prfx+'Hbeta_sm'+str(nsm)+ext] < hbcut) | 
-                        (A_Ha_smo > ahahi) | (A_Ha_smo < ahalo))
                 sfr_smo = Column(sfr0 * 10**(0.4*A_Ha_smo),
                             name=prfx+'sigsfr_adopt'+ext, dtype='f4', unit=sfr0.unit,
                             description='smooth+clip BD corrected SFR surface density')
-                sfr_smo[clip] = sfr0[clip]
-                # This would clean up the smoothed A_Ha map but obscure the selection
-                # A_Ha_smo[clip] = np.nan
+                # For negative extinction we assume A=0
+                sfr_smo[A_Ha_smo < ahalo] = sfr0[A_Ha_smo < ahalo]
+                # For high extinction we blank the value
+                sfr_smo[A_Ha_smo > ahahi] = np.nan
                 tab0.add_columns([A_Ha_smo, sfr_smo])
 
                 # BPT requires flux_elines since EW(Ha) is part of classification
@@ -406,16 +412,3 @@ if __name__ == "__main__":
     do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo12.hdf5',
               colabel='co21.smo12', comomdir='../img_comom/aca12', 
               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True, allpix=True)
-
-    # ACA galaxies, 9" resolution
-#     gallist = [os.path.basename(file).split('.')[0] for file in 
-#                sorted(glob.glob('fits_smo9_aca/[A-Z]*.SSP.cube.fits.gz'))]
-#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo9.hdf5', 
-#               colabel='co21.smo9', comomdir='../img_comom/aca9', 
-#               fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True)
-#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo9.hdf5',
-#               colabel='co21.smo9', comomdir='../img_comom/aca9', 
-#               fitsdir='fits_smo9_aca', nsm=4, ext='_sm', append=True, allpix=True)
-
-
-

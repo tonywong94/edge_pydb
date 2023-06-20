@@ -10,7 +10,7 @@ import shutil
 
 os.system('/Users/tonywong/Work/bin/bbarolo/BBarolo -v')
 
-tout = 180
+tout = 240
 masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
 sets  = ['natv', 'smo7']

@@ -1,4 +1,4 @@
-# %ECSV 0.9
+# %ECSV 1.0
 # ---
 # datatype:
 # - {name: Name, datatype: string, description: Galaxy Name}
@@ -15,7 +15,8 @@
 # - {name: ImagingDate, datatype: string, description: Date of imaging}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2020-06-01'}
+# - {comments: Observational Parameters for CARMA E array cubes}
+# - {date: '2023-06-20'}
 # schema: astropy-2.0
 Name,coDname,coVsys,coEobstim,coNpt,coEbmaj,coEbmin,coRMS_mJybm,coRMS_mK,coTpk_mK,coSNRpeak,ImagingDate
 NGC5394,NGC5394,3370.3,0.66,7,8.75,7.08,22.1,32.9,1407,42.72,07/22/15 01:38:36 CDT

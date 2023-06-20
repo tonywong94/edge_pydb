@@ -50,6 +50,7 @@ newt = t[outcols+clist]
 for cname in clist:
     newt[cname].name = t[cname].name.replace('co','rd')
 newt.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+newt.meta['comments'] = ('Radial distribution parameters from Bolatto+ 2017ApJ...846..159B')
 print(newt.meta)
 newt.write('edge_rdist17.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 

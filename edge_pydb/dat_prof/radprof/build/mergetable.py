@@ -8,9 +8,11 @@ import os
 from astropy.table import Table,Column,vstack
 import numpy as np
 import glob
+from datetime import datetime
 
 for msk in ['de20_smo', 'smo7_smo']:
     filelist = glob.glob('rproftxt/*.'+msk+'b0.rprof.txt')
+    filelist.sort()
     tablelist=[]
     for file in filelist:
         gal = os.path.basename(file).split('.')[0]
@@ -48,5 +50,10 @@ for msk in ['de20_smo', 'smo7_smo']:
         t_merge['sigmol'].description = 'average face-on surface density including He with alphaco=4.3'
         t_merge['cumlum'].description = 'total CO luminosity within the given radius'
         t_merge['cummass'].description = 'total molecular gas mass within the given radius'
-        t_merge.write('../rprof_'+msk+'.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
+        if msk == 'de20_smo':
+            t_merge.meta['comments'] = ('Radial CO profiles from smoothed-mask moment maps at native resolution')
+        else:
+            t_merge.meta['comments'] = ('Radial CO profiles from smoothed-mask moment maps at 7as resolution')
+        t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')
+        t_merge.write('rprof_'+msk+'.csv',overwrite=True,delimiter=',',format='ascii.ecsv')
 

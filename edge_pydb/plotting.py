@@ -7,7 +7,7 @@ from matplotlib.patches import Circle, Ellipse
 from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
 from edge_pydb.conversion import kewley01, kauffm03, cidfer10
-
+from astropy.visualization import PercentileInterval, ImageNormalize
 
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     '''
@@ -83,6 +83,8 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
         the binned y-values
     ystd : numpy.array
         standard deviation of y-values
+    ycnt : numpy.array
+        number of y-values in each bin
     '''
     if log:
         good = (xarr>0) & (yarr>0)
@@ -102,10 +104,12 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
             statistic=stat, bins=bins, range=range)
         ystd, xbinedge, _  = stats.binned_statistic(x, y,
             statistic=estat, bins=bins, range=range)
+        ycnt, xbinedge, _  = stats.binned_statistic(x, y,
+            statistic='count', bins=bins, range=range)
         xbin = 0.5*(xbinedge[1:]+xbinedge[:-1])
-        return xbin, ymean, ystd
+        return xbin, ymean, ystd, ycnt
     else:
-        return [0], [0], [0]
+        return [0], [0], [0], [0]
 
 
 def dotpatch(x, y, imval, blank=None, dotsize=1, clipedge=True, pad=5, axes=None, **kwargs):
@@ -217,6 +221,8 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
         axes = plt.gca()
     xdim = len(np.unique(x))
     ydim = len(np.unique(y))
+    sortorder = np.lexsort((y,x))
+    imval = imval[sortorder]
     imarray = np.reshape(imval, [ydim,xdim], order='F')
     if clipedge:
         valid = ~np.isnan(imarray)
@@ -241,8 +247,9 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
 
 def gridplot(edgetab=None, gallist=None, columnlist=None, 
             xrange=None, yrange=None, blank=None, plotstyle='image',
-            cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, 
-            vshow=False, clipedge=False, pad=5, verbose=False, **kwargs):
+            cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, pct=99,
+            allnorm=False, vshow=False, clipedge=False, pad=5, verbose=False, 
+            **kwargs):
     '''
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
@@ -272,6 +279,10 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         number of sub-panels in y direction
     dotsize : float
         size of plot symbol for dot plot
+    pct : float
+        percentile interval for colormap normalization
+    allnorm : boolean
+        True to get percentile interval for whole sample rather than each galaxy
     pdfname : string
         name of output PDF file, otherwise plot to screen
     vshow : boolean
@@ -291,6 +302,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         gallist = [gallist]
     if isinstance(columnlist, str):
         columnlist = [columnlist]
+    if 'norm' in kwargs:
+        usernorm = kwargs.pop('norm')
 
     # Plot mode: multiple galaxies or multiple columns
     if columnlist is not None and len(columnlist) == 1:
@@ -300,6 +313,9 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
             gallist = list(np.unique(edgetab['Name']))
         print('Plotting column',columnlist[0],'for',len(gallist),'galaxies')
         pagelist = gallist
+        if allnorm:
+            norm = ImageNormalize(edgetab[columnlist[0]], 
+                      interval=PercentileInterval(pct))
     elif gallist is not None and len(gallist) == 1:
         mode = 'onegal'
         # Plot all non-coordinate columns by default
@@ -310,6 +326,9 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                     columnlist.remove(key)
         print('Plotting',len(columnlist),'columns for galaxy',gallist[0])
         pagelist = columnlist
+        if allnorm:  # not sure this works
+            norm = ImageNormalize(edgetab[edgetab['Name']==gallist[0]][columnlist], 
+                      interval=PercentileInterval(pct))
     else:
         raise ValueError('Specify either one galaxy or one column to plot')
 
@@ -344,19 +363,23 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
             else:
                 galblank = None
             if not np.isnan(edgetab[galtab][column]).all():
+                if not allnorm:
+                    norm = ImageNormalize(edgetab[galtab][column], 
+                                          interval=PercentileInterval(pct))
                 if plotstyle == 'dot':
                     img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
                                                 edgetab[galtab]['iy'],
                                                 edgetab[galtab][column], 
                                                 blank=galblank, clipedge=clipedge,
                                                 pad=pad, dotsize=dotsize, cmap=cmap, 
-                                                axes=ax, **kwargs)
+                                                norm=norm, axes=ax, **kwargs)
                 else:
                     img, xlims, ylims = imarrayplot(edgetab[galtab]['ix'], 
                                                 edgetab[galtab]['iy'],
                                                 edgetab[galtab][column], 
                                                 blank=galblank, clipedge=clipedge,
-                                                pad=pad, cmap=cmap, axes=ax, **kwargs)        
+                                                pad=pad, cmap=cmap, 
+                                                norm=norm, axes=ax, **kwargs)        
                 if xrange is None:
                     ax.set_xlim(xlims)
                     if i == 0:
@@ -375,8 +398,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                         labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
                     else:
                         labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
-                    plt.text(0.04,0.07,labelstr,ha='left',va='center',
-                        transform=ax.transAxes, bbox=dict(facecolor='none',edgecolor='none'))
+                    plt.text(0.04,0.06,labelstr,ha='left',va='center',size='small',
+                        transform=ax.transAxes, bbox=dict(facecolor='white',edgecolor='none'))
             ax.set_aspect('equal')
             ax.xaxis.set_ticks([])
             ax.yaxis.set_ticks([])

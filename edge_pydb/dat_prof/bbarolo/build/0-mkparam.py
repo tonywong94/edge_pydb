@@ -71,9 +71,11 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
             vrot = 600.
         elif gal in ['NGC2639']:
             vrot = 400.
-        elif gal in ['NGC0496','NGC0551','NGC4210','NGC5480']:
+        elif gal in ['NGC2347','NGC5908']:
+            vrot = 250
+        elif gal in ['NGC0496','NGC0551','NGC4210','NGC5480','NGC6186']:
             vrot = 150
-        elif gal in ['NGC4961','NGC5016','NGC5520','NGC6155','UGC04461','UGC09542']:
+        elif gal in ['NGC4961','NGC5016','NGC5520','NGC6155','UGC04461','UGC09542','UGC09665']:
             vrot = 100
         else:
             vrot = 200.
@@ -159,7 +161,6 @@ print (gallist)
 #masks = ['dilmsk', 'bbmsk']
 masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
-#sets  = ['natv', 'smo5', 'smo7']
 sets  = ['natv', 'smo7']
 runs  = []
 for set in sets:

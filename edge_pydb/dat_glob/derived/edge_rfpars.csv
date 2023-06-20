@@ -1,4 +1,4 @@
-# %ECSV 0.9
+# %ECSV 1.0
 # ---
 # datatype:
 # - {name: Name, datatype: string, description: standard EDGE-CALIFA galaxy name}
@@ -32,7 +32,8 @@
 # - {name: rfKinDecl, unit: deg, datatype: float64, description: Decl of kinematic center including rfKinYoff (J2000 degrees); rfKinDecl=ledaDE-rfKinYoff}
 # delimiter: ','
 # meta: !!omap
-# - {date: '2022-01-14'}
+# - {comments: Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L}
+# - {date: '2023-06-18'}
 # schema: astropy-2.0
 Name,rfVsys,rfVsysFlag,rfLSRK2helio,rfRflat,rfVrotMaxL,rfeVrotMaxL,rfVrotMaxLFlag,rfVrotMax,rfeVrotMax,rfPA,rfPAFlag,rfInc,rfIncFlag,rfKinXoff,rfKinYoff,rfKinRA,rfKinDecl
 IC0480,4595.0,0,1.13,20.2,179.8,9.4,1,165.3,28.0,347.9,2,76.6,2,-1.6,-1.0,7.92313853,26.74309458

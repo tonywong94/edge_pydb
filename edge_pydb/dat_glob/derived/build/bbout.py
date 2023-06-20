@@ -8,6 +8,7 @@ import numpy as np
 from astropy.table import Table, Column
 from astropy.wcs import WCS
 from astropy.io.fits import getheader
+from datetime import datetime
 
 dotypes = ['natv', 'smo7']
 
@@ -77,6 +78,7 @@ for type in dotypes:
         elif cname == 'bbVsys' or cname == 'bbKinInc' or cname == 'bbKinPA':
             tab[cname].format='.2f'
 
+    tab.meta['date'] = datetime.today().strftime('%Y-%m-%d')
     tab.meta['comments'] = ('Global fit parameters from Bbarolo on '
             +type+' CO data')
     tab.write('edge_bbpars_'+type+'.csv', format='ascii.ecsv', delimiter=',',

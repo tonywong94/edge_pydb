@@ -151,9 +151,9 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
             sig_sfr_out = uarray_to_list(sig_sfr.value)
             if column:
                 return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
-                    description='SFR surface density no extinction'), \
-                    Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
-                    description='error of uncorrected SFR surface density')
+                              description='SFR surface density no extinction'), \
+                       Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
+                              description='error of uncorrected SFR surface density')
             else:
                 return sig_sfr_out[0], sig_sfr_out[1]
         else:   # with Balmer decrement
@@ -166,13 +166,13 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
             A_Ha_out = uarray_to_list(A_Ha.data)
             if column:
                 return Column(sig_sfr_out[0], name=name, dtype='f4', unit=sig_sfr.unit,
-                    description='BD corrected SFR surface density'), \
-                    Column(A_Ha_out[0], name=name.replace('sigsfr','AHa'), 
-                    dtype='f4', unit='mag', description='Ha extinction from BD'), \
-                    Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
-                    description='error of BD corrected SFR surface density'), \
-                    Column(A_Ha_out[1], name='e_'+name.replace('sigsfr','AHa'), 
-                    dtype='f4', unit='mag', description='error of Ha extinction from BD')
+                              description='BD corrected SFR surface density'), \
+                       Column(A_Ha_out[0], name=name.replace('sigsfr','AHa'), 
+                              dtype='f4', unit='mag', description='Ha extinction from BD'), \
+                       Column(sig_sfr_out[1], name='e_'+name, dtype='f4', unit=sig_sfr.unit,
+                              description='error of BD corrected SFR surface density'), \
+                       Column(A_Ha_out[1], name='e_'+name.replace('sigsfr','AHa'), 
+                              dtype='f4', unit='mag', description='error of Ha extinction from BD')
             else:
                 return sig_sfr_out[0], A_Ha_out[0], sig_sfr_out[1], A_Ha_out[1]
 
@@ -182,7 +182,7 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
         if flux_hb is None:   # no Balmer decrement
             if column:
                 return Column(sig_sfr, name=name, dtype='f4',
-                    description='SFR surface density no extinction')
+                            description='SFR surface density no extinction')
             else:
                 return sig_sfr
         else:   # with Balmer decrement
@@ -190,9 +190,9 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
             sig_sfr = sig_sfr * 10**(0.4*A_Ha)
             if column:
                 return Column(sig_sfr, name=name, dtype='f4',
-                    description='BD corrected SFR surface density'), \
-                    Column(A_Ha, name=name.replace('sigsfr','AHa'), dtype='f4', 
-                    unit='mag', description='Ha extinction from BD')
+                              description='BD corrected SFR surface density'), \
+                       Column(A_Ha, name=name.replace('sigsfr','AHa'), dtype='f4', 
+                              unit='mag', description='Ha extinction from BD')
             else:
                 return sig_sfr, A_Ha
 
@@ -345,23 +345,20 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     y = unp.nominal_values(o3hb_u)
     x_std = unp.std_devs(n2ha_u)
     y_std = unp.std_devs(o3hb_u)
-    x_arr, y_arr = np.meshgrid( np.linspace(x - x_std, x + x_std, grid_size),
-                                np.linspace(y - y_std, y + y_std, grid_size) )
+    x_seq, delta_x = np.linspace(x - x_std, x + x_std, grid_size, retstep=True)
+    y_seq, delta_y = np.linspace(y - y_std, y + y_std, grid_size, retstep=True)
+    x_arr, y_arr = np.meshgrid( x_seq, y_seq )
     pos = np.dstack((x_arr, y_arr))
-    grid = np.zeros((grid_size, grid_size))  
     grid = bpt_region(x_arr, y_arr)
     gauss2d = ndNormal(mean=(x, y), cov=(x_std**2, y_std**2))
     pdf = gauss2d.pdf(pos)
-    normal_prob = np.zeros((grid_size, grid_size))
-    delta_x = x_arr[0][1] - x_arr[0][0]
-    delta_y = y_arr[1][0] - y_arr[0][0]
-    total = 0
     # the integrand
     normal_prob = pdf * delta_x * delta_y
     # Normalization constant, count how many cells we have
     total = np.sum(normal_prob)
+    normal_prob /= total
     # do the sum reduction
-    return ndimage.sum(normal_prob * 1/total, grid, index=bpt_type)
+    return ndimage.sum(normal_prob, grid, index=bpt_type)
 
 
 def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):

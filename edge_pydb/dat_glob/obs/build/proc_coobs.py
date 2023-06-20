@@ -31,6 +31,7 @@ t['coSNRpeak'].description = 'Peak brightness in SNR units'
 t.remove_column('co_mmom0_flux_Kkmsas^2')
 t['Last_updated'].name = 'ImagingDate'
 t['ImagingDate'].description = 'Date of imaging'
+t.meta['comments'] = ('Observational Parameters for CARMA D array cubes')
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 print(t.meta)
 t.write('edge_coobs_D.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
@@ -62,6 +63,7 @@ t['coSNRpeak'].description = 'Peak brightness in SNR units'
 t.remove_column('co_mmom0_flux_Kkmsas^2')
 t['Last_updated'].name = 'ImagingDate'
 t['ImagingDate'].description = 'Date of imaging'
+t.meta['comments'] = ('Observational Parameters for CARMA E array cubes')
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 print(t.meta)
 t.write('edge_coobs_E.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
@@ -99,6 +101,7 @@ for i in ['1','2']:
     t['coSNRpeak_'+i+'0'].description = 'Peak brightness at '+i+'0 km/s in SNR units'
     t['Last_updated_'+i].name = 'ImagingDate_'+i+'0'
     t['ImagingDate_'+i+'0'].description = 'Date of '+i+'0 km/s imaging'
+t.meta['comments'] = ('Observational Parameters for CARMA D+E array cubes')
 t.meta['date'] = datetime.today().strftime('%Y-%m-%d')
 print(t.meta)
 t.write('edge_coobs_DE.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
