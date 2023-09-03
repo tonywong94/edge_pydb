@@ -249,7 +249,7 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
             xrange=None, yrange=None, blank=None, plotstyle='image',
             cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, pct=99,
             allnorm=False, vshow=False, clipedge=False, pad=5, verbose=False, 
-            **kwargs):
+            maxlabel=18, **kwargs):
     '''
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
@@ -292,6 +292,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         False to use show full image.  Overridden by xrange, yrange.
     pad : int
         Padding in pixels around edges if clipedge=True
+    maxlabel : int
+        Units longer than this many characters are not shown when vshow=True
     **kwargs :
         Additional arguments including vmin, vmax, colormap normalization
     '''
@@ -398,6 +400,9 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                         labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
                     else:
                         labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
+                    if edgetab[galtab][column].unit is not None:
+                        if len(edgetab[galtab][column].unit.to_string()) <= maxlabel:
+                            labelstr = f"{labelstr} {edgetab[galtab][column].unit:latex_inline}"
                     plt.text(0.04,0.06,labelstr,ha='left',va='center',size='small',
                         transform=ax.transAxes, bbox=dict(facecolor='white',edgecolor='none'))
             ax.set_aspect('equal')
