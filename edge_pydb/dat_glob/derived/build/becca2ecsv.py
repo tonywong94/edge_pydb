@@ -2,14 +2,15 @@
 
 #change log
 # 2022-01-14 : RCL : added names keyword to Table.read in line 27 to fix ValueError
+# 2023-09-15 : TW : fix head_start and dat_start so that ARP220 is included
 
 from astropy.table import Table
 import numpy as np
 from datetime import datetime
 
 infile = "EDGE_COparameters_20220113.csv"
-head_start = 20  # previously 21
-dat_start = 21   # previously 22
+head_start = 19  # previously 21
+dat_start  = 20   # previously 22
 
 # Get header names from top of file
 headnames = {}

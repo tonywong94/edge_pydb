@@ -33,9 +33,10 @@
 # delimiter: ','
 # meta: !!omap
 # - {comments: Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L}
-# - {date: '2023-06-18'}
+# - {date: '2023-09-15'}
 # schema: astropy-2.0
 Name,rfVsys,rfVsysFlag,rfLSRK2helio,rfRflat,rfVrotMaxL,rfeVrotMaxL,rfVrotMaxLFlag,rfVrotMax,rfeVrotMax,rfPA,rfPAFlag,rfInc,rfIncFlag,rfKinXoff,rfKinYoff,rfKinRA,rfKinDecl
+ARP220,5247.0,0,-1.06,2.2,-75.8,0.0,0,98.9,508.9,157.7,2,29.7,2,0.0,0.0,15.5825867,23.5026682
 IC0480,4595.0,0,1.13,20.2,179.8,9.4,1,165.3,28.0,347.9,2,76.6,2,-1.6,-1.0,7.92313853,26.74309458
 IC0540,2022.0,0,-1.94,nan,0.0,0.0,0,0.0,0.0,170.0,2,68.3,2,0.0,0.0,9.5028553,7.9025896
 IC0944,6907.0,0,-2.1,29.6,280.3,13.4,1,280.4,18.8,285.7,2,75.0,0,0.0,0.0,13.8585759,14.0919749
