@@ -11,6 +11,10 @@ import requests as _requests
 import h5py as _h5py
 from astropy.visualization import PercentileInterval, ImageNormalize
 
+'''
+Core functions used in building the database.
+'''
+
 # Initial setup script to read the file location from config file
 _ROOT = _os.path.abspath(_os.path.dirname(__file__))
 

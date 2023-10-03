@@ -4,10 +4,9 @@ from astropy.table import join as _join
 
 
 '''
-Definition of the EdgeTable class.
-An EdgeTable is a regular AstroPy table in either ECSV or HDF5 format.
-For an HDF5 table, the Path must be specified, otherwise a list of available Paths
-is provided.
+Definition of the EdgeTable class.  An EdgeTable is a regular AstroPy table in 
+either ECSV or HDF5 format.  For an HDF5 table, the Path must be specified, otherwise 
+a list of available Paths is provided.
 Keyword 'cols' allows a subset of available columns to be read in.
 '''
 

@@ -7,6 +7,10 @@ from scipy.optimize import fsolve
 from scipy import ndimage
 from scipy.stats import multivariate_normal as ndNormal
 
+'''
+Utility functions used to create derived columns in the data tables.
+'''
+
 try:
     import uncertainties.unumpy as unp
 except (ImportError, ModuleNotFoundError) as error:

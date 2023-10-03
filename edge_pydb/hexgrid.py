@@ -3,6 +3,11 @@ from astropy.table import Table, Column
 from edge_pydb.conversion import gc_polr
 from functools import wraps
 
+'''
+Interpolate the data onto a hexagonal grid.  This code is still in a
+rough state.
+'''
+
 use_numba = False
 
 if use_numba:

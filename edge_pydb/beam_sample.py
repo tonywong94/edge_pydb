@@ -15,8 +15,8 @@ def beam_sample(edgetab, gallist=None, columnlist=None, beam_orig=7, beam_final=
     """
     Process one or more galaxies from an allpix HDF5 file and output central surface
     brightness after convolution to a user-specified Gaussian beam.  The pixel with
-    the smallest value of rad_arc is used; this should be recalculated using gc_polr
-    beforehand if the default central pixel is not desired.
+    the smallest value of rad_arc is used as the center; this should be recalculated
+    using gc_polr (conversion.py) beforehand if the default central pixel is not desired.
 
     === Parameters ===
     edgetab : EdgeTable

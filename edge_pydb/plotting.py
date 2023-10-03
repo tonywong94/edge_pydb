@@ -9,6 +9,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 from edge_pydb.conversion import kewley01, kauffm03, cidfer10
 from astropy.visualization import PercentileInterval, ImageNormalize
 
+'''
+Utility functions for plotting.
+'''
+
 def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     '''
     Prepare a 2D density histogram from a scatterplot.

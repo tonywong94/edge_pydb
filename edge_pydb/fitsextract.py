@@ -137,6 +137,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         wcsin = (np.array([tab['ix'],tab['iy']])).T
     # Reduce WCS to 2-D for pseudocubes
     wfix = w.sub(naxis)
+    
+    # Calculate the coordinate columns
     if first:
         wcsout = wfix.wcs_pix2world(wcsin,0)
         col_ra = Column(wcsout.T[0], name='ra_abs',  dtype='f4', 
