@@ -1,5 +1,5 @@
 # edge_pydb
-Python-based database for CARMA EDGE.  This package requires Python 3.
+Python-based database for the Extragalactic Database for Galaxy Evolution (EDGE).  This package requires Python 3.
 
 The EDGE database has several components (see `index_csv.md` and `index_hdf.txt` for details):
 
@@ -7,7 +7,7 @@ The EDGE database has several components (see `index_csv.md` and `index_hdf.txt`
 
 * One-dimensional CSV tables (e.g. radial profiles or spectra), found in `dat_prof` and `dat_spec`.
 
-* Downsampled 2D or 3D images, saved as HDF5 binary tables in the `img_` directories.
+* Downsampled 2D or 3D images, saved as HDF5 binary tables in the `img_` directories, or as large HDF5 files in a user-specified area.
 
 ## Installation
 
@@ -23,7 +23,7 @@ Required packages are:
 * [h5py](https://www.h5py.org)
 * [uncertainties](https://uncertainties-python-package.readthedocs.io)
 
-Also needed for building the database are:
+Also needed for building the database (but not for general use) are:
 
 * [pyFIT3D](http://ifs.astroscu.unam.mx/pyPipe3D/)
 * [reproject](https://reproject.readthedocs.io)
