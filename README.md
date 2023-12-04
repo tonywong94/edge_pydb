@@ -11,6 +11,23 @@ The EDGE database has several components (see `index_csv.md` and `index_hdf.txt`
 
 ## Installation
 
+Required packages are:
+
+* [matplotlib](https://matplotlib.org)
+* [numpy](https://numpy.org)
+* [scipy](https://scipy.org)
+* [astropy](https://www.astropy.org)
+* [pandas](https://pandas.pydata.org)
+* [radio_beam](https://radio-beam.readthedocs.io)
+* [requests](https://requests.readthedocs.io)
+* [h5py](https://www.h5py.org)
+* [uncertainties](https://uncertainties-python-package.readthedocs.io)
+
+Also needed for building the database are:
+
+* [pyFIT3D](http://ifs.astroscu.unam.mx/pyPipe3D/)
+* [reproject](https://reproject.readthedocs.io)
+
 Install the package directly from PyPI (https://pypi.org/project/edge-pydb/) using
 
     pip install --user edge_pydb
@@ -40,7 +57,11 @@ but note that the `_config.json` will not be removed, so to fully uninstall you 
 
 ## Merging in large data sets
 
-The Github package only contains data for a single galaxy (NGC 4047), for demonstration and testing purposes.  Larger data files can be downloaded as ZIP archives from Box.  It is recommended that you unpack additional files into a single directory that is easily accessible on your file system, and not embedded within your Python libraries (`site-packages` area).  Here is the suggested way to incorporate these into your runtime environment.
+The Github package only contains data for a single galaxy (NGC 4047), for demonstration and testing purposes.  Larger data files can be downloaded from Zenodo:
+
+* [HDF5 Files for CARMA EDGE](https://zenodo.org/records/10256732)
+
+It is recommended that you unpack additional files into a single directory that is easily accessible on your file system, and not embedded within your Python libraries (`site-packages` area).  Here is the suggested way to incorporate these into your runtime environment.
 
 Leave the git directory in which this README is located.  (This ensures that the package runs from your `site-packages` area and not the current directory.)  Open an iPython shell and type:
 
@@ -62,7 +83,7 @@ makes a listing of the available files.
 
     ctrpos = EdgeTable('edge_coflux_smo7.csv')
 
-loads a CSV file.  `ctrpos` can now be treated like an astropy table, for example `ctrpos.info()` will summarize the contents and `ctrpos.pprint()` will print some of the data.
+loads a CSV file.  `ctrpos` can now be treated like an [astropy table](https://docs.astropy.org/en/stable/table/), for example `ctrpos.info()` will summarize the contents and `ctrpos.pprint()` will print some of the data.
 
     ctrpos = EdgeTable('edge_coflux_smo7.csv', cols=['Name', 'coRactr_smo7', 'coDectr_smo7'])
 
@@ -77,7 +98,7 @@ will merge a sub-table from `edge_leda.csv` into `ctrpos`.  We must select the `
 
 loads an HDF5 file.  The path must be given, otherwise a listing of available paths is provided.
 
-A `demo_notebk` folder provides examples of accessing and plotting database values in a Jupyter notebook.
+A `demo_notebk` folder and various subfolders provide examples of accessing and plotting database values in a Jupyter notebook.
 
 ## HDF5 File Contents
 
@@ -89,7 +110,7 @@ Detailed listings of the HDF5 files are provided in [index_hdf.txt](https://gith
 
 - **[label].cocube_smo7.hdf5**: These contain the CARMA CO data cubes and mask cubes, at a resolution of 7 arcsec (FWHM Gaussian beam).  These tables have the same astrometric grid as those in **[label].2d_smo7.hdf5** and can be joined with those tables (but note values in the 2D table will be replicated along the velocity axis).
 
-Available datasets will expand over time, but current values for [label] include `edge_carma` (which uses a square sampling grid spaced by 3", sufficient for Nyquist sampling the CARMA beam) and `edge_carma_allpix` (all pixel values saved, resulting in much longer tables).
+Available datasets will expand over time, but current values for [label] include `edge_carma` (which uses a square sampling grid spaced by 3", sufficient for Nyquist sampling the CARMA beam), `edge_carma_hex` (which uses a hexagonal sampling grid and is still experimental) and `edge_carma_allpix` (all pixel values saved, resulting in much longer tables).
 
 ## References
 
@@ -103,4 +124,4 @@ For more information about EDGE:
 
 If you use this package in a publication please also cite:
 
-- Wong et al. (2023), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies," in prep.
+- Wong et al. (2024), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies," submitted to ApJS.
