@@ -13,7 +13,7 @@ from edge_pydb.fitsextract import fitsextract
 
 
 def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13'],
-             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.3, 
+             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.35, 
              hexgrid=False, allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv',
              append=False, overwrite=True):
     """
@@ -71,12 +71,16 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
             dotypes = ['snrpk', 'mom0',   'e_mom0', 'mom1', 'e_mom1', 'mom2', 'e_mom2']
             unit    = ['',      'K km/s', 'K km/s', 'km/s', 'km/s',   'km/s', 'km/s']
         if msk == 'smo':
-            dotypes = ['mom0',   'e_mom0', 'mom1', 'e_mom1', 'mom2', 'e_mom2']
-            unit    = ['K km/s', 'K km/s', 'km/s', 'km/s',   'km/s', 'km/s']
+            dotypes = ['snrpk', 'mom0',   'e_mom0', 'mom1', 'e_mom1', 'mom2', 'e_mom2']
+            unit    = ['',      'K km/s', 'K km/s', 'km/s', 'km/s',   'km/s', 'km/s']
         for gal in gallist:
-            file0 = os.path.join(fitsdir,
-                    gal+'.'+linelbl[0]+'.'+seq+'_'+msk+'.'+dotypes[0]+'.fits.gz')
-            print(file0)
+            # snrpk.fits is produced for dilated mask only
+            if msk == 'smo':
+                file0 = os.path.join(fitsdir,
+                        gal+'.'+linelbl[0]+'.'+seq+'_dil.snrpk.fits.gz')
+            else:
+                file0 = os.path.join(fitsdir,
+                        gal+'.'+linelbl[0]+'.'+seq+'_'+msk+'.'+dotypes[0]+'.fits.gz')
             if not os.path.exists(file0):
                 continue
             adopt_incl = orttbl.loc[gal]['ledaAxIncl']
@@ -126,8 +130,6 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                             description='factor to deproject to face-on using ledaAxIncl', dtype='f4')
                     sigmol = msd_co(galtab['mom0_12'], name='sigmol', alphaco=alphaco)
                     e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol', alphaco=alphaco)
-                    #sigmol_fo = msd_co(galtab['mom0_12']*np.cos(np.radians(adopt_incl)), name='sigmol_fo', alphaco=alphaco)
-                    #e_sigmol_fo = msd_co(galtab['e_mom0_12']*np.cos(np.radians(adopt_incl)), name='e_sigmol_fo', alphaco=alphaco)
                     galtab.add_columns([sigmol, e_sigmol, cosi])
             tablelist.append(galtab)
 
@@ -146,8 +148,6 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                 if line == '12':
                     t_merge['sigmol'].description = 'apparent H2+He surf density not deprojected'
                     t_merge['e_sigmol'].description = 'error in sigmol not deprojected'
-                    #t_merge['sigmol_fo'].description = 'H2+He surf density deprojected to face-on using ledaAxIncl'
-                    #t_merge['e_sigmol_fo'].description = 'error in sigmol deprojected to face-on'
             t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')   
             print(t_merge[20:50])
 
@@ -175,11 +175,11 @@ if __name__ == "__main__":
     
     # ACA galaxies, 12" resolution, using alphaco=6.6 instead of 4.3
     # R21 = 0.65 (Leroy+22)
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('aca12/*_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_aca', seq='smo12', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12')
-    do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
-             linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12', 
-             allpix=True)
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('aca12/*_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_aca', seq='smo12', lines=['12'],
+#              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12')
+#     do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
+#              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12', 
+#              allpix=True)
 

@@ -9,7 +9,7 @@
 - [edge_bbpars_natv.csv](#edge_bbpars_natvcsv)
 - [edge_bbpars_smo7.csv](#edge_bbpars_smo7csv)
 - [edge_califa.csv](#edge_califacsv)
-- [edge_coflux_e20.csv](#edge_coflux_e20csv)
+- [edge_coflux_E20.csv](#edge_coflux_E20csv)
 - [edge_coflux_natv.csv](#edge_coflux_natvcsv)
 - [edge_coflux_smo7.csv](#edge_coflux_smo7csv)
 - [edge_coobs_D.csv](#edge_coobs_Dcsv)
@@ -36,7 +36,7 @@
 
 Bbarolo second round results for run natv_fitvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -64,7 +64,7 @@ date: '2020-07-15'
 | bbFtype |   | int64 |   |   |
 | bbWfunc |   | int64 |   |   |
 | bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
+| bbNpix |   | float64 |   | number of pixels in ring |
 | bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
 | bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
 
@@ -72,7 +72,7 @@ date: '2020-07-15'
 
 Bbarolo first round results for run natv_fitvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -109,7 +109,7 @@ date: '2020-07-15'
 
 Bbarolo second round results for run natv_fixvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -135,7 +135,7 @@ date: '2020-07-15'
 | bbFtype |   | int64 |   |   |
 | bbWfunc |   | int64 |   |   |
 | bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
+| bbNpix |   | float64 |   | number of pixels in ring |
 | bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
 | bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
 
@@ -143,7 +143,7 @@ date: '2020-07-15'
 
 Bbarolo first round results for run natv_fixvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -178,7 +178,7 @@ date: '2020-07-15'
 
 Bbarolo second round results for run smo7_fitvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -206,7 +206,7 @@ date: '2020-07-15'
 | bbFtype |   | int64 |   |   |
 | bbWfunc |   | int64 |   |   |
 | bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
+| bbNpix |   | float64 |   | number of pixels in ring |
 | bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
 | bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
 
@@ -214,7 +214,7 @@ date: '2020-07-15'
 
 Bbarolo first round results for run smo7_fitvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -251,7 +251,7 @@ date: '2020-07-15'
 
 Bbarolo second round results for run smo7_fixvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -277,7 +277,7 @@ date: '2020-07-15'
 | bbFtype |   | int64 |   |   |
 | bbWfunc |   | int64 |   |   |
 | bbFlag |   | int64 |   | '=1 when some ringlog exits, but Bbarolo fails to produce at least one of the plots' |
-| bbNpix |   | int64 |   | number of pixels in ring |
+| bbNpix |   | float64 |   | number of pixels in ring |
 | bbIntens | (Jy*km/s)/arcsec**2 | float64 |   | 'average intensity in ring, not corrected for inclination' |
 | bbIntensRMS | (Jy*km/s)/arcsec**2 | float64 |   | standard deviation of intensity in ring |
 
@@ -285,7 +285,7 @@ date: '2020-07-15'
 
 Bbarolo first round results for run smo7_fixvd_dilmsk
 
-date: '2020-07-15'
+date: '2023-12-03'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|
@@ -394,7 +394,7 @@ date: '2023-02-27'
 | caFlgImg5 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V500 |
 | caFlgImg12 |   | float64 |   | Flag (-1/0/1/2=NA/good/minor/bad) for reconstructed image quality V1200 |
 
-## [edge_coflux_e20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_e20.csv)
+## [edge_coflux_E20.csv](https://github.com/tonywong94/edge_pydb/blob/master/edge_pydb/dat_glob/obs/edge_coflux_E20.csv)
 
 Integrated CO fluxes from e20 cubes
 
@@ -732,7 +732,7 @@ date: '2023-06-18'
 
 Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L
 
-date: '2023-06-18'
+date: '2023-09-15'
 
 | name | unit | datatype | format | description |
 |---|---|---|---|---|

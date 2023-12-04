@@ -49,7 +49,7 @@ parlabel = {
 denselbl = {
     "RADIUS" : 'bbRad',
     "NPIX" : 'bbNpix',
-    "SURFDENS" : 'bbIntens',
+    "SDENS" : 'bbIntens',
     "ERR_SD" : 'bbIntensRMS'
 }
 
@@ -177,7 +177,8 @@ for run in runs:
             continue
         try:
             gal_densprof = Table.read(bbdir+run+'/output/'+gal[:8]+'/'+'densprof'+'.txt',
-                    format='ascii.commented_header',header_start=13)
+                    format='ascii.commented_header',header_start=12)
+            gal_densprof.pprint()
         except:
             print('reading densprof for '+gal+' failed, probably because the table is empty')
             continue

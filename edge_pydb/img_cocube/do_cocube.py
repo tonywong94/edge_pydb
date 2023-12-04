@@ -114,7 +114,7 @@ def do_cocube(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','1
             t_merge[colm[2]+'_'+line].description = linelbl[i_line]+' mask value for dilated mask'
             t_merge[colm[3]+'_'+line].description = linelbl[i_line]+' mask value for smoothed mask'
         t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')
-        t_merge.meta['comments'] = 'Sampled CO and 13CO data cubes from EDGE-125'
+        t_merge.meta['comments'] = 'Sampled CO and 13CO data cubes from EDGE'
         t_merge.write(outname+'.cocube_'+seq+'.hdf5', path='data', overwrite=True, 
                 serialize_meta=True, compression=True)
     return
@@ -127,5 +127,7 @@ if __name__ == "__main__":
     gallist = [os.path.basename(file).split('.')[0] for file in 
                sorted(glob.glob('fitsdata/*.co.smo7msk.K.fits'))]
     do_cocube(gallist=gallist, outname='edge_carma')
+    # EDGE125 hexgrid - not yet working
+    # do_cocube(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
     # EDGE125 allpix data
     do_cocube(gallist=gallist, outname='edge_carma_allpix', allpix=True)

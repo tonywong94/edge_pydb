@@ -22,7 +22,7 @@ np.seterr(divide='ignore', invalid='ignore')
 
 def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], 
              fitsdir='fits_natv_edge', comomdir=None, colabel='co.smo7',
-             ext='', nsm=2, ortpar='edge_leda.csv', distpar='edge_califa.csv',
+             ext='', fwhm=7, nsm=2, ortpar='edge_leda.csv', distpar='edge_califa.csv',
              distcol='caDistP3d', hexgrid=False, allpix=False, debug=False, 
              prob=True, discard_cdmatrix=False, append=True, overwrite=True):
     """
@@ -181,13 +181,23 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                 if prod == 'ELINES':
                     hb_idx = 5
                     ha_idx = 6
+                    e_hb_idx = hb_idx + 9
+                    e_ha_idx = ha_idx + 9
                     col_lbl += ['Hbeta_sm'+str(nsm)+ext, 'Halpha_sm'+str(nsm)+ext]
                     cahd['DESC_20'] = ' Hbeta after {} pix smooth'.format(str(nsm))
                     cahd['DESC_21'] = ' Halpha after {} pix smooth'.format(str(nsm))
                 else:
                     hb_idx = 28
                     ha_idx = 45
+                    e_hb_idx = hb_idx + 204
+                    e_ha_idx = ha_idx + 204
                     col_lbl += ['flux_Hbeta_sm'+str(nsm)+ext, 'flux_Halpha_sm'+str(nsm)+ext]
+                # Estimate of noise following convolution, see 2021RNAAS...5...39K
+#                 e_kernel = Gaussian2DKernel(nsm/np.sqrt(2))
+#                 base_res = fwhm / np.sqrt(8*np.log(2))
+#                 scalefac = 4 * np.pi * base_res**2 * nsm**2 / (base_res**2 + nsm**2)
+#                 e_hb_conv = scalefac * convolve(newim[e_hb_idx,:,:], e_kernel, preserve_nan=True)
+#                 e_ha_conv = scalefac * convolve(newim[e_ha_idx,:,:], e_kernel, preserve_nan=True)
                 hb_conv = convolve(newim[hb_idx,:,:], kernel, preserve_nan=True)
                 ha_conv = convolve(newim[ha_idx,:,:], kernel, preserve_nan=True)
                 newim = np.concatenate((newim, hb_conv[np.newaxis], ha_conv[np.newaxis]))
@@ -293,6 +303,9 @@ def do_califa(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'],
                     #
                     zoh0, zoherr0 = ZOH_M13(tab0, ext=ext, name='ZOH'+ext, err=True)
                     tab0.add_columns([zoh0, zoherr0])
+                    zoh2, zoherr2 = ZOH_M13(tab0, ext=ext, name='ZOH_N2'+ext, 
+                                            method='n2', err=True)
+                    tab0.add_columns([zoh2, zoherr2])
 
             elif prod == 'SFH':
                 if i_gal == 0:
@@ -402,13 +415,13 @@ if __name__ == "__main__":
               ext='_sm', nsm=3, hexgrid=True, append=True)
 
     # ACA galaxies, 12" resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
-    do_califa(gallist=gallist, outfile='edge_aca_allpix.pipe3d.hdf5', 
-              fitsdir='fits_natv_aca', append=False, allpix=True)
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo12.hdf5', 
-              colabel='co21.smo12', comomdir='../img_comom/aca12', 
-              fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True)
-    do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo12.hdf5',
-              colabel='co21.smo12', comomdir='../img_comom/aca12', 
-              fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True, allpix=True)
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
+#     do_califa(gallist=gallist, outfile='edge_aca_allpix.pipe3d.hdf5', 
+#               fitsdir='fits_natv_aca', append=False, allpix=True)
+#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo12.hdf5', 
+#               colabel='co21.smo12', comomdir='../img_comom/aca12', 
+#               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True)
+#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo12.hdf5',
+#               colabel='co21.smo12', comomdir='../img_comom/aca12', 
+#               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True, allpix=True)

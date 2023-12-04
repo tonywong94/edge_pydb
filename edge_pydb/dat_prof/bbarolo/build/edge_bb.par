@@ -32,6 +32,7 @@ VDISP       8
 INC         %.3f          
 PA          %.3f         
 Z0          %.3f
+MAXVDISP    100
          
 // Free parameters for the minimization.
 FREE        %s
@@ -89,5 +90,5 @@ TWOSTAGE    true
 POLYN       0
           
 // OPTIONAL: Enabling error estimation (default is false):
-flagErrors  true
-plotmask    true
+FLAGERRORS  true
+PLOTMASK    true

@@ -2,6 +2,7 @@
 
 # This script tries repeating the runs which failed the first time.
 # Galaxies which still fail are listed in nrad8_fail2.txt and nrad8_vdisp8_fail2.txt
+# These files can be renamed to *_fail1.txt and the process repeated.
 
 import os
 import glob

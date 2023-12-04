@@ -26,7 +26,7 @@ for run in runs:
     noPlot_txt = open(run+'_fail1.txt','w')
     noPlot=[]
     os.chdir(run)
-    plist = glob.glob('param_*.par')
+    plist = sorted(glob.glob('param_*.par'))
     for pfile in plist:
         gal = pfile.strip('param_.par')
         print(gal)

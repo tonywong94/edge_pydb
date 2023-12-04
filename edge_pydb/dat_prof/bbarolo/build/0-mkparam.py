@@ -58,12 +58,14 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
             nrad = 11
         elif gal in ['IC0944','IC2487','NGC2410','NGC5980','NGC6478','UGC05111']:
             nrad = 10
-        elif gal in ['NGC3994','NGC4149','NGC5953','UGC09067']:
+        elif gal in ['NGC4149','NGC5953','UGC05598','UGC09067']:
             nrad = 7
-        elif gal in ['NGC5657','NGC7819']:
+        elif gal in ['NGC5657','NGC7819','NGC3994']:
             nrad = 6
-        elif gal in ['NGC0447','NGC4676A','UGC05108']:
+        elif gal in ['NGC0447','UGC05108']:
             nrad = 5
+        elif gal in ['NGC2487','NGC4676A']:
+            nrad = 4
         else:
             nrad = 8
         # --- Set default parameters for VROT and VDISP
@@ -71,9 +73,11 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
             vrot = 600.
         elif gal in ['NGC2639']:
             vrot = 400.
-        elif gal in ['NGC2347','NGC5908']:
+        elif gal in ['NGC0447']:
+            vrot = 300.
+        elif gal in ['NGC2347','NGC5908','UGC08107']:
             vrot = 250
-        elif gal in ['NGC0496','NGC0551','NGC4210','NGC5480','NGC6186']:
+        elif gal in ['NGC0496','NGC0551','NGC4210','NGC4711','NGC5218','NGC5480','NGC6186']:
             vrot = 150
         elif gal in ['NGC4961','NGC5016','NGC5520','NGC6155','UGC04461','UGC09542','UGC09665']:
             vrot = 100
@@ -120,7 +124,7 @@ def write_par(gallist, run='nrad8', template='edge_bb.par', edgedir='../../carma
         inc = db['ledaAxIncl'][i]
         if (inc > 88):
             inc=88.0
-        pa = (db['rfPA'][i] + 180) % 360
+        pa = db['rfPA'][i]
         # --- Use default values for distance and thickness = 100 pc
         dmpc = db['caDistMpc'][i]
         z0 = 206265*100/(dmpc*1e6)  # 100 pc thickness, fixed
@@ -158,7 +162,6 @@ with open(listfile) as f:
 gallist = [gal for gal in namelist if not gal.startswith("#")]
 print (gallist)
 
-#masks = ['dilmsk', 'bbmsk']
 masks = ['dilmsk']
 fits  = ['fitvd', 'fixvd']
 sets  = ['natv', 'smo7']

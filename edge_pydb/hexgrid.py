@@ -5,7 +5,11 @@ from functools import wraps
 
 '''
 Interpolate the data onto a hexagonal grid.  This code is still in a
-rough state.
+rough state.  To be done:
+(1) Support for cubes, for which there is an additional coordinate
+    column iz
+(2) The ra_abs, dec_abs, ra_off, and dec_off columns are still determined
+    by interpolation; they should be calculated from ix and iy from the WCS
 '''
 
 use_numba = False
@@ -227,7 +231,8 @@ def hex_sampler(tab, sidelen, keepref, ref_pix, ra_ref, dec_ref,
     if hexgrid_output is not None:
         np.savetxt(hexgrid_output, datapoint)
     info = interpolate_all_points(tab.as_array(), datapoint, bound, List(header))
-    units = [tab[col].unit for col in tab.colnames]
+    # Currently Astropy has trouble creating a table with dimensionless columns
+    units = [None if tab[col].unit=='' else tab[col].unit for col in tab.colnames]
     sampled_tab = Table(info, names=header, units=units)
     if ('rad_arc' in header) and ('azi_ang' in header):
         sampled_tab['rad_arc'], sampled_tab['azi_ang'] = gc_polr(
