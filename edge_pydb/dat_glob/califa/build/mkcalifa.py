@@ -162,16 +162,16 @@ print(t)
 # t['caeAvstars'].description = 'Error in stellar extinction from col 158 in Pipe3D_NSA_CALIFA-DR3_candidates.csv'
 
 # Columns from get_mag_cubes_v2.2.fixheader.csv
-for str_name in ['Su','Sg','Sr','Si','caB','caV','caR','caRe','caeRe','caEllipticity','caPA','caR50',\
-                'caeR50','caR90','caeR90']:
+for str_name in ['caSu','caSg','caSr','caSi','caB','caV','caR','caRe','caeRe',
+                 'caEllipticity','caPA','caR50','caeR50','caR90','caeR90']:
     t.add_column(np.nan,name=str_name)
 for i in range(len(t)):
     if len(np.where(get_mag_cubes['name-obj'] == t['Name'][i])[0]) != 0:
         ind = np.where(get_mag_cubes['name-obj'] == t['Name'][i])[0][0]
-        t['Su'][i] = get_mag_cubes['u band mag'][ind]
-        t['Sg'][i] = get_mag_cubes['g band mag'][ind]
-        t['Sr'][i] = get_mag_cubes['r band mag'][ind]
-        t['Si'][i] = get_mag_cubes['i band mag'][ind]
+        t['caSu'][i] = get_mag_cubes['u band mag'][ind]
+        t['caSg'][i] = get_mag_cubes['g band mag'][ind]
+        t['caSr'][i] = get_mag_cubes['r band mag'][ind]
+        t['caSi'][i] = get_mag_cubes['i band mag'][ind]
         t['caB'][i] = get_mag_cubes['B band mag'][ind]
         t['caV'][i] = get_mag_cubes['V band mag'][ind]
         t['caR'][i] = get_mag_cubes['R band mag'][ind]
@@ -183,14 +183,14 @@ for i in range(len(t)):
         t['caeR50'][i] = get_mag_cubes['error R50 (arcsec)'][ind]
         t['caR90'][i] = get_mag_cubes['R90 (arcsec)'][ind]
         t['caeR90'][i] = get_mag_cubes['error R90 (arcsec)'][ind]
-t['Su'].unit = 'mag'
-t['Su'].description = 'SDSS u magnitude from col 4 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
-t['Sg'].unit = 'mag'
-t['Sg'].description = 'SDSS g magnitude from col 8 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
-t['Sr'].unit = 'mag'
-t['Sr'].description = 'SDSS r magnitude from col 12 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
-t['Si'].unit = 'mag'
-t['Si'].description = 'SDSS i magnitude from col 16 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
+t['caSu'].unit = 'mag'
+t['caSu'].description = 'SDSS u magnitude from col 4 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
+t['caSg'].unit = 'mag'
+t['caSg'].description = 'SDSS g magnitude from col 8 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
+t['caSr'].unit = 'mag'
+t['caSr'].description = 'SDSS r magnitude from col 12 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
+t['caSi'].unit = 'mag'
+t['caSi'].description = 'SDSS i magnitude from col 16 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
 t['caB'].unit = 'mag'
 t['caB'].description = 'B magnitude from col 20 in get_mag_cubes_v2.2.csv. From CALIFA synthetic photometry corrected for foreground extinction'
 t['caV'].unit = 'mag'
@@ -214,16 +214,16 @@ t['caeR90'].unit = 'arcsec'
 t['caeR90'].description = 'Error in R90 from col 43 in get_mag_cubes_v2.2.csv'
 
 # Columns from get_proc_elines_CALIFA.fixheader.csv
-for str_name in ['caZgas','caZstars','caAge','caeAge','caFHa','caFHacorr',
-                 'caLHacorr','caMstars','caeMstars','caSFR','caOH','caeOH','caAvgas',
+for str_name in ['cazgas','cazstars','caAge','caeAge','caFHa','caFHacorr','caLHacorr',
+                 'caMstars','caeMstars','caSFR','caeSFR','caOH','caeOH','caAvgas',
                  'caeAvgas','caAvstars','caeAvstars','caDistP3d','caDistMpc']:
     t.add_column(np.nan,name=str_name)
 cosmo = FlatLambdaCDM(H0=70, Om0=0.27)
 for i in range(len(t)):
     if len(np.where(get_proc_elines['name'] == t['Name'][i])[0]) != 0:
         ind = np.where(get_proc_elines['name'] == t['Name'][i])[0][0]
-        t['caZgas'][i]     = get_proc_elines['z_gas'][ind]
-        t['caZstars'][i]   = get_proc_elines['z_stars'][ind]
+        t['cazgas'][i]     = get_proc_elines['z_gas'][ind]
+        t['cazstars'][i]   = get_proc_elines['z_stars'][ind]
         t['caAge'][i]      = get_proc_elines['log_age_mean_LW'][ind]
         t['caeAge'][i]     = get_proc_elines['s_log_age_mean_LW'][ind]
         t['caFHa'][i]      = get_proc_elines['log_F_Ha'][ind]
@@ -232,6 +232,7 @@ for i in range(len(t)):
         t['caMstars'][i]   = get_proc_elines['log_Mass'][ind]
         t['caeMstars'][i]  = get_proc_elines['error_Mass'][ind]
         t['caSFR'][i]      = get_proc_elines['lSFR'][ind]
+        t['caeSFR'][i]     = get_proc_elines['e_lSFR'][ind]
         t['caOH'][i]       = get_proc_elines['OH_O3N2'][ind]
         t['caeOH'][i]      = get_proc_elines['e_OH_O3N2'][ind]
         t['caAvgas'][i]    = get_proc_elines['Av_gas_LW_Re'][ind]
@@ -239,10 +240,10 @@ for i in range(len(t)):
         t['caAvstars'][i]  = get_proc_elines['Av_ssp_stats_mean'][ind]
         t['caeAvstars'][i] = get_proc_elines['Av_ssp_stats_stddev'][ind]
         t['caDistP3d'][i]  = get_proc_elines['DL'][ind]
-    if t['caZgas'][i] != np.nan:
-        t['caDistMpc'][i] = cosmo.luminosity_distance(t['caZgas'][i]).value
-t['caZgas'].description = 'Redshift for gas lines from <z_gas> in get_proc_elines_CALIFA.csv'
-t['caZstars'].description = 'Redshift for stars from <z_stars> in get_proc_elines_CALIFA.csv'
+    if t['cazgas'][i] != np.nan:
+        t['caDistMpc'][i] = cosmo.luminosity_distance(t['cazgas'][i]).value
+t['cazgas'].description = 'Redshift for gas lines from <z_gas> in get_proc_elines_CALIFA.csv'
+t['cazstars'].description = 'Redshift for stars from <z_stars> in get_proc_elines_CALIFA.csv'
 t['caAge'].unit = 'dex(Gyr)'
 t['caAge'].description = 'Mean stellar age from <log_age_mean_LW> in get_proc_elines_CALIFA.csv'
 t['caeAge'].unit = 'dex(Gyr)'
@@ -259,6 +260,8 @@ t['caeMstars'].unit = 'dex(solMass)'
 t['caeMstars'].description = 'Error in log of stellar mass from <error_Mass> in get_proc_elines_CALIFA.csv'
 t['caSFR'].unit = 'dex(solMass / yr)'
 t['caSFR'].description = 'SFR from <lSFR> in get_proc_elines_CALIFA.csv'
+t['caeSFR'].unit = 'dex(solMass / yr)'
+t['caeSFR'].description = 'Error in SFR from <e_lSFR> in get_proc_elines_CALIFA.csv'
 t['caOH'].unit = 'dex'
 t['caOH'].description = 'Oxygen abundance as 12+log(O/H) from <OH_O3N2> in get_proc_elines_CALIFA.csv'
 t['caeOH'].unit = 'dex'
@@ -275,7 +278,7 @@ t['caDistP3d'].unit = 'cm'
 t['caDistP3d'].convert_unit_to('Mpc')
 t['caDistP3d'].description = 'Luminosity distance in Mpc from <DL> in get_proc_elines_CALIFA.csv'
 t['caDistMpc'].unit = 'Mpc'
-t['caDistMpc'].description = 'Luminosity distance in Mpc computed from caZgas assuming Ho=70, Om=0.27, Ol=0.73'
+t['caDistMpc'].description = 'Luminosity distance in Mpc computed from cazgas assuming Ho=70, Om=0.27, Ol=0.73'
 
 # CALIFA Quality Tables
 for str_name in ['caFlgWav5','caFlgWav12','caFlgReg5','caFlgReg12','caFlgImg5','caFlgImg12']:
