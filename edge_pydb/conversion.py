@@ -112,7 +112,7 @@ def get_AHa(flux_ha, flux_hb, log10):
 
 
 def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
-            name='sigsfr', column=True, imf='kroupa'):
+            name='sigsfr', column=True, imf='kroupa', pixsca=1*u.arcsec):
     '''
     Convert Halpha intensity to SFR surface density, optionally
     with extinction estimates and corrections (if flux_hb is provided).
@@ -139,8 +139,15 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     === Returns ===
     several columns depending on input (see code)
     '''
+    # Assume arcsec units for pixsca if not given
+    try:
+        unit = pixsca.unit
+    except:
+        pixsca = pixsca * u.arcsec
+
     # input line flux is actually flux per arcsec^2
-    sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
+    #sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
+    sterad = (u.sr/pixsca**2).decompose().value
     
     # Calzetti+(2010ApJ...714.1256C), Kroupa IMF, 1 Gyr old pop
     lumcon = 5.45e-42 * (u.solMass/u.yr) / (u.erg/u.s)
@@ -225,7 +232,7 @@ def msd_co(sb_co, alphaco=4.3, name='sigmol'):
         return sig_mol
     
 
-def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
+def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, pixsca=1*u.arcsec, name='sigstar'):
     '''
     Convert units for stellar surface density to Msol/pc2, optionally 
     applying dezonification image.
@@ -237,19 +244,28 @@ def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, name='sigstar'):
         dezonification image from Pipe3D (optional)
     dist : float or astropy.Quantity
         The distance of the galaxy, assumed to be in Mpc if no units
+    pixsca : float or astropy.Quantity
+        The pixel scale of the IFU image, assumed to be in arcsec if no units.
+        Default: 1 arcsec, appropriate for CALIFA.
     name : string
         The name of the output Column, if input is a Column
 
     === Returns ===
     numpy.array or astropy.table.Column, depending on input
     '''
-    # Assume Mpc units if not given
+    # Assume Mpc units for dist if not given
     try:
         unit = dist.unit
     except:
         dist = dist * u.Mpc
-    sterad = (u.sr/u.arcsec**2).decompose().scale   # 206265^2
-    pxarea = (dist**2/sterad).to(u.pc**2)
+    # Assume arcsec units for pixsca if not given
+    try:
+        unit = pixsca.unit
+    except:
+        pixsca = pixsca * u.arcsec
+    pixelscale = u.pixel_scale(pixsca/u.pixel)
+    pixang = (1*u.pixel).to(u.rad, pixelscale)  
+    pxarea = ((pixang.value*dist)**2).to(u.pc**2)
 
     def convert_stmass(stmass_in, dz):
         stmass_in[~np.isfinite(stmass_in)] = np.nan

@@ -124,4 +124,4 @@ For more information about EDGE:
 
 If you use this package in a publication please also cite:
 
-- Wong et al. (2024), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies," submitted to ApJS.
+- [Wong et al. (2024)](http://adsabs.harvard.edu/abs/2017ApJ...846..159B), "The EDGE-CALIFA Survey: An Extragalactic Database for Galaxy Evolution Studies."

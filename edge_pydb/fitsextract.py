@@ -159,6 +159,8 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
             dec_gc = w.wcs.crval[1]
         if not (inc>0):
             inc = 0.
+        if ~np.isfinite(pa):
+            pa = 0.
         r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
         col_r = Column(r, name='rad_arc', dtype='f4', unit='arcsec', format='.3f',
             description='radius based on {}'.format(ortlabel))
@@ -282,15 +284,16 @@ def getlabels(product):
     elif product == 'flux_elines':
         # We only select the bright lines that are also in ELINES
         nz = 408
+        nfelines = nz // 8
         flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
         nline = len(flux)
-        vel   = list(np.array(flux)+51)
-        disp  = list(np.array(flux)+102)
-        ew    = list(np.array(flux)+153)
-        eflux = list(np.array(flux)+204)
-        evel  = list(np.array(flux)+255)
-        edisp = list(np.array(flux)+306)
-        eew   = list(np.array(flux)+357)
+        vel   = list(np.array(flux)+nfelines)
+        disp  = list(np.array(flux)+nfelines*2)
+        ew    = list(np.array(flux)+nfelines*3)
+        eflux = list(np.array(flux)+nfelines*4)
+        evel  = list(np.array(flux)+nfelines*5)
+        edisp = list(np.array(flux)+nfelines*6)
+        eew   = list(np.array(flux)+nfelines*7)
         zsel  = flux + vel + disp + ew + eflux + evel + edisp + eew
         flbl  = ['flux_[OII]3727', 'flux_[OIII]5007', 'flux_[OIII]4959', 
                  'flux_Hbeta',     'flux_[OI]6300',   'flux_Halpha',   

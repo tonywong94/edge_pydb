@@ -8,6 +8,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
 from edge_pydb.conversion import kewley01, kauffm03, cidfer10
 from astropy.visualization import PercentileInterval, ImageNormalize
+from astropy.visualization import LinearStretch, SqrtStretch, LogStretch
 
 '''
 Utility functions for plotting.
@@ -41,14 +42,16 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     locx : numpy.array
         bin edges along first dimension
     locy : numpy.array
-        bin edges along first dimension
+        bin edges along second dimension
     '''
     if log:
-        x = np.log10(xarr)
-        y = np.log10(yarr)
+        valid = (xarr > 0) & (yarr > 0)
+        x = np.log10(xarr[valid])
+        y = np.log10(yarr[valid])
     else:
-        x = xarr
-        y = yarr
+        valid = np.isfinite(xarr+yarr)
+        x = xarr[valid]
+        y = yarr[valid]
     # Histogram the data
     hh, locx, locy = np.histogram2d(x, y, bins=bins)
     # Get the bin value z for each (x,y) point
@@ -253,7 +256,7 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
             xrange=None, yrange=None, blank=None, plotstyle='image',
             cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, pct=99,
             allnorm=False, vshow=False, clipedge=False, pad=5, verbose=False, 
-            maxlabel=18, **kwargs):
+            stretch='linear', maxlabel=18, **kwargs):
     '''
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
@@ -287,6 +290,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         percentile interval for colormap normalization
     allnorm : boolean
         True to get percentile interval for whole sample rather than each galaxy
+    stretch : string
+        colormap stretch, can use 'log', 'sqrt', or 'linear'
     pdfname : string
         name of output PDF file, otherwise plot to screen
     vshow : boolean
@@ -301,6 +306,17 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
     **kwargs :
         Additional arguments including vmin, vmax, colormap normalization
     '''
+
+    match stretch:
+        case 'linear':
+             stretch = LinearStretch()
+        case 'sqrt':
+             stretch = SqrtStretch()
+        case 'log':
+             stretch = LogStretch()
+        case _:
+            print('Invalid stretch',stetch,'- assuming linear')
+            stretch = LinearStretch()
 
     if gallist is None and columnlist is None:
         raise TypeError('Either gallist or columnlist must be provided!')
@@ -320,8 +336,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         print('Plotting column',columnlist[0],'for',len(gallist),'galaxies')
         pagelist = gallist
         if allnorm:
-            norm = ImageNormalize(edgetab[columnlist[0]], 
-                      interval=PercentileInterval(pct))
+            vmin, vmax = PercentileInterval(pct).get_limits(edgetab[columnlist[0]])
+            norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
     elif gallist is not None and len(gallist) == 1:
         mode = 'onegal'
         # Plot all non-coordinate columns by default
@@ -333,8 +349,9 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         print('Plotting',len(columnlist),'columns for galaxy',gallist[0])
         pagelist = columnlist
         if allnorm:  # not sure this works
-            norm = ImageNormalize(edgetab[edgetab['Name']==gallist[0]][columnlist], 
-                      interval=PercentileInterval(pct))
+            vmin, vmax = PercentileInterval(pct).get_limits(
+                             edgetab[edgetab['Name']==gallist[0]][columnlist])
+            norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
     else:
         raise ValueError('Specify either one galaxy or one column to plot')
 
@@ -370,8 +387,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                 galblank = None
             if not np.isnan(edgetab[galtab][column]).all():
                 if not allnorm:
-                    norm = ImageNormalize(edgetab[galtab][column], 
-                                          interval=PercentileInterval(pct))
+                    vmin, vmax = PercentileInterval(pct).get_limits(edgetab[galtab][column])
+                    norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
                 if plotstyle == 'dot':
                     img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
                                                 edgetab[galtab]['iy'],
@@ -399,11 +416,10 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                 else:
                     ax.set_ylim(yrange)
                 if vshow:
-                    vminmax = img.get_clim()
-                    if vminmax[1] < 1:
-                        labelstr = '[{:.3f} .. {:.3f}]'.format(vminmax[0],vminmax[1])
+                    if vmax < 1:
+                        labelstr = '[{:.3f} .. {:.3f}]'.format(vmin,vmax)
                     else:
-                        labelstr = '[{:.2f} .. {:.2f}]'.format(vminmax[0],vminmax[1])
+                        labelstr = '[{:.2f} .. {:.2f}]'.format(vmin,vmax)
                     if edgetab[galtab][column].unit is not None:
                         if len(edgetab[galtab][column].unit.to_string()) <= maxlabel:
                             labelstr = f"{labelstr} {edgetab[galtab][column].unit:latex_inline}"
