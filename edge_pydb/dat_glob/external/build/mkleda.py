@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from astropy.table import Table, vstack, join
+from astropy import units as u
 import numpy as np
 from datetime import datetime
 from astroquery.ipac.ned import Ned
@@ -75,7 +76,6 @@ for list in all_list:
     print('Working on',list)
     # Process the output from HyperLEDA
     if list == 'edge_aca':
-        #t = Table.read(list+'_ledaout.txt',format='csv',delimiter=',')
         t = Table.read(list+'_ledaout.txt',format='ascii.fixed_width',header_start=2)
         t = Table(t, masked=True, copy=False)
         t.remove_columns(['name'])
@@ -95,10 +95,10 @@ for list in all_list:
     if list == 'edge':
         renames = {
                    # LEDAname : CALIFAname
-                   'NGC4211A' : 'NGC4211NED02',
-                   'NGC6027E' : 'NGC6027',
+                   'NGC4211A'  : 'NGC4211NED02',
+                   'NGC6027E'  : 'NGC6027',
                    'PGC029708' : 'UGC05498NED01',
-                   'UGC04299' : 'IC2247'
+                   'UGC04299'  : 'IC2247'
                   }
     if list == 'alma':
         renames = {
@@ -106,7 +106,7 @@ for list in all_list:
                    'PGC072803' : 'NGC7783NED01',
                    'PGC002029' : 'UGC00335NED02',
                    'PGC066150' : 'UGC11680NED02',
-                   'NGC7237' : 'UGC11958',
+                   'NGC7237'   : 'UGC11958',
                    'PGC070084' : 'VV488NED02'
                   }
     if list == 'edge_aca':
@@ -203,6 +203,8 @@ for list in all_list:
     t['Name'].description = 'Galaxy Name'
 
     t['ledaRA'].unit = 'hourangle'
+    t['ledaRA'].convert_unit_to('deg')
+    t['ledaRA'] = np.round(t['ledaRA'], 7) * u.deg
     t['ledaRA'].description = 'RA J2000 from LEDA /al2000/'
 
     t['ledaDE'].unit = 'deg'

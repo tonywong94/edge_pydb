@@ -18,9 +18,8 @@
 #     Vrot at radii larger than 12 arcsec as used in Levy+18}
 # - {name: rfeVrotMax, unit: km / s, datatype: float64, description: the error in rfVrotMax using standard deviation of Vrot at radii
 #     larger than 12 arcsec as used in Levy+18}
-# - {name: rfPA, unit: deg, datatype: float64, description: position angle (degrees) ranging from 0-365 degrees defined counterclockwise
-#     from North to receding side of major axis; see PAFlag for how this was derived; please note that Levy+2018 defined the PA from the
-#     approaching side so these values differ by 180deg}
+# - {name: rfPA, unit: deg, datatype: float64, description: position angle (degrees) defined counterclockwise from N to receding side
+#     of major axis; see PAFlag for how this was derived; note Levy+2018 defined PA from approaching side so these values differ by 180}
 # - {name: rfPAFlag, datatype: int64, description: this describes where the PA listed is from; 0=CO kinematics; 1=Ha kinematics; 2=outer
 #     optical isophotes; 3=LEDA}
 # - {name: rfInc, unit: deg, datatype: float64, description: inclination (degrees); see IncFlag for how this was derived}
@@ -33,7 +32,7 @@
 # delimiter: ','
 # meta: !!omap
 # - {comments: Global kinematic fit parameters from Levy et al. 2018ApJ...860...92L}
-# - {date: '2023-09-15'}
+# - {date: '2024-08-04'}
 # schema: astropy-2.0
 Name,rfVsys,rfVsysFlag,rfLSRK2helio,rfRflat,rfVrotMaxL,rfeVrotMaxL,rfVrotMaxLFlag,rfVrotMax,rfeVrotMax,rfPA,rfPAFlag,rfInc,rfIncFlag,rfKinXoff,rfKinYoff,rfKinRA,rfKinDecl
 ARP220,5247.0,0,-1.06,2.2,-75.8,0.0,0,98.9,508.9,157.7,2,29.7,2,0.0,0.0,15.5825867,23.5026682

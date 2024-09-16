@@ -502,7 +502,7 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     HaF = fluxtab['flux_Halpha'+ext]
     HbF = fluxtab['flux_Hbeta'+ext]
 
-    if method == 'o3n2':
+    if method == 'o3n2' or method == 'o3n2_pp04':
         good = (N2F>0) & (O3F>0) & (HaF>0) & (HbF>0)
     elif method == 'n2':
         good = (N2F>0) & (HaF>0)
@@ -537,10 +537,16 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
 
     if method == 'o3n2':
         ZOH_M13 = 8.533 - 0.214 * O3N2 # Eq(2) from Marino+2013
-    else:
+    elif method == 'n2':
         ZOH_M13 = 8.743 + 0.462 * N2   # Eq(4) from Marino+2013
+    elif method == 'o3n2_pp04':
+        ZOH_M13 = 8.73 - 0.32 * O3N2   # Eq(3) from Pettini & Pagel 2004            
 
-    desc = '12+log(O/H) using {} method in Marino+13'.format(method)
+    if method == 'o3n2_pp04':
+        desc = '12+log(O/H) using o3n2 method in PP04'
+    else:
+        desc = '12+log(O/H) using {} method in Marino+13'.format(method)
+
     if err == False: 
         return Column(ZOH_M13, name=name, unit='dex', dtype='f4', description=desc)
     else:            

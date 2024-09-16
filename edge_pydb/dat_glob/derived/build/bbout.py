@@ -14,16 +14,16 @@ dotypes = ['natv', 'smo7']
 
 for type in dotypes:
     if type == 'natv':
-        cubedir = '/Volumes/Scratch2/tonywong/EDGE/comb_de_10/cmnorm_sub/'
-        fitdir1 = '/Volumes/Data/tonywong/sharenb/bbarolo/gal_nrad8/output/'
-        fitdir2 = '/Volumes/Data/tonywong/sharenb/bbarolo/gal_nrad8_smolist/output/'
+        cubedir = '/Volumes/Scratch2/tonywong/EDGE/comb_de_10/native/'
+        fitdir  = '/Volumes/Scratch2/tonywong/EDGE/bbarolo/natv_fitvd_dilmsk/output/'
+        fitdir2 = '/Volumes/Data/tonywong/sharenb/bbarolo/smo7_fitvd_dilmsk/output/'
     elif type == 'smo7':
         cubedir = '/Volumes/Scratch2/tonywong/EDGE/comb_de_10/smo7/'
-        fitdir1 = '/Volumes/Data/tonywong/sharenb/bbarolo_7as/gal_nrad8/output/'
+        fitdir  = '/Volumes/Scratch2/tonywong/EDGE/bbarolo/smo7_fitvd_dilmsk/output/'
         fitdir2 = '/Volumes/Data/tonywong/sharenb/bbarolo_7as/gal_nrad8_smolist/output/'
 
     # -- Original cubes are needed to provide astrometry
-    cubelist = glob.glob(cubedir+'*.co.*normsub.fits.gz')
+    cubelist = sorted(glob.glob(cubedir+'*.co.*norm.fits.gz'))
     print('Found {} cubes in {}'.format(len(cubelist),cubedir))
     gallist = [os.path.basename(file).split('.')[0] for file in cubelist]
 
@@ -38,7 +38,7 @@ for type in dotypes:
     tab['bbVsys'].description = 'Systemic velocity determined by Bbarolo (radio-LSR)'
     tab['bbKinInc'].unit = 'deg'
     tab['bbKinInc'].description = 'Inclination determined by Bbarolo'
-    tab['bbKinPA'].unit = 'arcsec'
+    tab['bbKinPA'].unit = 'deg'
     tab['bbKinPA'].description = 'Position angle E from N determined by Bbarolo'
     tab['bbMask'].description = 'Identifier for cube mask'
 
@@ -48,7 +48,7 @@ for type in dotypes:
         hdr['ctype3']  = 'VRAD'
         hdr['velref']  = 257
         w = WCS(hdr)
-        ringlog = fitdir1 + gal[:8] + '/ringlog2.txt'
+        ringlog = fitdir + gal[:8] + '/rings_final2.txt'
         try:
             dat=Table.read(ringlog, format='ascii', include_names=
                     ['INC(deg)','P.A.(deg)','XPOS(pix)','YPOS(pix)','VSYS(km/s)'])

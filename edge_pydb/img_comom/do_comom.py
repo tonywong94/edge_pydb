@@ -13,9 +13,10 @@ from edge_pydb.fitsextract import fitsextract
 
 
 def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13'],
-             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.35, 
+             linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], alphaco=4.3, 
              hexgrid=False, allpix=False, fitsdir='fitsdata', ortpar='edge_leda.csv',
-             append=False, overwrite=True):
+             radec=['ledaRA','ledaDE'], pa='ledaPA', inc='ledaAxIncl', deproj='axrat', 
+             ortlabel='LEDA', append=False, overwrite=True, manganame=False):
     """
     Extract 2D molecular line data into an HDF5 database.  This script assumes
     standardized naming conventions, for example:
@@ -44,14 +45,29 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
     allpix : boolean
         True to dump every pixel, otherwise every 3rd pixel in x and y is used.
     fitsdir : str
-        Path to the directory where FITS files reside
+        Path to the directory where the FITS files reside
     ortpar : filename
-        Name of the EdgeTable which has LEDA orientation parameters for the sample
+        Name of the EdgeTable or Astropy table which has galaxy orientation parameters
+    radec : list of str
+        Two column list of column names for RA and DEC in the ortpar table
+    pa : str
+        Column name for position angle in the ortpar table
+    inc : str
+        Column name for inclination or axis ratio in the ortpar table
+    deproj : str
+        Whether to interpret the inc column as an inclination in degrees (deproj='inc') 
+        or an axis ratio b/a (deproj='axrat') when determining cosi.
+    ortlabel : str
+        Short descriptor for the ortpar table used in the comments
     append : boolean
         True to append to an existing file.  Default is False (create/overwrite).
     overwrite : boolean
         True to overwrite existing tables.  Default is True (replace the table
         but do not delete other tables in the file).
+    manganame : boolean
+        For economy MaNGA galaxies are labeled as (e.g.) '8952-6104' in the Pipe3D
+        table whereas the ALMA file names use a longer string like 'manga_8952_6104'. 
+        If True, this translation is made to allow the IDs to be matched.
     """
     if allpix:
         stride = [1,1,1]
@@ -59,7 +75,10 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
         stride = [3,3,1]
 
     # Get the orientation parameters from LEDA
-    orttbl = EdgeTable(ortpar)
+    try:
+        orttbl = EdgeTable(ortpar)
+    except:
+        orttbl = Table.read(ortpar, format='ascii.ecsv')
     orttbl.add_index('Name') 
 
     for i_msk, msk in enumerate(msktyp):
@@ -83,8 +102,17 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                         gal+'.'+linelbl[0]+'.'+seq+'_'+msk+'.'+dotypes[0]+'.fits.gz')
             if not os.path.exists(file0):
                 continue
-            adopt_incl = orttbl.loc[gal]['ledaAxIncl']
-            print('Adopted inclination is {} deg'.format(adopt_incl))
+            if manganame:
+                gname = gal.replace('manga_','').replace('_','-')
+            else:
+                gname = gal
+            if deproj == 'inc':
+                adopt_incl = orttbl.loc[gname][inc]
+                adopt_cosi = np.cos(np.radians(adopt_incl))
+            elif deproj == 'axrat':
+                adopt_cosi = orttbl.loc[gname][inc]
+                adopt_incl = np.degrees(np.arccos(adopt_cosi))
+            print('Adopted inclination, axis ratio is {} deg, {}'.format(adopt_incl, adopt_cosi))
             for i_line, line in enumerate(lines):
                 for i_mtype, mtype in enumerate(dotypes):
                     # --- Read the first image (should be snrpk or mom0)
@@ -93,13 +121,13 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                         galtab = fitsextract(file0, bunit=unit[0], 
                                 col_lbl=dotypes[0]+'_'+line,
                                 keepnan=True, stride=stride,
-                                ra_gc=15*orttbl.loc[gal]['ledaRA'],
-                                dec_gc=orttbl.loc[gal]['ledaDE'],
-                                pa=orttbl.loc[gal]['ledaPA'],
+                                ra_gc=orttbl.loc[gname][radec[0]],
+                                dec_gc=orttbl.loc[gname][radec[1]],
+                                pa=orttbl.loc[gname][pa],
                                 inc=adopt_incl,
-                                ortlabel='LEDA', first=True,
+                                ortlabel=ortlabel, first=True,
                                 use_hexgrid=hexgrid)
-                        gname = Column([np.string_(gal)]*len(galtab), name='Name', description='Galaxy Name')
+                        gname = Column([np.string_(gname)]*len(galtab), name='Name', description='Galaxy Name')
                         galtab.add_column(gname, index=0)
                         print(galtab[20:50])
                     # --- Read the subsequent images
@@ -127,7 +155,7 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
                 # Add the H2 column density, with and without deprojection
                 if line == '12':
                     cosi = Column([np.cos(np.radians(adopt_incl))]*len(galtab), name='cosi', 
-                            description='factor to deproject to face-on using ledaAxIncl', dtype='f4')
+                            description='factor to deproject to face-on using {}'.format(inc), dtype='f4')
                     sigmol = msd_co(galtab['mom0_12'], name='sigmol', alphaco=alphaco)
                     e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol', alphaco=alphaco)
                     galtab.add_columns([sigmol, e_sigmol, cosi])
@@ -162,16 +190,16 @@ def do_comom(outname='NGC4047', gallist=['NGC4047'], seq='smo7', lines=['12','13
 
 if __name__ == "__main__":
     # NGC4047 only
-    do_comom(outname='NGC4047')
-    do_comom(hexgrid=True, outname='NGC4047_hex')
+#     do_comom(outname='NGC4047')
+#     do_comom(hexgrid=True, outname='NGC4047_hex')
 
     # All EDGE125 galaxies, 7" resolution
-    gallist = [os.path.basename(file).split('.')[0] for file in 
-               sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
-    do_comom(gallist=gallist, outname='edge_carma')
-    do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
-    # EDGE125 hexgrid
-    do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
+#     gallist = [os.path.basename(file).split('.')[0] for file in 
+#                sorted(glob.glob('fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
+#     do_comom(gallist=gallist, outname='edge_carma')
+#     do_comom(gallist=gallist, outname='edge_carma_allpix', allpix=True)
+#     # EDGE125 hexgrid
+#     do_comom(gallist=gallist, outname='edge_carma_hex', hexgrid=True)
     
     # ACA galaxies, 12" resolution, using alphaco=6.6 instead of 4.3
     # R21 = 0.65 (Leroy+22)
@@ -182,4 +210,14 @@ if __name__ == "__main__":
 #     do_comom(gallist=gallist, outname='edge_aca_allpix', seq='smo12', lines=['12'],
 #              linelbl=['co21'], msktyp=['str', 'dil'], alphaco=6.6, fitsdir='aca12', 
 #              allpix=True)
+
+    # ALMaQUEST galaxies, native resolution
+    gallist = [os.path.basename(file).split('.')[0] for file in sorted(
+               glob.glob('/Users/tonywong/Scratch2/almaquest/moments/maskmoment/*.co.preregrid_dil.snrpk.fits.gz'))]
+    print(gallist)
+    do_comom(gallist=gallist, radec=['objra','objdec'], pa='nsa_sersic_phi', 
+             inc='nsa_inclination', deproj='inc', lines=['12'], linelbl=['co'],
+             ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+             seq='preregrid', fitsdir='aquest_comom_fits', msktyp=['str','dil'],
+             outname='almaquest', manganame=True, ortlabel='p3d')
 

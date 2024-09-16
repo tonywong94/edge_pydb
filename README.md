@@ -27,6 +27,7 @@ Also needed for building the database (but not for general use) are:
 
 * [pyFIT3D](http://ifs.astroscu.unam.mx/pyPipe3D/)
 * [reproject](https://reproject.readthedocs.io)
+* [CO_conversion_factor](https://github.com/astrojysun/COConversionFactor)
 
 Install the package directly from PyPI (https://pypi.org/project/edge-pydb/) using
 

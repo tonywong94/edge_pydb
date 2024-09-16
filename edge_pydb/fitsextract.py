@@ -270,20 +270,33 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
 # getlabels: Interpret the FITS output from Pipe3D
 # -----------------------------------------------------
 
-def getlabels(product):
+def getlabels(product, p3dstruct='califa'):
     if product == 'ELINES':
-        nz = 20
+        if p3dstruct == 'califa':
+            nz = 20
+            has_errors = True
+        elif p3dstruct == 'manga':
+            nz = 11
+            has_errors = False
         zsel = range(nz)
-        bright = ['[OII]3727','[OIII]5007','[OIII]4959','Hbeta',
-                  'Halpha',   '[NII]6583', '[NII]6548', '[SII]6731', '[SII]6717']
-        elbl = ['e_'+txt for txt in bright]
+        bright = ['[OII]3727', '[OIII]5007', '[OIII]4959',
+                  'Hbeta'    , 'Halpha'    , '[NII]6583', 
+                  '[NII]6548', '[SII]6731' , '[SII]6717']
+        if has_errors:
+            elbl = ['e_'+txt for txt in bright]
+        else:
+            elbl = []
         lbl  = ['Havel', 'Vdisp'] + bright + elbl
         units = lbl.copy()
         units[0:2] = ['km/s', 'Angstrom']
         units[2:]  = ['10^-16 erg cm^-2 s^-1']*(nz-2)
     elif product == 'flux_elines':
-        # We only select the bright lines that are also in ELINES
-        nz = 408
+        # We select the bright lines that are also in ELINES, plus [OI]6300
+        has_errors = True
+        if p3dstruct == 'califa':
+            nz = 408
+        elif p3dstruct == 'manga':
+            nz = 456
         nfelines = nz // 8
         flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
         nline = len(flux)
@@ -318,6 +331,7 @@ def getlabels(product):
         units[7*nline:8*nline] = ['Angstrom']*nline
     elif product == 'indices':
         nz = 18
+        has_errors = True
         zsel = range(nz)
         albl = ['Hdel_idx',   'Hbet_idx',   'Mgb_idx', 
                 'Fe5270_idx', 'Fe5335_idx', 'D4000_idx', 
@@ -326,43 +340,66 @@ def getlabels(product):
         lbl = albl + elbl
         units = ['Angstrom']*len(lbl)
     elif product == 'SFH':
-        nz = 398
+        if p3dstruct == 'califa':
+            nz = 398    # 2*(39*4 + 39 + 4)
+            has_errors = True
+            # Note ages are in string rather than float order!
+            ages = ['0.0010', '0.0040', '0.0030', '0.0056', '0.0089', '0.0126', '0.0141', 
+                    '0.0178', '0.0199', '0.0100', '0.0251', '0.0316', '0.0398', '0.0562', 
+                    '0.0631', '0.0630', '0.0708', '0.1122', '0.1259', '0.1585', '0.1995', 
+                    '0.1000', '0.2818', '0.3548', '0.5012', '0.7079', '0.8913','10.0000', 
+                    '1.1220','12.5893', '1.2589','14.1254', '1.4125', '1.9953', '2.5119', 
+                    '3.5481', '4.4668', '6.3096', '7.9433']
+            mets = ['0.0037', '0.0076', '0.0190', '0.0315']
+        elif p3dstruct == 'manga':
+            nz = 319    # 39*7 + 39 + 7
+            has_errors = False
+            ages = ['0.0010', '0.0023', '0.0038', '0.0057', '0.0080', '0.0115', '0.0150', 
+                    '0.0200', '0.0260', '0.0330', '0.0425', '0.0535', '0.0700', '0.0900', 
+                    '0.1100', '0.1400', '0.1800', '0.2250', '0.2750', '0.3500', '0.4500', 
+                    '0.5500', '0.6500', '0.8500', '1.1000', '1.3000', '1.6000', '2.0000', 
+                    '2.5000', '3.0000', '3.7500', '4.5000', '5.2500', '6.2500', '7.5000', 
+                    '8.5000','10.2500','12.0000','13.5000']
+            mets = ['0.0001', '0.0005', '0.0020', '0.0080', '0.0170', '0.0300', '0.0400']
         zsel = range(nz)
         albl = []
         elbl = []
-        # Note ages are in string rather than float order!
-        ages = ['0.0010', '0.0040', '0.0030', '0.0056', '0.0089', '0.0126', '0.0141', 
-                '0.0178', '0.0199', '0.0100', '0.0251', '0.0316', '0.0398', '0.0562', 
-                '0.0631', '0.0630', '0.0708', '0.1122', '0.1259', '0.1585', '0.1995', 
-                '0.1000', '0.2818', '0.3548', '0.5012', '0.7079', '0.8913','10.0000', 
-                '1.1220','12.5893', '1.2589','14.1254', '1.4125', '1.9953', '2.5119', 
-                '3.5481', '4.4668', '6.3096', '7.9433']
-        mets = ['0.0037', '0.0076', '0.0190', '0.0315']
         for age in ages:
             for met in mets:
                 albl.append('lumfrac_age_'+age+'_met_'+met)
-                elbl.append('e_lumfrac_age_'+age+'_met_'+met)
+                if has_errors:
+                    elbl.append('e_lumfrac_age_'+age+'_met_'+met)
         ages_sort = sorted(ages,key=lambda x: float(x))
         for age in ages_sort:
             albl.append('lumfrac_age_'+age)
-            elbl.append('e_lumfrac_age_'+age)
+            if has_errors:
+                elbl.append('e_lumfrac_age_'+age)
         for met in mets:
             albl.append('lumfrac_met_'+met)
-            elbl.append('e_lumfrac_met_'+met)
+            if has_errors:
+                elbl.append('e_lumfrac_met_'+met)
         lbl  = albl + elbl
         units = ['fraction']*len(lbl)
     elif product == 'SSP':
-        nz = 20
+        if p3dstruct == 'califa':
+            nz = 20
+            has_errors = False
+        elif p3dstruct == 'manga':
+            nz = 21
+            has_errors = True
         zsel = range(nz)
         lbl = ['Vcont_ssp',   'cont_segm','cont_dezon','medflx_ssp', 
                'e_medflx_ssp','age_lwt',  'age_mwt',   'e_age_lwt', 
                'ZH_lwt',      'ZH_mwt',   'e_ZH_lwt',  'Av_ssp', 
                'e_Av_ssp',    'vel_ssp',  'e_vel_ssp', 'vdisp_ssp', 
                'e_vdisp_ssp', 'ML_ssp',   'mass_ssp',  'mass_Avcor_ssp']
-        units = ['10^-16 erg cm^-2 s^-1 AA^-1', 'none', 'none', '10^-16 erg cm^-2 s^-1 AA^-1', 
-                 '10^-16 erg cm^-2 s^-1 AA^-1', 'dex(yr)', 'dex(yr)', 'fraction', 
-                 'dex', 'dex', 'fraction', 'mag', 
-                 'mag', 'km/s', 'km/s', 'km/s', 
-                 'km/s', 'solMass/solLum', 'dex(solMass/arcsec^2)', 'dex(solMass/arcsec^2)']
-    return zsel, lbl, units, len(zsel)
+        units = ['10^-16 erg cm^-2 s^-1 AA^-1', 'none', 'none', 
+                 '10^-16 erg cm^-2 s^-1 AA^-1', '10^-16 erg cm^-2 s^-1 AA^-1', 
+                 'dex(yr)', 'dex(yr)', 'fraction', 'dex', 'dex', 'fraction', 
+                 'mag', 'mag', 'km/s', 'km/s', 'km/s', 'km/s', 
+                 'solMass/solLum', 'dex(solMass/arcsec^2)', 'dex(solMass/arcsec^2)']
+        if p3dstruct == 'manga':
+            lbl += ['e_mass_ssp']
+            units += ['dex(solMass/arcsec^2)']
+    return zsel, lbl, units, len(zsel), has_errors
 
