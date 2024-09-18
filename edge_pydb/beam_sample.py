@@ -18,7 +18,8 @@ def beam_sample(edgetab, gallist=None, columnlist=None, beam_orig=7, beam_final=
     the smallest value of rad_arc is used as the center; this should be recalculated
     using gc_polr (conversion.py) beforehand if the default central pixel is not desired.
 
-    === Parameters ===
+    Parameters
+    ----------
     edgetab : EdgeTable
         Table, extracted from an allpix HDF5 file
     gallist : string or list of strings
@@ -42,7 +43,8 @@ def beam_sample(edgetab, gallist=None, columnlist=None, beam_orig=7, beam_final=
     ny : int
         number of sub-panels in y direction
 
-    === Returns ===
+    Returns
+    -------
     tabout : Table
         Astropy table with the results
     """
