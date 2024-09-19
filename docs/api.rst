@@ -1,6 +1,6 @@
 API Documentation
 =================
 
-.. autosummary::
-   :toctree: generated
-
+.. automodapi:: edge_pydb
+   :no-inheritance-diagram:
+   :inherited-members:
