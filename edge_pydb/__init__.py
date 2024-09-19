@@ -1,4 +1,5 @@
-from edge_pydb import conversion, fitsextract, plotting, util
+from ._astropy_init import __version__, test
+from .edge_pydb import conversion, fitsextract, plotting, util
 from astropy.table import Table as _Table
 from astropy.table import join as _join
 
