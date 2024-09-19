@@ -14,3 +14,6 @@ edge_pydb/img_califa/fits_*
 old/
 demo_notebk/inprogress
 version.py
+/docs/_build
+/docs/_autosummary
+edge_pydb/img_comom/aquest_comom_fits

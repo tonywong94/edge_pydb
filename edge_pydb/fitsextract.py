@@ -20,11 +20,11 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
 
     Parameters
     ----------
-    input : str or `~numpy.ndarray`
+    input : str or :class:`~numpy.ndarray`
         The input image or cube to turn into a table. This can be:
             * The name of a FITS file
             * A numpy array (in which case header must be separately given)
-    header : `~astropy.io.fits.Header` object
+    header : :class:`~astropy.io.fits.Header` object
         Header corresponding to the input array.  Must be provided if the
         input is a numpy array.
     stride : tuple of ints, optional
@@ -76,7 +76,7 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
 
     Returns
     -------
-    tab : `~astropy.Table`
+    tab : :class:`~astropy.Table`
         The selected pixels as a 1-D table.
     """
 
@@ -293,13 +293,16 @@ def getlabels(product, p3dstruct='califa'):
     elif product == 'flux_elines':
         # We select the bright lines that are also in ELINES, plus [OI]6300
         has_errors = True
+        flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
+        nline = len(flux)
         if p3dstruct == 'califa':
             nz = 408
         elif p3dstruct == 'manga':
             nz = 456
+        elif p3dstruct == 'amusing':
+            nz = 240
+            flux  = [1, 2, 3, 19, 20, 21, 22, 24, 25]
         nfelines = nz // 8
-        flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
-        nline = len(flux)
         vel   = list(np.array(flux)+nfelines)
         disp  = list(np.array(flux)+nfelines*2)
         ew    = list(np.array(flux)+nfelines*3)
@@ -312,6 +315,8 @@ def getlabels(product, p3dstruct='califa'):
                  'flux_Hbeta',     'flux_[OI]6300',   'flux_Halpha',   
                  'flux_[NII]6583', 'flux_[NII]6548', 'flux_[SII]6717', 
                  'flux_[SII]6731']
+        if p3dstruct == 'amusing':
+            flbl = flbl[1:]
         vlbl  = [ w.replace('flux', 'vel')    for w in flbl ]
         dlbl  = [ w.replace('flux', 'disp')   for w in flbl ]
         wlbl  = [ w.replace('flux', 'EW')     for w in flbl ]
@@ -343,6 +348,17 @@ def getlabels(product, p3dstruct='califa'):
         if p3dstruct == 'califa':
             nz = 398    # 2*(39*4 + 39 + 4)
             has_errors = True
+            # Note ages are in string rather than float order!
+            ages = ['0.0010', '0.0040', '0.0030', '0.0056', '0.0089', '0.0126', '0.0141', 
+                    '0.0178', '0.0199', '0.0100', '0.0251', '0.0316', '0.0398', '0.0562', 
+                    '0.0631', '0.0630', '0.0708', '0.1122', '0.1259', '0.1585', '0.1995', 
+                    '0.1000', '0.2818', '0.3548', '0.5012', '0.7079', '0.8913','10.0000', 
+                    '1.1220','12.5893', '1.2589','14.1254', '1.4125', '1.9953', '2.5119', 
+                    '3.5481', '4.4668', '6.3096', '7.9433']
+            mets = ['0.0037', '0.0076', '0.0190', '0.0315']
+        elif p3dstruct == 'amusing':
+            nz = 199    # (39*4 + 39 + 4)
+            has_errors = False
             # Note ages are in string rather than float order!
             ages = ['0.0010', '0.0040', '0.0030', '0.0056', '0.0089', '0.0126', '0.0141', 
                     '0.0178', '0.0199', '0.0100', '0.0251', '0.0316', '0.0398', '0.0562', 

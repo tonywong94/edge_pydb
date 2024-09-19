@@ -564,62 +564,69 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=None, fitsdir=None,
 
 if __name__ == "__main__":
     # NGC4047, CALIFA only
-#     califa_dir = '/Users/tonywong/Data/califa/DR3/full_sample/pipe3d_packed/'
-#     do_pipe3d(outfile='NGC4047_allpix.pipe3d.hdf5', append=False, allpix=True,
-#               filelist=[califa_dir+'NGC4047.Pipe3D.cube.fits.gz'])
+    do_pipe3d(outfile='NGC4047_allpix.pipe3d.hdf5', append=False, allpix=True,
+              fitsdir='fits_natv_carma', packed=False, gallist=['NGC4047'])
     # NGC4047, append to 2d_smo7
-#     do_pipe3d(outfile='../img_comom/NGC4047.2d_smo7.hdf5', append=True, 
-#               comomdir='../img_comom/fitsdata', ext='_sm', nsm=3, 
-#               cotempl='GNAME.co.smo7_dil.snrpk.fits.gz',
-#               filelist=[califa_dir+'NGC4047.Pipe3D.cube.fits.gz'])
+    do_pipe3d(outfile='../img_comom/NGC4047.2d_smo7.hdf5', append=True, 
+              comomdir='../img_comom/fitsdata', ext='_sm', nsm=3, 
+              cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
+              gallist=['NGC4047'], fitsdir='fits_smo7_carma')
 
-#     filelist = sorted(glob.glob(califa_dir+'*.Pipe3D.cube.fits.gz'))
-#     print(filelist)
-#     # All EDGE125 galaxies, CALIFA only
-#     filelist = [califa_dir+os.path.basename(file).split('.')[0]+'.Pipe3D.cube.fits.gz' for file in 
-#                sorted(glob.glob('fits_smo7_edge/[A-Z]*.SSP.cube.fits.gz'))]
-#     print(filelist)
-#     do_pipe3d(filelist=filelist, outfile='edge_carma_allpix.pipe3d.hdf5', 
-#               append=False, allpix=True)
-#     # All EDGE125 galaxies, append to 2d_smo7
-#     do_pipe3d(outfile='../img_comom/edge_carma.2d_smo7.hdf5', append=True,
-#               comomdir='../img_comom/fitsdata', ext='_sm', nsm=3,
-#               cotempl='GNAME.co.smo7_dil.snrpk.fits.gz',
-#               filelist=filelist)
+    # All EDGE125 galaxies, CALIFA only
+    carma125 = [os.path.basename(file).split('.')[0] for file in 
+                sorted(glob.glob('fits_smo7_carma/[A-Z]*.SSP.cube.fits.gz'))]
+    print(carma125)
+    do_pipe3d(gallist=carma125, outfile='edge_carma_allpix.pipe3d.hdf5', 
+              fitsdir='fits_natv_carma', packed=False, append=False, allpix=True)
 
-    # ACA galaxies, 12" resolution
-#     gallist = [os.path.basename(file).split('.')[0] for file in 
-#                sorted(glob.glob('fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
-#     do_pipe3d(gallist=gallist, outfile='edge_aca_allpix.pipe3d.hdf5', 
-#               fitsdir='fits_natv_aca', packed=False, append=False, allpix=True)
-#     do_pipe3d(gallist=gallist, outfile='../img_comom/edge_aca.2d_smo12.hdf5', 
-#               cotempl='GNAME.co21.smo12_dil.snrpk.fits.gz', comomdir='../img_comom/aca12', 
-#               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', packed=False, append=True)
-#     do_califa(gallist=gallist, outfile='../img_comom/edge_aca_allpix.2d_smo12.hdf5',
-#               colabel='co21.smo12', comomdir='../img_comom/aca12', 
-#               fitsdir='fits_smo12_aca', nsm=4, ext='_sm', append=True, allpix=True)
+    # All EDGE125 galaxies, append to 2d_smo7
+    do_pipe3d(outfile='../img_comom/edge_carma.2d_smo7.hdf5', append=True,
+              comomdir='../img_comom/fitsdata', ext='_sm', nsm=3,
+              cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
+              gallist=carma125, fitsdir='fits_smo7_carma')
 
-    # ALMaQUEST galaxies, native resolution
-#     gallist = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
-#                 glob.glob('fits_natv_aq/*.Pipe3D.cube.fits.gz'))]
-#     do_pipe3d(gallist=gallist, outfile='../img_comom/almaquest.2d_preregrid.hdf5',
-#               fitsdir='fits_natv_aq', p3dstruct='manga', packed=True,
-#               comomdir='../img_comom/aquest_comom_fits/', 
-#               cotempl='manga_GNAME.co.preregrid_dil.snrpk.fits.gz',
-#               ssptable='/Users/tonywong/Scratch1/manga_pipe3d/mastar_237.fits', nsm=3,
-#               ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
-#               distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
-#               coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
-#               coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', append=True)
+    # ACA-60 galaxies, 12" resolution
+    aca60   = [os.path.basename(file).split('.')[0] for file in 
+               sorted(glob.glob('fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
+    do_pipe3d(gallist=aca60, outfile='edge_aca_allpix.pipe3d.hdf5', 
+              fitsdir='fits_natv_aca', packed=False, append=False, allpix=True)
+    do_pipe3d(gallist=aca60, outfile='../img_comom/edge_aca.2d_smo12.hdf5', 
+              cotempl='GNAME.co21.smo12_dil.snrpk.fits.gz', comomdir='../img_comom/aca12', 
+              fitsdir='fits_smo12_aca', nsm=4, ext='_sm', packed=False, append=True)
+
+    # ALMaQUEST galaxies, native resolution, append to 2d_preregrid
+    aquest = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
+              glob.glob('fits_natv_aq/*.Pipe3D.cube.fits.gz'))]
+    do_pipe3d(gallist=aquest, outfile='../img_comom/almaquest.2d_preregrid.hdf5',
+              fitsdir='fits_natv_aq', p3dstruct='manga', packed=True,
+              comomdir='../img_comom/aquest_comom_fits/', 
+              cotempl='manga_GNAME.co.preregrid_dil.snrpk.fits.gz',
+              ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits', nsm=3,
+              ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+              distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+              coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
+              coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', append=True)
+
+    # All of CALIFA DR3
+    # Select the 646 galaxies in CALIFA DR3 V500
+    dr3 = Table.read('../dat_glob/califa/build/QCflags_std_V500_DR3.csv',
+                     format='ascii.no_header')
+    dr3.keep_columns(['col2','col18'])
+    dr3.rename_columns(['col2','col18'],['Name','in_dr3'])
+    dr3only = dr3[ dr3['in_dr3']==1 ]
+    califa = sorted(list(dr3only['Name']))
+    do_pipe3d(outfile='dr3_allpix.pipe3d.hdf5', gallist=califa, fitsdir='fits_califa',
+              p3dstruct='califa', packed=True, ortpar='edge_leda.csv', 
+              distpar='edge_califa.csv', prob=False, append=False, allpix=True)
 
     # All of MaNGA
     gallist = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
                 glob.glob('fits_manga/*.Pipe3D.cube.fits.gz'))]
     do_pipe3d(gallist=gallist, outfile='manga_allpix.pipe3d.hdf5', allpix=True,
               fitsdir='fits_manga', p3dstruct='manga', packed=True,
-              ssptable='/Users/tonywong/Scratch1/manga_pipe3d/mastar_237.fits', nsm=3,
+              ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits', nsm=3,
               ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
               distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
               coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
-              coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', append=False, prob=False)
+              coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', prob=False, append=False)
     

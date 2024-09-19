@@ -16,10 +16,9 @@ author = 'Tony Wong, Yufeng Luo'
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
-    "sphinx_automodapi.automodapi",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
 ]
 numpydoc_show_class_members = False
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
