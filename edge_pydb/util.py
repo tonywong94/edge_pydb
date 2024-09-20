@@ -126,8 +126,10 @@ def listfiles(contain='', values=False, printing=False):
     If values=True, give full directory paths
     If contain='hdf', list only file names with the 'hdf' substring
 
-    Parameters:
-        contain: the target substring to find in the file name to list, if not provided, then will print all files
+    Parameters
+    ----------
+    contain : str
+        the target substring to find in the file name to list, if not provided, then will print all files
     '''
     files = []
     if values:
@@ -149,8 +151,10 @@ def fetch(names):
     '''
     Get all the files by its file name, can either be a single file or a list of files
 
-    Parameters:
-        names: a list of files or a single file name in package data
+    Parameters
+    ----------
+    names : list of str
+        a list of files or a single file name in package data
     '''
     if isinstance(names, list):
         retval = []
@@ -225,13 +229,18 @@ def add_from_dir(src, dest='', copy=True, overwrite=False, max_depth=-1):
 
     Parameters
     ----------
-    src: source directory to copy from
-    dest: destination directory to copy to
-    copy: if copy is false, files will not be copied, and instead the path of
-            these files will be recorded in the _config.json
-    overwrite: if file is at the destination, overwrite the file if true, else create
-            and copy into a subdirectory data/ under the edge_pydb package directory
-    max_depth: specify the depth the copy should perform.
+    src : str
+        source directory to copy from
+    dest : str
+        destination directory to copy to
+    copy : boolean
+        if copy is false, files will not be copied, and instead the path of
+        these files will be recorded in the _config.json
+    overwrite : boolean
+        if file is at the destination, overwrite the file if true, else create
+        and copy into a subdirectory data/ under the edge_pydb package directory
+    max_depth : int 
+        specify the depth the copy should perform.
             -1 means copy all directories
             0 means just under the root directory and do not go into subdirectories
     '''
@@ -399,7 +408,8 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
-    === Parameters ===
+    Parameters
+    ----------
     hdf_files : list of str
         Names of HDF5 files, should be available via EdgeTable.  Default is
         to process all available HDF5 files except with 'cocube' in the filename.

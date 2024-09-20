@@ -20,7 +20,8 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     Based on a response to a Stack Overflow question:
     stackoverflow.com/questions/49662964/density-scatter-plot-for-huge-dataset-in-matplotlib
 
-    === Parameters ===
+    Parameters
+    ----------
     xarr : numpy.array
         The x values in the scatter plot
     yarr : numpy.array
@@ -30,7 +31,8 @@ def xy2hist(xarr, yarr, log=True, bins=[100,100]):
     bins : list of int
         The number of bins in x and y for the histogram
 
-    === Returns ===
+    Returns
+    -------
     x : numpy.array
         x values sorted by increasing density
     y : numpy.array
@@ -69,7 +71,8 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
     Prepare binned averages from a scatterplot.
     If log=True, averaging is done after taking the log of x and y.
 
-    === Parameters ===
+    Parameters
+    ----------
     xarr : numpy.array
         The x values in the scatter plot
     yarr : numpy.array
@@ -83,7 +86,8 @@ def xy2binned(xarr, yarr, log=True, bins=20, range=None, yval='mean'):
     yval : string
         'mean' (default) or 'median'
 
-    === Returns ===
+    Returns
+    -------
     xbin : numpy.array
         the centers (NOT edges) of the x bins
     ymean : numpy.array
@@ -123,7 +127,8 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, clipedge=True, pad=5, axes=None
     '''
     Generate and plot a patch collection for a dot plot.
 
-    === Parameters ===
+    Parameters
+    ----------
     x : numpy.array
         The x values in the scatter plot (typically 'ix')
     y : numpy.array
@@ -144,7 +149,8 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, clipedge=True, pad=5, axes=None
     **kwargs :
         Additional arguments including vmin, vmax, colormap normalization
 
-    === Returns ===
+    Returns
+    -------
     img : matplotlib image object
         Plotted image
     xminmax : tuple
@@ -195,7 +201,8 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
     '''
     Plot a pixel image from a data column.
 
-    === Parameters ===
+    Parameters
+    ----------
     x : numpy.array
         The x values in the image plot (typically 'ix')
     y : numpy.array
@@ -214,7 +221,8 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
     **kwargs :
         Additional arguments including vmin, vmax, colormap normalization
 
-    === Returns ===
+    Returns
+    -------
     img : matplotlib image object
         Plotted image
     xminmax : tuple
@@ -261,7 +269,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
 
-    === Parameters ===
+    Parameters
+    ----------
     edgetab : EdgeTable
         Table containing the galaxies and data to plot
     gallist : string or list of strings

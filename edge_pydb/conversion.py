@@ -33,7 +33,8 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
     Returns galactocentric polar coordinates (radius in arcsec, 
     azimuthal angle in degrees from receding major axis).
 
-    === Parameters ===
+    Parameters
+    ----------
     ra : float or numpy.array
         The RA coordinate(s) to transform, in degrees
     dec : float or numpy.array
@@ -49,7 +50,8 @@ def gc_polr(ra, dec, ra_gc, dec_gc, pa, inc, reject=89):
     reject : float
         Return NaNs for inclinations larger than this (default=89)
 
-    === Returns ===
+    Returns
+    -------
     pair of floats or numpy.array [radius, azang]
     '''
     ctr = SkyCoord(ra_gc, dec_gc, unit="deg")
@@ -73,11 +75,13 @@ def uarray_to_list(target):
     '''
     Break array of uncertainties values into 2 separate arrays.
 
-    === Parameters ===
+    Parameters
+    ----------
     target : unumpy.uarray
         The array of values with uncertainties
 
-    === Returns ===
+    Returns
+    -------
     retval[0] -> nominal values
     retval[1] -> standard deviation
     '''
@@ -88,7 +92,8 @@ def get_AHa(flux_ha, flux_hb, log10):
     '''
     Returns Halpha extinction in magnitudes given flux_ha and flux_hb.
 
-    === Parameters ===
+    Parameters
+    ----------
     flux_ha : astropy.table.Column
         The H-alpha flux values
     flux_hb : astropy.table.Column
@@ -96,7 +101,8 @@ def get_AHa(flux_ha, flux_hb, log10):
     log10 : function
         The log10 function, normally np.log10 but use unumpy.log10 for error propagation.
 
-    === Returns ===
+    Returns
+    -------
     numpy.ndarray representing AHa in magnitudes
     '''
     A_Ha = flux_ha.data * np.nan
@@ -120,7 +126,8 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     in order to propagate the error.  Otherwise the SFR is computed
     without dust correction (if flux_hb=None) or without error estimation. 
 
-    === Parameters ===
+    Parameters
+    ----------
     flux_ha : astropy.table.Column
         The H-alpha flux values
     flux_hb : astropy.table.Column
@@ -136,7 +143,8 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     imf : string
         'salpeter' to scale result by 1.51 (default uses Kroupa IMF)
 
-    === Returns ===
+    Returns
+    -------
     several columns depending on input (see code)
     '''
     # Assume arcsec units for pixsca if not given
@@ -212,7 +220,8 @@ def msd_co(sb_co, alphaco=4.3, name='sigmol'):
     '''
     Convert CO intensity to H_2 (+ He) mass surface density.
 
-    === Parameters ===
+    Parameters
+    ----------
     sb_co : numpy.array or astropy.table.Column
         CO integrated intensity values, in K km/s
     alphaco : float
@@ -220,7 +229,8 @@ def msd_co(sb_co, alphaco=4.3, name='sigmol'):
     name : string
         The name of the output Column, if input is a Column
 
-    === Returns ===
+    Returns
+    -------
     numpy.array or astropy.table.Column, matching input
     '''
     convfac = alphaco * (u.solMass/u.pc**2) / (u.K*u.km/u.s)
@@ -237,7 +247,8 @@ def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, pixsca=1*u.arcsec, name='sigs
     Convert units for stellar surface density to Msol/pc2, optionally 
     applying dezonification image.
     
-    === Parameters ===
+    Parameters
+    ----------
     stmass_as2 : numpy.array or astropy.table.Column
         stellar surface density in Pipe3D units
     dz : numpy.array or astropy.table.Column
@@ -250,7 +261,8 @@ def stmass_pc2(stmass_as2, dz=None, dist=10*u.Mpc, pixsca=1*u.arcsec, name='sigs
     name : string
         The name of the output Column, if input is a Column
 
-    === Returns ===
+    Returns
+    -------
     numpy.array or astropy.table.Column, depending on input
     '''
     # Assume Mpc units for dist if not given
@@ -309,7 +321,8 @@ def bpt_region(n2ha, o3hb, good=True):
     Determine BPT classification based on [NII]/Ha and [OIII]/Hb.  Does 
     not impose a requirement on EW(Ha).
 
-    === Parameters ===
+    Parameters
+    ----------
     n2ha : numpy.ndarray
         log10([NII]/Halpha)
     o3hb : numpy.ndarray
@@ -317,7 +330,8 @@ def bpt_region(n2ha, o3hb, good=True):
     good : boolean
         mask to apply to output arrays    
 
-    === Returns ===
+    Returns
+    -------
     boolean index arrays for SF, intermediate, LINER, and Seyfert.
     '''
     # These are constant values determined by the curve equations
@@ -348,7 +362,8 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     This is done by constructing a grid and measuring the normalized Gaussian 
     area within the chosen BPT region.
 
-    === Parameters ===
+    Parameters
+    ----------
     n2ha_u : ufloat
         log10([NII]/Halpha) and uncertainty
     o3hb_u : ufloat
@@ -358,7 +373,8 @@ def bpt_prob(n2ha_u, o3hb_u, bpt_type, grid_size=5):
     grid_size : float
         The number of grid points placed between +/- one sigma of the mean
     
-    === Returns ===
+    Returns
+    -------
     probability that measurement is in the specified region
     '''
     x = unp.nominal_values(n2ha_u)
@@ -389,8 +405,9 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     This function should be run before ZOH_M13.
     For more information see Husemann et al. (2013A&A...549A..87H) Figure 7.
 
-    === Parameters ===
-    fluxtab : astropy.Table
+    Parameters
+    ----------
+    fluxtab : `astropy.Table`
         flux_elines table extracted from Pipe3D output
     ext : string
         suffix for selected column names, e.g. '_rg' or '_sm'
@@ -403,7 +420,8 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     grid_size : float
         The size of the square grid where BPT probabilities constructed
     
-    === Returns ===
+    Returns
+    -------
     if sf==False and prob==False:
         one astropy.table.Column [BPT]
     if sf==False and prob==True:
@@ -481,7 +499,8 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     star-forming in the BPT diagram.
     Both O3N2 and N2 methods are supported.
 
-    === Parameters ===
+    Parameters
+    ----------
     fluxtab : astropy.Table
         flux_elines table extracted from Pipe3D output
     ext : string
@@ -491,11 +510,12 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     err : boolean
         True to calculate uncertainty as an additional column
     
-    === Returns ===
+    Returns
+    -------
     if err==False:
-        astropy.table.Column ZOH
+        `astropy.table.Column` ZOH
     if err==True:
-        two astropy.table.Column [ZOH, e_ZOH]
+        two `astropy.table.Column` [ZOH, e_ZOH]
     '''
     N2F = fluxtab['flux_[NII]6583'+ext]
     O3F = fluxtab['flux_[OIII]5007'+ext]
