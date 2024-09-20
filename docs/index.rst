@@ -6,13 +6,6 @@
 Welcome to edge-pydb's documentation!
 ================================================
 
-.. autosummary::
-   :toctree: _autosummary
-   :template: custom-module-template.rst
-   :recursive:
-
-   edge_pydb
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
