@@ -99,6 +99,12 @@ release = package.__version__
 # name of a builtin theme or the name of a custom theme in html_theme_path.
 #html_theme = None
 
+html_theme_options = {
+    'logotext1': 'edge-pydb',  # white,  semi-bold
+    'logotext2': '',  # orange, light
+    'logotext3': ':docs'   # white,  light
+    }
+
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
 
