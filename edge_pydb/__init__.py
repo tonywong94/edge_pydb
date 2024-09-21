@@ -13,6 +13,23 @@ Keyword 'cols' allows a subset of available columns to be read in.
 
 
 class EdgeTable(_Table):
+    """
+    Definition of the EdgeTable class.  An EdgeTable is a regular Astropy table in 
+    either ECSV or HDF5 format.
+
+    Parameters
+    ----------
+    file : str
+        Name of the file.  This is generally NOT a full path, as the package
+        maintains a list of available tables.  The name should end with .csv
+        or .hdf5.  Use 'list' to provide a listing of available tables.
+    path : str
+        Name of the path within the file, for HDF5 files only.  If not given,
+        a list of available paths is output.
+    cols : list of str
+        A list of columns to read in.  Other columns are discarded.
+    """
+
     def __init__(self, file='', path='', cols=None, data=None, masked=None, names=None, 
                  dtype=None, meta=None, copy=True, rows=None, copy_indices=True,
                  **kwargs):
@@ -29,10 +46,11 @@ class EdgeTable(_Table):
                 # no path specified with hdf5 file
                 print('Paths in',file,':\n', util.getPath(file))
         if cols:
-            data = []
-            for i in cols:
-                data.append(self.table[i])
-            self.table = _Table(data=data)
+            self.table.keep_columns(cols)
+#             data = []
+#             for i in cols:
+#                 data.append(self.table[i])
+#             self.table = _Table(data=data)
             self.__dict__.update(self.table.__dict__)
         self.srcfile = file
         self.path = path

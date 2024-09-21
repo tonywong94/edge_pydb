@@ -4,7 +4,7 @@ import os
 
 from astropy.tests.runner import TestRunner
 
-# __all__ = ['__version__', 'test']
+__all__ = ['__version__', 'test']
 
 try:
     from .version import version as __version__

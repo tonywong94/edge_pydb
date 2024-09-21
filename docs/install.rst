@@ -3,21 +3,21 @@ Installation
 
 Required packages are:
 
--  `matplotlib <https: matplotlib.org="">`__
--  `numpy <https: numpy.org="">`__
--  `scipy <https: scipy.org="">`__
--  `astropy <https: www.astropy.org="">`__
--  `pandas <https: pandas.pydata.org="">`__
--  `radio_beam <https: radio-beam.readthedocs.io="">`__
--  `requests <https: requests.readthedocs.io="">`__
--  `h5py <https: www.h5py.org="">`__
--  `uncertainties <https: uncertainties-python-package.readthedocs.io="">`__
+-  `matplotlib <https://matplotlib.org/>`__
+-  `numpy <https://numpy.org/>`__
+-  `scipy <https://scipy.org/>`__
+-  `astropy <https://www.astropy.org/>`__
+-  `pandas <https://pandas.pydata.org/>`__
+-  `radio_beam <https://radio-beam.readthedocs.io/>`__
+-  `requests <https://requests.readthedocs.io/>`__
+-  `h5py <https://www.h5py.org/>`__
+-  `uncertainties <https://uncertainties-python-package.readthedocs.io/>`__
 
 Also needed for building the database (but not for general use) are:
 
--  `pyFIT3D <http: ifs.astroscu.unam.mx="" pypipe3d="">`__
--  `reproject <https: reproject.readthedocs.io="">`__
--  `CO_conversion_factor <https: github.com="" astrojysun="" coconversionfactor="">`__
+-  `pyFIT3D <https://ifs.astroscu.unam.mx/pyPipe3D/>`__
+-  `reproject <https://reproject.readthedocs.io/>`__
+-  `CO_conversion_factor <https://github.com/astrojysun/COConversionFactor/>`__
 
 Install the package directly from PyPI
 (https://pypi.org/project/edge-pydb/) using
@@ -74,7 +74,7 @@ The Github package only contains data for a single galaxy (NGC 4047),
 for demonstration and testing purposes. Larger data files can be
 downloaded from Zenodo:
 
--  `HDF5 Files for CARMA EDGE <https: zenodo.org="" records="" 10256732="">`__
+-  `HDF5 Files for CARMA EDGE <https://zenodo.org/records/10256732>`__
 
 It is recommended that you unpack additional files into a single
 directory that is easily accessible on your file system, and not
@@ -103,4 +103,3 @@ done once after package installation, unless you add new files to
 ``pybase``. Here the ``max_depth=0`` parameter prevents files in
 subdirectories from being added. Use the ``listfiles`` command above to
 verify that the expected tables are available.
-</https:></https:></https:></http:></https:></https:></https:></https:></https:></https:></https:></https:></https:>
