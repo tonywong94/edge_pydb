@@ -21,6 +21,6 @@ Getting started
    :maxdepth: 2
 
    install.rst
-   demo_notebk/Tutorial.ipynb
+   ../demo_notebk/Tutorial.ipynb
    api.rst
 

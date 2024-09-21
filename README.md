@@ -1,5 +1,5 @@
 # edge_pydb
-Python-based database for the Extragalactic Database for Galaxy Evolution (EDGE).  This package requires Python 3.
+Python-based database for the [Extragalactic Database for Galaxy Evolution (EDGE)](https://www.astro.umd.edu/~bolatto/EDGE/).  This package requires Python 3.
 
 The EDGE database has several components (see `index_csv.md` and `index_hdf.txt` for details):
 
