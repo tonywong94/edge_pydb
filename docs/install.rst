@@ -11,7 +11,7 @@ Required packages are:
 -  `radio_beam <https://radio-beam.readthedocs.io/>`__
 -  `requests <https://requests.readthedocs.io/>`__
 -  `h5py <https://www.h5py.org/>`__
--  `uncertainties <https://uncertainties-python-package.readthedocs.io/>`__
+-  `uncertainties <https://uncertainties.readthedocs.io/>`__
 
 Also needed for building the database (but not for general use) are:
 
@@ -26,8 +26,8 @@ Install the package directly from PyPI
 
    pip install --user edge_pydb
 
-or, if you prefer to keep the latest source code handy, by cloning this
-Github repository and running
+or, if you prefer to keep the latest source code handy, by cloning the
+`Github repository <https://github.com/tonywong94/edge_pydb>`_ and running
 
 ::
 
@@ -81,9 +81,9 @@ directory that is easily accessible on your file system, and not
 embedded within your Python libraries (``site-packages`` area). Here is
 the suggested way to incorporate these into your runtime environment.
 
-Leave the git directory in which this README is located. (This ensures
-that the package runs from your ``site-packages`` area and not the
-current directory.) Open an iPython shell and type:
+Ensure you are *not* in the directory in which ``setup.py`` is located, since 
+you want to run the package from your ``site-packages`` area and not the
+current directory. Open an iPython shell and type:
 
 ::
 
