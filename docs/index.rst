@@ -1,7 +1,8 @@
 edge-pydb
 =========
 
-Python-based database for the Extragalactic Database for Galaxy Evolution (EDGE).
+Python-based database for the `Extragalactic Database for Galaxy Evolution (EDGE) 
+<https://www.astro.umd.edu/~bolatto/EDGE/>`_.
 
 The EDGE database has several components:
 
@@ -20,5 +21,6 @@ Getting started
    :maxdepth: 2
 
    install.rst
+   demo_notebk/Tutorial.ipynb
    api.rst
 

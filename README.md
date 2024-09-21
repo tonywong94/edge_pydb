@@ -21,7 +21,7 @@ Required packages are:
 * [radio_beam](https://radio-beam.readthedocs.io)
 * [requests](https://requests.readthedocs.io)
 * [h5py](https://www.h5py.org)
-* [uncertainties](https://uncertainties-python-package.readthedocs.io)
+* [uncertainties](https://uncertainties.readthedocs.io)
 
 Also needed for building the database (but not for general use) are:
 
@@ -64,7 +64,9 @@ The Github package only contains data for a single galaxy (NGC 4047), for demons
 
 It is recommended that you unpack additional files into a single directory that is easily accessible on your file system, and not embedded within your Python libraries (`site-packages` area).  Here is the suggested way to incorporate these into your runtime environment.
 
-Leave the git directory in which this README is located.  (This ensures that the package runs from your `site-packages` area and not the current directory.)  Open an iPython shell and type:
+Ensure you are *not* in the directory in which `setup.py` is located, since 
+you want to run the package from your `site-packages` area and not the
+current directory.  Open an iPython shell and type:
 
     import edge_pydb.util as edgeutil
     edgeutil.listfiles(values=True)
