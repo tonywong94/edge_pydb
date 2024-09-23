@@ -571,6 +571,10 @@ if __name__ == "__main__":
               comomdir='../img_comom/fitsdata', ext='_sm', nsm=3, 
               cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
               gallist=['NGC4047'], fitsdir='fits_smo7_carma')
+    do_pipe3d(outfile='../img_comom/NGC4047_hex.2d_smo7.hdf5', append=True, 
+              comomdir='../img_comom/fitsdata', ext='_sm', nsm=3, 
+              cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
+              gallist=['NGC4047'], fitsdir='fits_smo7_carma', hexgrid=True)
 
     # All EDGE125 galaxies, CALIFA only
     carma125 = [os.path.basename(file).split('.')[0] for file in 
@@ -578,7 +582,6 @@ if __name__ == "__main__":
     print(carma125)
     do_pipe3d(gallist=carma125, outfile='edge_carma_allpix.pipe3d.hdf5', 
               fitsdir='fits_natv_carma', packed=False, append=False, allpix=True)
-
     # All EDGE125 galaxies, append to 2d_smo7
     do_pipe3d(outfile='../img_comom/edge_carma.2d_smo7.hdf5', append=True,
               comomdir='../img_comom/fitsdata', ext='_sm', nsm=3,

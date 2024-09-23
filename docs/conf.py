@@ -60,6 +60,8 @@ exclude_patterns.append('_templates')
 rst_epilog += """
 """
 
+extensions += ['nbsphinx']
+
 # -- Project information ------------------------------------------------------
 
 # This does not *have* to match the package name, but typically does
