@@ -33,4 +33,4 @@ python:
       path: .
       extra_requirements:
         - docs
-    - requirements: nbsphinx
+    - requirements: docs/requirements.txt
