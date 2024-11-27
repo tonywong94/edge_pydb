@@ -345,8 +345,9 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         print('Plotting column',columnlist[0],'for',len(gallist),'galaxies')
         pagelist = gallist
         if allnorm:
-            vmin, vmax = PercentileInterval(pct).get_limits(edgetab[columnlist[0]])
-            norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
+            if not np.isnan(edgetab[columnlist[0]]).all():
+                vmin, vmax = PercentileInterval(pct).get_limits(edgetab[columnlist[0]])
+                norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
     elif gallist is not None and len(gallist) == 1:
         mode = 'onegal'
         # Plot all non-coordinate columns by default
@@ -433,7 +434,7 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                         if len(edgetab[galtab][column].unit.to_string()) <= maxlabel:
                             labelstr = f"{labelstr} {edgetab[galtab][column].unit:latex_inline}"
                     plt.text(0.04,0.06,labelstr,ha='left',va='center',size='small',
-                        transform=ax.transAxes, bbox=dict(facecolor='white',edgecolor='none'))
+                        transform=ax.transAxes, bbox=dict(boxstyle='square,pad=0.1',facecolor='white',edgecolor='none'))
             ax.set_aspect('equal')
             ax.xaxis.set_ticks([])
             ax.yaxis.set_ticks([])

@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# @Author: Tony Wong
+# @Date: Nov 22, 2024
+# EDGE database generation using IFU astrometric grid
+
+import os
+import glob
+from astropy.table import Table, join
+from edge_pydb import EdgeTable
+from edge_pydb.img_califa import do_pipe3d
+from edge_pydb.img_comom  import do_comom
+
+workdir    = os.path.expanduser('~/Work/bin/py-package/edge_pydb/')
+pipe3d_dir = os.path.join(workdir, 'edge_pydb/img_califa/')
+comom_dir  = os.path.join(workdir, 'edge_pydb/img_comom/')
+output_dir = os.path.join(workdir, 'bin/')
+
+# All of CALIFA DR3
+# Select the 646 galaxies in CALIFA DR3 V500
+dr3 = Table.read(workdir+'edge_pydb/dat_glob/califa/build/QCflags_std_V500_DR3.csv',
+                 format='ascii.no_header')
+dr3.keep_columns(['col2','col18'])
+dr3.rename_columns(['col2','col18'],['Name','in_dr3'])
+dr3only = dr3[ dr3['in_dr3']==1 ]
+califa = sorted(list(dr3only['Name']))
+outfile = output_dir + 'dr3_allpix.pipe3d.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_pipe3d(gallist=califa, outfile=outfile, fitsdir=pipe3d_dir+'fits_califa',
+          ssptable=pipe3d_dir+'gsd01_156.fits',
+          p3dstruct='califa', packed=True, ortpar='edge_leda.csv', 
+          distpar='edge_califa.csv', prob=False, allpix=True)
+
+# All of MaNGA
+outfile = output_dir + 'manga.pipe3d.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+manga = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
+            glob.glob(pipe3d_dir+'fits_manga/*.Pipe3D.cube.fits.gz'))]
+do_pipe3d(gallist=manga, outfile=outfile,
+          fitsdir=pipe3d_dir+'fits_manga', p3dstruct='manga', packed=True,
+          ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits', nsm=3,
+          ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
+          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', prob=False)
+
+# All of AMUSING
+outfile = output_dir + 'amusing.pipe3d.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+amusing = [os.path.basename(file).split('.')[0] for file in sorted(
+            glob.glob(pipe3d_dir+'fits_amusing/*.SSP.cube.fits.gz'))]
+do_pipe3d(gallist=amusing, outfile=outfile,
+          fitsdir=pipe3d_dir+'fits_amusing', p3dstruct='amusing', packed=False, 
+          ssptable=pipe3d_dir+'gsd01_156.fits', nsm=2,
+          ortpar='/Users/tonywong/Scratch2/amusing/tables/amusing_leda.csv', 
+          distpar='/Users/tonywong/Scratch2/amusing/tables/amusing_global.csv', 
+          coln_dmpc='DistP3d', prob=False, 
+          prodtype=['SFH', 'SSP', 'indices', 'flux_elines'],
+          leadstr=['', '', 'indices.CS.', 'flux_elines.'],
+          tailstr=['.SFH','.SSP','',''])
+

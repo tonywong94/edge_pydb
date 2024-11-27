@@ -88,6 +88,22 @@ def uarray_to_list(target):
     return [unp.nominal_values(target), unp.std_devs(target)]
 
 
+def K_cardelli(wave, Rv=3.1):
+    # Extinction curve from Cardelli+ (1989ApJ...345..245C)
+    # Assume Angstrom units for wave if not given
+    try:
+        unit = wave.unit
+    except:
+        wave = wave * u.AA
+    inv_wave = (1/(wave.to(u.micron))).value
+    y = inv_wave - 1.82
+    a = (1 + 0.17699*y - 0.50447*y**2 - 0.02427*y**3 + 0.72085*y**4 + 
+         0.01979*y**5 - 0.77530*y**6 + 0.32999*y**7)
+    b = (1.41338*y + 2.28305*y**2 + 1.07233*y**3 - 5.38434*y**4 - 
+         0.62251*y**5 + 5.30260*y**6 - 2.09002*y**7)
+    return a*Rv + b
+
+
 def get_AHa(flux_ha, flux_hb, log10):
     '''
     Returns Halpha extinction in magnitudes given flux_ha and flux_hb.
@@ -110,11 +126,57 @@ def get_AHa(flux_ha, flux_hb, log10):
         # Need positive flux to take the log.
         good = (flux_ha > 0) & (flux_hb > 0)
         # Extinction curve from Cardelli+ (1989).
-        K_Ha = 2.53
-        K_Hb = 3.61
+        K_Ha = K_cardelli(6563) # 2.53
+        K_Hb = K_cardelli(4861) # 3.61
         # Get A_Ha using Eq(1) from Catalan-Torrecilla+ (2015). 
         A_Ha[good] = K_Ha/(-0.4*(K_Ha-K_Hb)) * log10((flux_ha[good]/flux_hb[good])/2.86)
     return A_Ha
+
+
+def get_Alambda(fluxtab, colnames, A_Ha, A_Ha_valid=[0,6]):
+    '''
+    Corrects a set of columns in a table for extinction.
+
+    Parameters
+    ----------
+    fluxtab : `astropy.Table`
+        flux_elines table extracted from Pipe3D output
+    colnames : list of str
+        List of column names with the flux values to correct
+    A_Ha : astropy.table.Column
+        The H-alpha extinction values (from Balmer decrement)
+    A_Ha_valid : tuple of float
+        Range of acceptable H-alpha extinctions.  Negative 
+        extinctions are set to zero, large extinctions are blanked.
+
+    Returns
+    -------
+    input `astropy.Table` with additional columns giving extinction corrected fluxes
+    '''
+    if isinstance(colnames, str): colnames = [colnames]
+    for colname in colnames:
+        if 'Hbeta' in colname:
+            wavstr = 'Hbeta'
+            wave = 4861
+        elif 'Halpha' in colname:
+            wavstr = 'Halpha'
+            wave = 6563
+        elif colname[-4:].isdigit():
+            wavstr = colname[-4:]
+            wave = int(wavstr)
+        else:
+            # Convention is the wavelength precedes last underscore
+            wavstr = colname.rsplit('_',1)[0][-4:]
+            wave = int(wavstr)
+        K_lambda =  K_cardelli(wave)
+        K_Ha = K_cardelli(6563)
+        A_Ha[A_Ha < A_Ha_valid[0]] = 0
+        A_Ha[A_Ha > A_Ha_valid[1]] = np.nan
+        fluxcor = fluxtab[colname] * 10**(0.4 * A_Ha * K_lambda / K_Ha)
+        newcolname = colname.replace(wavstr, wavstr+'_avcor')
+        cidx = fluxtab.colnames.index(colname)
+        fluxtab.add_column(fluxcor, index=cidx+1, name=newcolname)
+    return
 
 
 def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
@@ -401,7 +463,7 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     '''
     Adds BPT classification to the flux_elines table. BPT==-1 means in the
     star-forming region of the diagram.  An additional column SF_BPT is
-    set to True when BPT==-1 and Halpha EW > 6. 
+    set to 1 when BPT==-1 and Halpha EW > 6. 
     This function should be run before ZOH_M13.
     For more information see Husemann et al. (2013A&A...549A..87H) Figure 7.
 
@@ -446,9 +508,12 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
     if sf:
-        ew_ha = fluxtab['EW_Halpha'+ext]
+        if ext != '_cobm':
+            ew_ha = fluxtab['EW_Halpha'+ext]
+        else:
+            ew_ha = fluxtab['EW_Halpha']
         bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
-        bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='?',
+        bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='u1',
                     description='True if star forming (BPT=-1 and EW_Ha>6)')
 
     if prob:
@@ -506,7 +571,7 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     ext : string
         suffix for selected column names, e.g. '_rg' or '_sm'
     method : string
-        choose 'o3n2' (default) or 'n2'
+        choose 'o3n2' (default) or 'o3n2_pp04' or 'n2'
     err : boolean
         True to calculate uncertainty as an additional column
     
@@ -531,8 +596,7 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
     
     # Require SF in BPT if available.
     if 'SF_BPT'+ext in fluxtab.colnames:
-        BPT_sf = fluxtab['SF_BPT'+ext]
-        good = good & BPT_sf
+        good = good & (fluxtab['SF_BPT'+ext] > 0)
     else:
         print('ZOH_M13 warning: The SF_BPT{} column is missing'.format(ext))
 

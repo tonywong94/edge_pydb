@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# @Author: Tony Wong
+# @Date: Nov 22, 2024
+# EDGE database generation using CO astrometric grid
+
+import os
+import glob
+from astropy.table import Table, join
+from edge_pydb import EdgeTable
+from edge_pydb.img_califa import do_pipe3d
+from edge_pydb.img_comom import do_comom
+
+workdir    = os.path.expanduser('~/Work/bin/py-package/edge_pydb/')
+pipe3d_dir = os.path.join(workdir, 'edge_pydb/img_califa/')
+comom_dir  = os.path.join(workdir, 'edge_pydb/img_comom/')
+output_dir = os.path.join(workdir, 'bin/')
+
+# All EDGE125 galaxies, 7" resolution
+outfile = output_dir + 'edge_carma.2d_smo7.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+carma125 = [os.path.basename(file).split('.')[0] for file in 
+           sorted(glob.glob(comom_dir+'fitsdata/*.co.smo7_dil.snrpk.fits.gz'))]
+do_comom(gallist=carma125, outfile=outfile, fitsdir=comom_dir+'fitsdata', append=False)
+do_pipe3d(gallist=carma125, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          comomdir=comom_dir+'fitsdata', ext='_sm', nsm=3,
+          cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
+          fitsdir=pipe3d_dir+'fits_smo7_carma')
+
+outfile = output_dir + 'edge_carma_allpix.2d_smo7.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_comom(gallist=carma125, outfile=outfile, fitsdir=comom_dir+'fitsdata', 
+         append=False, allpix=True)
+do_pipe3d(gallist=carma125, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          comomdir=comom_dir+'fitsdata', ext='_sm', nsm=3,
+          cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', packed=False,
+          fitsdir=pipe3d_dir+'fits_smo7_carma', allpix=True)
+
+# ACA galaxies, 12" resolution, using alphaco=6.6 instead of 4.3 (R21 = 0.65, Leroy+22)
+outfile = output_dir + 'edge_aca.2d_smo12.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+aca60   = [os.path.basename(file).split('.')[0] for file in 
+           sorted(glob.glob(comom_dir+'aca12/*_dil.snrpk.fits.gz'))]
+do_comom(gallist=aca60, outfile=outfile, fitsdir=comom_dir+'aca12', 
+         linelbl=['co21'], lines=['12'], msktyp=['str', 'dil'], alphaco=6.6, 
+         seq='smo12', append=False)
+do_pipe3d(gallist=aca60, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          comomdir=comom_dir+'aca12', ext='_sm', nsm=4, 
+          cotempl='GNAME.co21.smo12_dil.snrpk.fits.gz', packed=False, 
+          fitsdir=pipe3d_dir+'fits_smo12_aca')
+
+outfile = output_dir + 'edge_aca_allpix.2d_smo12.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+aca60   = [os.path.basename(file).split('.')[0] for file in 
+           sorted(glob.glob(comom_dir+'aca12/*_dil.snrpk.fits.gz'))]
+do_comom(gallist=aca60, outfile=outfile, fitsdir=comom_dir+'aca12', 
+         linelbl=['co21'], lines=['12'], msktyp=['str', 'dil'], alphaco=6.6, 
+         seq='smo12', append=False, allpix=True)
+do_pipe3d(gallist=aca60, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          comomdir=comom_dir+'aca12', ext='_sm', nsm=4, 
+          cotempl='GNAME.co21.smo12_dil.snrpk.fits.gz', packed=False, 
+          fitsdir=pipe3d_dir+'fits_smo12_aca', allpix=True)
+
+# ALMaQUEST galaxies, native resolution, append to 2d_preregrid
+outfile = output_dir + 'almaquest.2d_preregrid.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+aquest = [os.path.basename(file).split('.')[0] for file in sorted(
+          glob.glob(comom_dir+'aquest_comom_fits/*.preregrid_dil.snrpk.fits.gz'))]
+aquest2 = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
+          glob.glob(pipe3d_dir+'fits_natv_aq/*.Pipe3D.cube.fits.gz'))]
+do_comom(gallist=aquest, outfile=outfile, fitsdir=comom_dir+'aquest_comom_fits', 
+         linelbl=['co'], lines=['12'], msktyp=['str','dil'], seq='preregrid',
+         ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+         ortlabel='p3d', coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi', 
+         coln_inc='nsa_inclination', append=False, manganame=True)
+do_pipe3d(gallist=aquest2, outfile=outfile,
+          fitsdir=pipe3d_dir+'fits_natv_aq', p3dstruct='manga', packed=True,
+          comomdir=comom_dir+'aquest_comom_fits', 
+          cotempl='manga_GNAME.co.preregrid_dil.snrpk.fits.gz',
+          ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits',
+          ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
+          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc')
+          
+outfile = output_dir + 'almaquest_allpix.2d_preregrid.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_comom(gallist=aquest, outfile=outfile, fitsdir=comom_dir+'aquest_comom_fits', 
+         linelbl=['co'], lines=['12'], msktyp=['str','dil'], seq='preregrid',
+         ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+         ortlabel='p3d', coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi', 
+         coln_inc='nsa_inclination', append=False, manganame=True, allpix=True)
+do_pipe3d(gallist=aquest2, outfile=outfile,
+          fitsdir=pipe3d_dir+'fits_natv_aq', p3dstruct='manga', packed=True,
+          comomdir=comom_dir+'aquest_comom_fits', 
+          cotempl='manga_GNAME.co.preregrid_dil.snrpk.fits.gz',
+          ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits',
+          ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
+          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', allpix=True)
+

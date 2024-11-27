@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# @Author: Tony Wong
+# @Date: Nov 22, 2024
+# EDGE database generation using IFU astrometric grid
+
+import os
+import glob
+from astropy.table import Table, join
+from edge_pydb import EdgeTable
+from edge_pydb.img_califa import do_pipe3d
+from edge_pydb.img_comom  import do_comom
+
+workdir    = os.path.expanduser('~/Work/bin/py-package/edge_pydb/')
+pipe3d_dir = os.path.join(workdir, 'edge_pydb/img_califa/')
+comom_dir  = os.path.join(workdir, 'edge_pydb/img_comom/')
+output_dir = os.path.join(workdir, 'bin/')
+
+# CARMA-125 galaxies, CALIFA only
+outfile = output_dir + 'edge_carma_allpix.pipe3d.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+carma125 = [os.path.basename(file).split('.')[0] for file in 
+            sorted(glob.glob(pipe3d_dir+'fits_smo7_carma/[A-Z]*.SSP.cube.fits.gz'))]
+do_pipe3d(gallist=carma125, outfile=outfile, fitsdir=pipe3d_dir+'fits_natv_carma', 
+          ssptable=pipe3d_dir+'gsd01_156.fits',
+          allpix=True, packed=False)
+
+# CARMA-125 galaxies, CALIFA native resolution processing smoothed to CO
+outfile = output_dir + 'edge_carma_allmatch.2d_smo7.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_pipe3d(gallist=carma125, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          cotempl='GNAME.co.smo7_dil.snrpk.fits.gz', 
+          comomdir=comom_dir+'fitsdata', fitsdir=pipe3d_dir+'fits_natv_carma', 
+          matchres=True, ext='', allpix=True, packed=False)
+do_comom(gallist=carma125, outfile=outfile, 
+         seq='smo7', fitsdir=comom_dir+'fitsdata', allpix=True, append=True, 
+         p3d_dir=pipe3d_dir+'fits_natv_carma')
+
+# ACA-60 galaxies, CALIFA only
+outfile = output_dir + 'edge_aca_allpix.pipe3d.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+aca60   = [os.path.basename(file).split('.')[0] for file in 
+           sorted(glob.glob(pipe3d_dir+'fits_smo12_aca/[A-Z]*.SSP.cube.fits.gz'))]
+do_pipe3d(gallist=aca60, outfile=outfile, fitsdir=pipe3d_dir+'fits_natv_aca', 
+          ssptable=pipe3d_dir+'gsd01_156.fits',
+          allpix=True, packed=False)
+
+# ACA-60 galaxies, CALIFA native resolution processing smoothed to CO
+outfile = output_dir + 'edge_aca_allmatch.2d_smo12.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_pipe3d(gallist=aca60, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          cotempl='GNAME.co21.smo12_dil.snrpk.fits.gz', 
+          comomdir=comom_dir+'aca12', fitsdir=pipe3d_dir+'fits_natv_aca', 
+          matchres=True, ext='', allpix=True, packed=False)
+do_comom(gallist=aca60, outfile=outfile, 
+         seq='smo12', lines=['12'], linelbl=['co21'], msktyp=['str', 'dil'], 
+         alphaco=6.6, fitsdir=comom_dir+'aca12', allpix=True, append=True,
+         p3d_dir=pipe3d_dir+'fits_natv_aca')
+

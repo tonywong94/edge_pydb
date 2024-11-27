@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.ma as ma
 from astropy.io import fits
 from astropy.table import Table, Column, join
 from astropy.wcs import WCS
@@ -153,13 +154,13 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
         col_dcoff = Column(wcsout.T[1]-w.wcs.crval[1], name='dec_off', dtype='f4', 
                         unit='deg', format='.6f', 
                         description='dec offset from ref pixel')
-        if ra_gc is None:
+        if ra_gc is None or ma.is_masked(ra_gc):
             ra_gc = w.wcs.crval[0]
-        if dec_gc is None:
+        if dec_gc is None or ma.is_masked(dec_gc):
             dec_gc = w.wcs.crval[1]
         if not (inc>0):
             inc = 0.
-        if ~np.isfinite(pa):
+        if ma.is_masked(pa) or ~np.isfinite(pa):
             pa = 0.
         r, theta = gc_polr(wcsout.T[0], wcsout.T[1], ra_gc, dec_gc, pa, inc)
         col_r = Column(r, name='rad_arc', dtype='f4', unit='arcsec', format='.3f',
@@ -275,9 +276,11 @@ def getlabels(product, p3dstruct='califa'):
         if p3dstruct == 'califa':
             nz = 20
             has_errors = True
+            fluxlike = list(range(11))[2:]
         elif p3dstruct == 'manga':
             nz = 11
             has_errors = False
+            fluxlike = list(range(nz))[2:]
         zsel = range(nz)
         bright = ['[OII]3727', '[OIII]5007', '[OIII]4959',
                   'Hbeta'    , 'Halpha'    , '[NII]6583', 
@@ -334,6 +337,7 @@ def getlabels(product, p3dstruct='califa'):
         units[5*nline:6*nline] = ['km/s']*nline
         units[6*nline:7*nline] = ['Angstrom']*nline
         units[7*nline:8*nline] = ['Angstrom']*nline
+        fluxlike = flux.copy()
     elif product == 'indices':
         nz = 18
         has_errors = True
@@ -344,6 +348,7 @@ def getlabels(product, p3dstruct='califa'):
         elbl = ['e_'+txt for txt in albl]
         lbl = albl + elbl
         units = ['Angstrom']*len(lbl)
+        fluxlike = []
     elif product == 'SFH':
         if p3dstruct == 'califa':
             nz = 398    # 2*(39*4 + 39 + 4)
@@ -396,8 +401,9 @@ def getlabels(product, p3dstruct='califa'):
                 elbl.append('e_lumfrac_met_'+met)
         lbl  = albl + elbl
         units = ['fraction']*len(lbl)
+        fluxlike = []
     elif product == 'SSP':
-        if p3dstruct == 'califa':
+        if p3dstruct == 'califa' or p3dstruct == 'amusing':
             nz = 20
             has_errors = False
         elif p3dstruct == 'manga':
@@ -409,13 +415,14 @@ def getlabels(product, p3dstruct='califa'):
                'ZH_lwt',      'ZH_mwt',   'e_ZH_lwt',  'Av_ssp', 
                'e_Av_ssp',    'vel_ssp',  'e_vel_ssp', 'vdisp_ssp', 
                'e_vdisp_ssp', 'ML_ssp',   'mass_ssp',  'mass_Avcor_ssp']
-        units = ['10^-16 erg cm^-2 s^-1 AA^-1', 'none', 'none', 
+        units = ['10^-16 erg cm^-2 s^-1 AA^-1', None, None, 
                  '10^-16 erg cm^-2 s^-1 AA^-1', '10^-16 erg cm^-2 s^-1 AA^-1', 
                  'dex(yr)', 'dex(yr)', 'fraction', 'dex', 'dex', 'fraction', 
                  'mag', 'mag', 'km/s', 'km/s', 'km/s', 'km/s', 
-                 'solMass/solLum', 'dex(solMass/arcsec^2)', 'dex(solMass/arcsec^2)']
+                 'solMass/solLum', 'dex(solMass/pixel^2)', 'dex(solMass/pixel^2)']
+        fluxlike = [0]
         if p3dstruct == 'manga':
             lbl += ['e_mass_ssp']
-            units += ['dex(solMass/arcsec^2)']
-    return zsel, lbl, units, len(zsel), has_errors
+            units += ['dex(solMass/pixel^2)']
+    return zsel, lbl, units, len(zsel), has_errors, fluxlike
 

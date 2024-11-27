@@ -4,6 +4,7 @@ import numpy as _np
 from astropy.table import Table as _Table
 import astropy as _astropy
 import sys
+import shutil
 import os as _os
 import json as _json
 import shutil as _shutil
@@ -403,8 +404,8 @@ def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', addurl=True):
     return
 
 
-def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8, 
-                pct=99, paths=None, basedir='.'):
+def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
+                pct=99, paths=None, basedir='.', **kwargs):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
@@ -439,8 +440,19 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
     elif isinstance(hdf_files, str):
         hdf_files = [hdf_files]
 
+    if 'allnorm' in kwargs:
+        allnorm = kwargs.pop('allnorm')
+    else:
+        allnorm = False
+
+
     # Loop over files
     for dofile in hdf_files:
+        thisfile = _os.path.splitext(dofile)[0]
+        thisdir  = _os.path.join(basedir, thisfile)
+        if clobber:
+            if _os.path.exists(thisdir): 
+                shutil.rmtree(thisdir)
         if 'cocube' in dofile:
             continue
         # Loop over paths within each file
@@ -453,37 +465,44 @@ def plotgallery(hdf_files=None, scale='auto', nx=7, ny=6, pad=8,
             for j in range(9, len(tab.colnames)):
                 if tab.colnames[j] == 'cosi':
                     continue
-                if scale == 'perc':
-                    vmin = _np.min(tab[tab.colnames[j]])
-                    vmax = _np.max(tab[tab.colnames[j]])
-                    print('\n{} has vmin={} and vmax={}'.format(
-                        tab.colnames[j], vmin, vmax))
-                    if vmax == vmin:
-                        vmax = vmin + 1
-                        norm = _Normalize(vmin=vmin, vmax=vmax)
-                    else:
-                        norm = ImageNormalize(tab[tab.colnames[j]], 
-                                              interval=PercentileInterval(pct))
-                    cm = 'nipy_spectral'
-                    outfile = _os.path.join(
-                        basedir, dofile, dopath, tab.colnames[j]+'_perc.pdf')
-                    use_pct = None
+                if not errors:
+                    if (tab.colnames[j].startswith('e_') or
+                        tab.colnames[j].startswith('fe_')):
+                        continue
+#                 if scale == 'perc':
+#                     vmin = _np.min(tab[tab.colnames[j]])
+#                     vmax = _np.max(tab[tab.colnames[j]])
+#                     print('\n{} has vmin={} and vmax={}'.format(
+#                         tab.colnames[j], vmin, vmax))
+#                     if vmax == vmin:
+#                         vmax = vmin + 1
+#                         norm = _Normalize(vmin=vmin, vmax=vmax)
+#                     else:
+#                         norm = ImageNormalize(tab[tab.colnames[j]], 
+#                                               interval=PercentileInterval(pct))
+#                     cm = 'nipy_spectral'
+#                     outfile = _os.path.join(
+#                         basedir, dofile, dopath, tab.colnames[j]+'_perc.pdf')
+#                     use_pct = None
+#                 else:
+#                     print('')
+#                     norm = None
+#                     cm = 'jet'
+                
+                if allnorm:
+                    outfile = _os.path.join(thisdir, dopath, tab.colnames[j]+'_perc.pdf')
                 else:
-                    print('')
-                    norm = None
-                    cm = 'jet'
-                    outfile = _os.path.join(
-                        basedir, dofile, dopath, tab.colnames[j]+'_auto.pdf')
-                    use_pct = pct
-                if not _os.path.isdir(_os.path.join(basedir, dofile, dopath)):
-                    _os.makedirs(_os.path.join(basedir, dofile, dopath))
+                    outfile = _os.path.join(thisdir, dopath, tab.colnames[j]+'_auto.pdf')
+#                     use_pct = pct
+                if not _os.path.isdir(_os.path.join(thisdir, dopath)):
+                    _os.makedirs(_os.path.join(thisdir, dopath))
                 if 'hex' in dofile:
                     _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
-                              plotstyle='dot', clipedge=True, pad=pad, nx=nx, ny=ny,
-                              cmap=cm, norm=norm, pdfname=outfile)
+                              plotstyle='dot', cmap=cmap, allnorm=allnorm, 
+                              pdfname=outfile, **kwargs)
                 else:
                     _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
-                              plotstyle='image', clipedge=True, pad=pad, nx=nx, ny=ny,
-                              cmap=cm, norm=norm, pct=use_pct, pdfname=outfile)
+                              plotstyle='image', cmap=cmap, allnorm=allnorm, 
+                              pdfname=outfile, **kwargs)
     return
 
