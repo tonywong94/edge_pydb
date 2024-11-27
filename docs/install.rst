@@ -16,7 +16,7 @@ Required packages are:
 Also needed for building the database (but not for general use) are:
 
 -  `pyFIT3D <https://ifs.astroscu.unam.mx/pyPipe3D/>`__
--  `photutils` <https://photutils.readthedocs.io/>`__
+-  `photutils <https://photutils.readthedocs.io/>`__
 -  `reproject <https://reproject.readthedocs.io/>`__
 -  `CO_conversion_factor <https://github.com/astrojysun/COConversionFactor/>`__
 

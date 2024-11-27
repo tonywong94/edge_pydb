@@ -15,6 +15,9 @@ The EDGE database has several components:
 -  Downsampled 2D or 3D images, saved as HDF5 binary tables in the
    ``img_`` directories, or as large HDF5 files in a user-specified area.
 
+For the latest version matching this documentation, please install from the
+`Github repository <https://github.com/tonywong94/edge_pydb>`_.
+
 If you use this package in a publication please cite:
 
 -  `Wong et
