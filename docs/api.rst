@@ -35,6 +35,3 @@ API Documentation
    :no-inherited-members:
    :skip: fetch, line_proc
 
-.. automodapi:: edge_pydb.img_califa
-   :no-inheritance-diagram:
-   :no-inherited-members:
