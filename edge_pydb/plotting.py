@@ -147,7 +147,7 @@ def dotpatch(x, y, imval, blank=None, dotsize=1, clipedge=True, pad=5, axes=None
     axes : matplotlib.axes
         Axes for plotting
     **kwargs :
-        Additional arguments including vmin, vmax, colormap normalization
+        Additional arguments passed to PatchCollection
 
     Returns
     -------
@@ -219,7 +219,7 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
     axes : matplotlib.axes
         Axes for plotting
     **kwargs :
-        Additional arguments including vmin, vmax, colormap normalization
+        Additional arguments passed to imshow
 
     Returns
     -------
@@ -313,7 +313,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
     maxlabel : int
         Units longer than this many characters are not shown when vshow=True
     **kwargs :
-        Additional arguments including vmin, vmax, colormap normalization
+        Additional arguments passed to imarrayplot or dotpatch, including 
+        vmin, vmax, colormap normalization
     '''
 
     match stretch:

@@ -69,8 +69,10 @@ if not _runtime:
     _fp.close()
 
 
-# update the files
 def updatefiles(dir=_ROOT, max_depth=-1):
+    '''
+    Update the files and rewrite json file
+    '''
     tmp = _walkthrough(dir, max_depth)
     for k, v in tmp.items():
         if k not in _config.keys():
@@ -84,6 +86,9 @@ def updatefiles(dir=_ROOT, max_depth=-1):
 
 
 def download(file, url, loc='', user='', password=''):
+    '''
+    Download and install a file from a www location
+    '''
     if not loc:
         if not _os.path.exists(_ROOT + '/data'):
             _os.mkdir(_ROOT + '/data')
@@ -108,7 +113,7 @@ def save_config(src):
 
 def load_config(src, readonly=False):
     '''
-    read the config from a file
+    Read the config from a file
     '''
     _fp = open(src, 'r')
     global _config
@@ -123,8 +128,8 @@ def load_config(src, readonly=False):
 
 def listfiles(contain='', values=False, printing=False):
     '''
-    List the current available files in the package data directory
-    If values=True, give full directory paths
+    List the current available files in the package data directory.
+    If values=True, give full directory paths.
     If contain='hdf', list only file names with the 'hdf' substring
 
     Parameters
@@ -379,6 +384,7 @@ def line_proc(line, other, val):
 
 
 def add_url(file='index_csv.md', root_url="https://github.com/tonywong94/edge_pydb/blob/master"):
+    """Add hyperlinks to the index_csv.md file"""
     with open(file, 'r') as fp:
         lines = fp.readlines()
     for i in range(len(lines)):
@@ -398,6 +404,7 @@ def add_url(file='index_csv.md', root_url="https://github.com/tonywong94/edge_py
 
 
 def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', addurl=True):
+    """Generate index files index_csv.md and index_hdf.txt"""
     md_generate(csv_out, h5_out)
     if addurl:
         add_url(csv_out)
@@ -405,7 +412,7 @@ def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', addurl=True):
 
 
 def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
-                pct=99, paths=None, basedir='.', **kwargs):
+                allnorm=False, pct=99, paths=None, basedir='.', **kwargs):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
@@ -414,23 +421,24 @@ def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
     hdf_files : list of str
         Names of HDF5 files, should be available via EdgeTable.  Default is
         to process all available HDF5 files except with 'cocube' in the filename.
-    scale : str
-        'auto' (default) uses a jet (rainbow) colormap normalized to each galaxy
-            individually.
-        'perc' uses a gist_ncar_r colormap ranging from 1st to 99th percentile
-            over all galaxies in the plotted column.
-    nx : int
-        number of subplots in horizontal direction
-    ny : int
-        number of subplots in vertical direction
-    pad : int
-        Padding in pixels around edges of bounding box
+    cmap : str
+        Colormap for matplotlib
+    clobber : bool
+        Whether to delete existing plots for these files before plotting.
+        Default is False.
+    errors : bool
+        Whether to plot the uncertainty columns.  Default is True.
+    allnorm : bool
+        False (default) normalizes the colormap to each galaxy individually.
+        True normalizes the colormap over all galaxies in the plotted column.
     pct : float
         Percentile for scale='perc'.  Default is 99%.
-    paths: list of str
+    paths : list of str
         Names of paths (subtables) to plot.  Default is to plot all.
     basedir : str
         The directory into which to write the files.
+    **kwargs :
+        Additional arguments passed to gridplot including nx, ny, pad
     '''
 
     # Get the list of available files
@@ -439,12 +447,6 @@ def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
         print('Files to be processed:\n{}'.format(hdf_files))
     elif isinstance(hdf_files, str):
         hdf_files = [hdf_files]
-
-    if 'allnorm' in kwargs:
-        allnorm = kwargs.pop('allnorm')
-    else:
-        allnorm = False
-
 
     # Loop over files
     for dofile in hdf_files:
@@ -493,7 +495,6 @@ def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
                     outfile = _os.path.join(thisdir, dopath, tab.colnames[j]+'_perc.pdf')
                 else:
                     outfile = _os.path.join(thisdir, dopath, tab.colnames[j]+'_auto.pdf')
-#                     use_pct = pct
                 if not _os.path.isdir(_os.path.join(thisdir, dopath)):
                     _os.makedirs(_os.path.join(thisdir, dopath))
                 if 'hex' in dofile:

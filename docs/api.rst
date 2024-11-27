@@ -21,6 +21,10 @@ API Documentation
    :no-inherited-members:
    :skip: gc_polr, join
 
+.. automodapi:: edge_pydb.hexgrid
+   :no-inheritance-diagram:
+   :no-inherited-members:
+
 .. automodapi:: edge_pydb.plotting
    :no-inheritance-diagram:
    :no-inherited-members:
@@ -29,4 +33,8 @@ API Documentation
 .. automodapi:: edge_pydb.util
    :no-inheritance-diagram:
    :no-inherited-members:
+   :skip: fetch, line_proc
 
+.. automodapi:: edge_pydb.img_califa
+   :no-inheritance-diagram:
+   :no-inherited-members:

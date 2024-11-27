@@ -75,5 +75,6 @@ More Information
    Tutorial
    global_props
    SFLaw-edge
+   Alambda_demo
    api.rst
 
