@@ -343,7 +343,7 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         # Plot all galaxies by default
         if gallist is None:
             gallist = list(np.unique(edgetab['Name']))
-        print('Plotting column',columnlist[0],'for',len(gallist),'galaxies')
+        print('\nPlotting column',columnlist[0],'for',len(gallist),'galaxies')
         pagelist = gallist
         if allnorm:
             if not np.isnan(edgetab[columnlist[0]]).all():

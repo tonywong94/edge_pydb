@@ -58,3 +58,25 @@ do_comom(gallist=aca60, outfile=outfile,
          alphaco=6.6, fitsdir=comom_dir+'aca12', allpix=True, append=True,
          p3d_dir=pipe3d_dir+'fits_natv_aca')
 
+# ALMaQUEST galaxies, MaNGA native resolution processing smoothed to 2.5 kpc CO
+outfile = output_dir + 'almaquest_allmatch.2p5kpc.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+aquest = [os.path.basename(file).split('.')[0] for file in sorted(
+          glob.glob(comom_dir+'aquest_comom_2p5/*_dil.snrpk.fits.gz'))]
+aquest2 = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
+          glob.glob(pipe3d_dir+'fits_natv_aq/*.Pipe3D.cube.fits.gz'))]
+do_pipe3d(gallist=aquest2, outfile=outfile,
+          fitsdir=pipe3d_dir+'fits_natv_aq', p3dstruct='manga', packed=True,
+          matchres=True, ext='', comomdir=comom_dir+'aquest_comom_2p5', 
+          cotempl='manga_GNAME.co.kpc2p5_dil.snrpk.fits.gz',
+          ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits',
+          ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+          coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
+          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', allpix=True)
+do_comom(gallist=aquest, outfile=outfile, fitsdir=comom_dir+'aquest_comom_2p5', 
+         linelbl=['co'], lines=['12'], seq='kpc2p5',
+         ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
+         ortlabel='p3d', coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi', 
+         coln_inc='nsa_inclination', append=True, manganame=True, allpix=True,
+         p3d_dir=pipe3d_dir+'fits_natv_aq', p3dtempl='GNAME.Pipe3D.cube.fits.gz')

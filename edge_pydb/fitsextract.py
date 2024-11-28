@@ -297,7 +297,6 @@ def getlabels(product, p3dstruct='califa'):
         # We select the bright lines that are also in ELINES, plus [OI]6300
         has_errors = True
         flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
-        nline = len(flux)
         if p3dstruct == 'califa':
             nz = 408
         elif p3dstruct == 'manga':
@@ -305,6 +304,7 @@ def getlabels(product, p3dstruct='califa'):
         elif p3dstruct == 'amusing':
             nz = 240
             flux  = [1, 2, 3, 19, 20, 21, 22, 24, 25]
+        nline = len(flux)
         nfelines = nz // 8
         vel   = list(np.array(flux)+nfelines)
         disp  = list(np.array(flux)+nfelines*2)

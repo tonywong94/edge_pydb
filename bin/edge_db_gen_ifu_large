@@ -55,7 +55,7 @@ do_pipe3d(gallist=amusing, outfile=outfile,
           ssptable=pipe3d_dir+'gsd01_156.fits', nsm=2,
           ortpar='/Users/tonywong/Scratch2/amusing/tables/amusing_leda.csv', 
           distpar='/Users/tonywong/Scratch2/amusing/tables/amusing_global.csv', 
-          coln_dmpc='DistP3d', prob=False, 
+          coln_dmpc='DistP3d', prob=False, blankval=-1,
           prodtype=['SFH', 'SSP', 'indices', 'flux_elines'],
           leadstr=['', '', 'indices.CS.', 'flux_elines.'],
           tailstr=['.SFH','.SSP','',''])

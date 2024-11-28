@@ -134,12 +134,24 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             newhd = hdul[0].header.copy()
             if p3d_dir is not None:
                 p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal))
+                if not os.path.exists(p3dfile):
+                    # Fudge for almaquest file naming convention
+                    gal2 = gal.replace('_','-')
+                    p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal2))
+                    if not os.path.exists(p3dfile):
+                        print('####### Cannot find',p3dfile)
+                        continue
                 p3dhd = fits.getheader(p3dfile)
                 hd2d = WCS(p3dhd).celestial.to_header()
                 for key in hd2d.keys():
                     newhd[key] = hd2d[key]
+                # For packed files NAXIS1 and NAXIS2 may be missing
                 for key in ['NAXIS1', 'NAXIS2']:
-                    newhd[key] = p3dhd[key]
+                    if key in p3dhd.keys():
+                        newhd[key] = p3dhd[key]
+                    else:
+                        p3dhd1 = fits.getheader(p3dfile, 1)
+                        newhd[key] = p3dhd1[key]
                 newim = reproject_interp(hdul[0], newhd, order=interp_order,
                                          return_footprint=False)
 #                 if debug:

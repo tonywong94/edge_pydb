@@ -32,7 +32,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
               distpar='edge_califa.csv', ortlabel='LEDA', coln_ra='ledaRA', 
               coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl',
               coln_dmpc='caDistP3d', hexgrid=False, allpix=False, debug=False, 
-              keepnan=True, blankzero=True, prob=True, discard_cdmatrix=False, 
+              keepnan=True, blankval=0, prob=True, discard_cdmatrix=False, 
               overwrite=True, matchres=False,
               prodtype=['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines'],
               leadstr=['', '', '', 'indices.CS.', 'flux_elines.'],
@@ -109,9 +109,11 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     debug : boolean
         True to generate some additional output
     keepnan : boolean
-        True to replace zeroes in the FITS file with NaN.  This is the default.
-    blankzero : boolean
-        True to replace zeroes in the FITS file with NaN.  This is the default.
+        If False, the output table drops rows which are all-NaN.
+        Default is True (keep the NaNs).
+    blankval : int
+        Integer value in the FITS file to replace with NaN.  Default is 0.
+        Set blankval=None to omit any additional blanking.
     prob : boolean
         True to add BPT probability column to flux_elines table.
     discard_cdmatrix : boolean
@@ -251,9 +253,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                                             y_size=copsf.shape[0])
                 elif p3dstruct == 'manga':
                     if 'RFWHM' in p3dhd.keys():
-                        target_fwhm = hdr['RFWHM']/pixsca.value  # convert to pixels
+                        fwhm = p3dhd['RFWHM']/pixsca.value  # convert to pixels
                     else:
-                        target_fwhm = 2.54/pixsca.value  # MaNGA sample median, (Yan+16)
+                        fwhm = 2.54/pixsca.value  # MaNGA sample median, (Yan+16)
                     print('Gaussian profile parameters: fwhm={}'.format(fwhm))
                     ifupsf = Gaussian2DKernel(fwhm/np.sqrt(8*np.log(2)),
                                      x_size=copsf.shape[1], y_size=copsf.shape[0])
@@ -317,8 +319,8 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             desckeys = [key for key in list(cahd.keys()) if key.startswith('DESC')]
             for key in desckeys:
                 w_cahd[key] = cahd[key]
-            if blankzero:
-                cadat[cadat==0] = np.nan
+            if blankval is not None:
+                cadat[cadat==blankval] = np.nan
 
             # Regrid to the CO template
             if not matchres and comomdir is not None:
