@@ -37,6 +37,17 @@ do_comom(gallist=carma125, outfile=outfile,
          seq='smo7', fitsdir=comom_dir+'fitsdata', allpix=True, append=True, 
          p3d_dir=pipe3d_dir+'fits_natv_carma')
 
+# CARMA-125 galaxies, CALIFA native resolution processing smoothed to 2.5 kpc CO
+outfile = output_dir + 'edge_carma_allmatch.2p5kpc.hdf5'
+if os.path.isfile(outfile): os.remove(outfile)
+do_pipe3d(gallist=carma125, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          cotempl='GNAME.co.kpc2p5_dil.snrpk.fits.gz', 
+          comomdir=comom_dir+'carma_2p5', fitsdir=pipe3d_dir+'fits_natv_carma', 
+          matchres=True, ext='', allpix=True, packed=False)
+do_comom(gallist=carma125, outfile=outfile, linelbl=['co'], lines=['12'], 
+         seq='kpc2p5', fitsdir=comom_dir+'carma_2p5', allpix=True, append=True, 
+         p3d_dir=pipe3d_dir+'fits_natv_carma')
+
 # ACA-60 galaxies, CALIFA only
 outfile = output_dir + 'edge_aca_allpix.pipe3d.hdf5'
 if os.path.isfile(outfile): os.remove(outfile)

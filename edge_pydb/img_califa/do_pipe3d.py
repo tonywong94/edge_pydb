@@ -237,6 +237,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 copsf = cobeam.as_kernel(pixsca)
 #                 copsf = cobeam.as_kernel(pixsca)._model   # to return Gaussian2D
                 print('\nCO TEMPLATE',cobeam)
+                # WARNING: for Moffat profile, deconvolving a larger beam may not be caught
                 if p3dstruct == 'califa':
                     if 'FWHM' in p3dhd.keys():
                         fwhm = p3dhd['FWHM']/pixsca.value  # convert to pixels
@@ -251,24 +252,30 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     # --- Generate input Moffat profile (note different notation in astropy)
                     ifupsf = Moffat2DKernel(alpha, beta, x_size=copsf.shape[1], 
                                             y_size=copsf.shape[0])
+                    try:
+                        convkern = create_matching_kernel(ifupsf, copsf)
+                        srccat = data_properties(convkern)
+                        kern_fwhm = srccat.fwhm.value * pixsca
+                        print('Convolving kernel has fwhm =',kern_fwhm)
+                    except:
+                        print('### Cannot deconvolve: IFU has larger PSF than CO template')
+                        continue
                 elif p3dstruct == 'manga':
                     if 'RFWHM' in p3dhd.keys():
-                        fwhm = p3dhd['RFWHM']/pixsca.value  # convert to pixels
+                        fwhm = p3dhd['RFWHM'] * u.arcsec
                     else:
-                        fwhm = 2.54/pixsca.value  # MaNGA sample median, (Yan+16)
-                    print('Gaussian profile parameters: fwhm={}'.format(fwhm))
-                    ifupsf = Gaussian2DKernel(fwhm/np.sqrt(8*np.log(2)),
-                                     x_size=copsf.shape[1], y_size=copsf.shape[0])
+                        fwhm = 2.54 * u.arcsec # MaNGA sample median, (Yan+16)
+                    print('MaNGA Gaussian profile parameters: fwhm={}'.format(fwhm))
+                    ifu_beam = Beam(fwhm)
+                    conv_beam = cobeam.deconvolve(ifu_beam, failure_returns_pointlike=True)
+                    if conv_beam.major > 0:
+                        convkern = conv_beam.as_kernel(pixsca)
+                    else:
+                        print("### Beam deconvolution failed - CO fwhm={:.2f}\n".format(
+                              cobeam.major.to(u.arcsec)))
+                        continue
                 else:
                     sys.exit('Invalid value for p3dstruct')
-                try:
-                    convkern = create_matching_kernel(ifupsf, copsf)
-                    srccat = data_properties(convkern)
-                    kern_fwhm = srccat.fwhm.value * pixsca
-                    print('Convolving kernel has fwhm =',kern_fwhm)
-                except:
-                    print('Cannot deconvolve: IFU has larger PSF than CO template')
-                    continue
             # If not matching resolution, we are regridding to the CO
             else:
                 # Copy the CALIFA header and replace wcskeys with CO values
@@ -303,6 +310,10 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             if packed:
                 cahd = hdul[prod].header
                 cadat = hdul[prod].data
+                if p3dstruct == 'manga':
+                    msk = hdul['GAIA_MASK'].data
+                    msk3d = np.broadcast_to(msk, cadat.shape)
+                    cadat[msk3d>0] = np.nan
             else:
                 cafile = os.path.join(fitsdir,leadstr[i_prod]+gname+tailstr[i_prod]+tailx)
                 cadat, cahd = fits.getdata(cafile, header=True, ignore_missing_end=True)
