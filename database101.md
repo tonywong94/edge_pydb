@@ -1,14 +1,16 @@
 # Database 101
-This document aims to provide a detailed "under-the-hood" guide to the `edge_pydb` infrastructure for constructing matched resolution CO-IFU databases.
+
+This document aims to provide a detailed "under-the-hood" guide to the `edge_pydb` infrastructure for constructing matched resolution CO-IFU databases.  The main database generation scripts are in the `bin` directory at the top level of the repository.
 
 ## Input global parameters
 For the overall galaxy sample, a CSV file (referred to as `ortpar` in the code) is required which contains columns of basic information including:
 * Center coordinates `coln_ra` and `coln_dc`
 * Disk inclination `coln_inc` (in degrees or as an axial ratio b/a)
 * Disk position angle `coln_pa`
+
 Another CSV file (referred to as `distpar` in the code, which could be the same file as `ortpar`) should contain the galaxy distance that was assumed by Pipe3D as `coln_dmpc`.
 
-Note that additional global parameters (such as total stellar mass and SFR) are useful for scienctific analysis but not needed for database generation.
+Note that additional global parameters (such as total stellar mass and SFR) are useful for scientific analysis but not needed for database generation.
 
 ## Input CO data
 The CO FITS files (all 2-D images) are converted into tables using `do_comom.py` (import command: `from edge_pydb.img_comom import do_comom`).  It is assumed that the CO cubes have already been processed into moment maps using the [maskmoment](https://github.com/tonywong94/maskmoment) package.  Up to three masking types are supported per galaxy:
