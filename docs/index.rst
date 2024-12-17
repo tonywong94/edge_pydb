@@ -75,6 +75,7 @@ More Information
    :maxdepth: 1
 
    install.rst
+   database101.rst
    Tutorial
    global_props
    SFLaw-edge

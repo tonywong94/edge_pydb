@@ -60,7 +60,7 @@ exclude_patterns.append('_templates')
 rst_epilog += """
 """
 
-extensions += ['nbsphinx']
+extensions += ['nbsphinx', 'myst_parser']
 
 # -- Project information ------------------------------------------------------
 
