@@ -1,5 +1,4 @@
 # Database 101
----
 This document aims to provide a detailed "under-the-hood" guide to the `edge_pydb` infrastructure for constructing matched resolution CO-IFU databases.
 
 ## Input global parameters
