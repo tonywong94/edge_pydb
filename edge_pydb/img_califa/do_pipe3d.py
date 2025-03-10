@@ -33,7 +33,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
               coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl',
               coln_dmpc='caDistP3d', hexgrid=False, allpix=False, debug=False, 
               keepnan=True, blankval=0, prob=True, discard_cdmatrix=False, 
-              overwrite=True, matchres=False,
+              overwrite=True, matchres=False, select_reg=True,
               prodtype=['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines'],
               leadstr=['', '', '', 'indices.CS.', 'flux_elines.'],
               tailstr=['.ELINES','.SFH','.SSP','',''], tailx='.cube.fits.gz'):
@@ -63,6 +63,8 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         'califa': ELINES has errors, flux_elines has 51 emission lines, SFH has 39
                   ages 4 mets and uncertainties, SSP lacks 'e_mass_ssp'
         'manga' : ELINES lacks errors, flux_elines has 57 emission lines, SFH has
+                  39 ages 7 mets no uncertainties, SSP has 'e_mass_ssp'
+        'ecalifa' : ELINES lacks errors, flux_elines has 53 emission lines, SFH has
                   39 ages 7 mets no uncertainties, SSP has 'e_mass_ssp'
     packed : boolean
         True if Pipe3D outputs for a galaxy are in a single multi-extension FITS file.
@@ -125,6 +127,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     matchres: boolean
         Whether to match the resolution of the flux-like columns to the CO resolution.
         Default: False
+    select_reg: boolean
+        Whether to limit FOV using the SELECT_REG extension (eCALIFA and MaNGA DR17).
+        Default: True
     prodtype : list of str
         List of Pipe3D products in the order to be analyzed.
     leadstr : list of str
@@ -198,6 +203,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 p3d_file = os.path.join(fitsdir, 'manga-'+gname+'.Pipe3D.cube.fits.gz')
             else:
                 p3d_file = os.path.join(fitsdir, gname+'.Pipe3D.cube.fits.gz')
+                # These have special names
+                if gname in ['NGC5953', 'NGC4211NED02']:
+                    p3d_file = os.path.join(fitsdir, gname+'_0.Pipe3D.cube.fits.gz')
         else:
             p3d_file = os.path.join(fitsdir, 'flux_elines.'+gname+tailx)
         if not os.path.exists(p3d_file):
@@ -260,12 +268,18 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     except:
                         print('### Cannot deconvolve: IFU has larger PSF than CO template')
                         continue
-                elif p3dstruct == 'manga':
-                    if 'RFWHM' in p3dhd.keys():
-                        fwhm = p3dhd['RFWHM'] * u.arcsec
+                elif p3dstruct in ['manga', 'ecalifa']:
+                    if p3dstruct == 'manga':
+                        if 'RFWHM' in p3dhd.keys():
+                            fwhm = p3dhd['RFWHM'] * u.arcsec
+                        else:
+                            fwhm = 2.54 * u.arcsec # MaNGA sample median, (Yan+16)
                     else:
-                        fwhm = 2.54 * u.arcsec # MaNGA sample median, (Yan+16)
-                    print('MaNGA Gaussian profile parameters: fwhm={}'.format(fwhm))
+                        if 'PIPE FWHM_r' in p3dhd.keys():
+                            fwhm = p3dhd['PIPE FWHM_r'] * u.arcsec
+                        else:
+                            fwhm = 1.5 * u.arcsec # Typical eCALIFA value (Sanchez+23)
+                    print('{} Gaussian profile parameters: fwhm={}'.format(p3dstruct,fwhm))
                     ifu_beam = Beam(fwhm)
                     conv_beam = cobeam.deconvolve(ifu_beam, failure_returns_pointlike=True)
                     if conv_beam.major > 0:
@@ -310,10 +324,14 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             if packed:
                 cahd = hdul[prod].header
                 cadat = hdul[prod].data
-                if p3dstruct == 'manga':
+                if p3dstruct in ['manga', 'ecalifa']:
                     msk = hdul['GAIA_MASK'].data
                     msk3d = np.broadcast_to(msk, cadat.shape)
                     cadat[msk3d>0] = np.nan
+                    if select_reg:
+                        sel = hdul['SELECT_REG'].data
+                        sel3d = np.broadcast_to(sel, cadat.shape)
+                        cadat[sel3d<1] = np.nan
             else:
                 cafile = os.path.join(fitsdir,leadstr[i_prod]+gname+tailstr[i_prod]+tailx)
                 cadat, cahd = fits.getdata(cafile, header=True, ignore_missing_end=True)
@@ -545,7 +563,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     idx = prodtype.index('SSP')
                     star0 = tablist[idx][tablist[idx]['Name']==gname]['sigstar'+ext]
                     alpha, f_term, g_term, rco = predict_alphaCO_SL24(
-                           Zprime=Zprime, Sigma_star=star0, return_all_terms=True)
+                           Zprime=Zprime.value, Sigma_star=star0, return_all_terms=True)
                     alphsca_SL24 = Column(f_term * g_term, name='alphsca_SL24'+ext, 
                                           unit=None, dtype='f4', 
                                           description='alphaCO scaling factor from SL24')
@@ -556,7 +574,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     try:
                         cotab  = Table.read(outfile, path='comom_dil')
                         comom0 = cotab[cotab['Name']==gname]['mom0_12']
-                        alpha2   = predict_alphaCO10_B13(Zprime=Zprime,
+                        alpha2   = predict_alphaCO10_B13(Zprime=Zprime.value,
                                         WCO10kpc=comom0, Sigmaelsekpc=star0+9)
                         alphsca_B13 = Column(alpha2.value/4.3, name='alphsca_B13'+ext, 
                                              unit=None, dtype='f4', 

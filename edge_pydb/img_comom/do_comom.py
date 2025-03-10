@@ -274,12 +274,12 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             t_merge.meta['date'] = datetime.today().strftime('%Y-%m-%d')   
             print(t_merge[20:50])
 
-        if i_msk == 0:
-            t_merge.write(outfile, path='comom_'+msk, append=append,
-                    overwrite=overwrite, serialize_meta=True, compression=True)
-        else:
-            t_merge.write(outfile, path='comom_'+msk, append=True, 
-                    overwrite=overwrite, serialize_meta=True, compression=True)
+            if i_msk == 0:
+                t_merge.write(outfile, path='comom_'+msk, append=append,
+                        overwrite=overwrite, serialize_meta=True, compression=True)
+            else:
+                t_merge.write(outfile, path='comom_'+msk, append=True, 
+                        overwrite=overwrite, serialize_meta=True, compression=True)
     return
 
 

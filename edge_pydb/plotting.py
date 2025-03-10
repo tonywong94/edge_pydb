@@ -6,6 +6,7 @@ from scipy import stats
 from matplotlib.patches import Circle, Ellipse
 from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from edge_pydb.conversion import kewley01, kauffm03, cidfer10
 from astropy.visualization import PercentileInterval, ImageNormalize
 from astropy.visualization import LinearStretch, SqrtStretch, LogStretch
@@ -263,8 +264,8 @@ def imarrayplot(x, y, imval, blank=None, clipedge=True, pad=5, axes=None, **kwar
 def gridplot(edgetab=None, gallist=None, columnlist=None, 
             xrange=None, yrange=None, blank=None, plotstyle='image',
             cmap='jet', nx=7, ny=6, dotsize=1, pdfname=None, pct=99,
-            allnorm=False, vshow=False, clipedge=False, pad=5, verbose=False, 
-            stretch='linear', maxlabel=18, **kwargs):
+            allnorm=False, vshow=True, clipedge=False, pad=5, verbose=False, 
+            stretch='linear', maxlabel=18, do_cbar=True, **kwargs):
     '''
     Plot one column for multiple galaxies or multiple columns for 
     one galaxy on a grid.
@@ -312,6 +313,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         Padding in pixels around edges if clipedge=True
     maxlabel : int
         Units longer than this many characters are not shown when vshow=True
+    do_cbar : boolean
+        True to plot a colorbar beneath the first subplot
     **kwargs :
         Additional arguments passed to imarrayplot or dotpatch, including 
         vmin, vmax, colormap normalization
@@ -378,6 +381,8 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         fig = plt.figure(figsize=(18,14))
         if not verbose:
             print('Plotting', thispage[0], 'to', thispage[-1])
+        if do_cbar:
+            cbar_done = False
 
         for i in range(0,len(thispage)):
             if mode == 'onecol':
@@ -436,12 +441,21 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                             labelstr = f"{labelstr} {edgetab[galtab][column].unit:latex_inline}"
                     plt.text(0.04,0.06,labelstr,ha='left',va='center',size='small',
                         transform=ax.transAxes, bbox=dict(boxstyle='square,pad=0.1',facecolor='white',edgecolor='none'))
+                if do_cbar and not cbar_done:
+                    cax = ax.inset_axes([0.0, -0.07, 1.0, 0.04]) 
+                    cbar = fig.colorbar(img, cax=cax, orientation='horizontal')
+                    if not allnorm:
+                        cbar.set_ticks([])
+                    else:
+                        cbar.ax.tick_params(labelsize='x-small')
+                        cbar.ax.tick_params(size=0)
+                    cbar_done = True
             ax.set_aspect('equal')
             ax.xaxis.set_ticks([])
             ax.yaxis.set_ticks([])
             plt.text(0.04,0.92,label,ha='left',va='center',transform=ax.transAxes,
                bbox=dict(facecolor='white', edgecolor='none', pad=1))
-        fig.subplots_adjust(hspace=0.05)
+        fig.subplots_adjust(hspace=0.1)
         fig.subplots_adjust(wspace=0.05)
         if pdfname is not None:
             pp.savefig(bbox_inches = 'tight', pad_inches=0.1)

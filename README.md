@@ -1,5 +1,5 @@
 # edge_pydb
-Python-based database for the [Extragalactic Database for Galaxy Evolution (EDGE)](https://www.astro.umd.edu/~bolatto/EDGE/).  This package requires Python 3.
+Python-based database for the [Extragalactic Database for Galaxy Evolution (EDGE)](https://www.astro.umd.edu/~bolatto/EDGE/).  This package requires Python 3.10 or higher.
 
 The EDGE database has several components (see `index_csv.md` and `index_hdf.txt` for details):
 
@@ -55,7 +55,7 @@ To uninstall you may use
 
 but note that the `_config.json` will not be removed, so to fully uninstall you will need to delete the `edge_pydb` directory manually using (e.g.):
 
-    rm -r ~/Library/Python/3.9/lib/python/site-packages/edge_pydb/
+    rm -r ~/Library/Python/3.10/lib/python/site-packages/edge_pydb/
 
 ## Merging in large data sets
 

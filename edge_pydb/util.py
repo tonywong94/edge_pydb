@@ -498,11 +498,11 @@ def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
                 if not _os.path.isdir(_os.path.join(thisdir, dopath)):
                     _os.makedirs(_os.path.join(thisdir, dopath))
                 if 'hex' in dofile:
-                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
+                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], 
                               plotstyle='dot', cmap=cmap, allnorm=allnorm, 
                               pdfname=outfile, **kwargs)
                 else:
-                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], vshow=True,
+                    _gridplot(edgetab=tab, columnlist=tab.colnames[j], 
                               plotstyle='image', cmap=cmap, allnorm=allnorm, 
                               pdfname=outfile, **kwargs)
     return

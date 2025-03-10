@@ -277,7 +277,7 @@ def getlabels(product, p3dstruct='califa'):
             nz = 20
             has_errors = True
             fluxlike = list(range(11))[2:]
-        elif p3dstruct == 'manga':
+        elif p3dstruct in ['manga', 'ecalifa']:
             nz = 11
             has_errors = False
             fluxlike = list(range(nz))[2:]
@@ -299,6 +299,8 @@ def getlabels(product, p3dstruct='califa'):
         flux  = [0, 26, 27, 28, 41, 45, 46, 47, 49, 50]
         if p3dstruct == 'califa':
             nz = 408
+        elif p3dstruct == 'ecalifa':
+            nz = 432
         elif p3dstruct == 'manga':
             nz = 456
         elif p3dstruct == 'amusing':
@@ -341,13 +343,19 @@ def getlabels(product, p3dstruct='califa'):
     elif product == 'indices':
         nz = 18
         has_errors = True
-        zsel = range(nz)
+        if p3dstruct == 'ecalifa':
+            idx = [22, 9, 13, 14, 15, 0, 33, 23, 34]
+            e_idx  = list(np.array(idx)+35)
+            zsel = idx + e_idx
+        else:
+            zsel = range(nz)
         albl = ['Hdel_idx',   'Hbet_idx',   'Mgb_idx', 
                 'Fe5270_idx', 'Fe5335_idx', 'D4000_idx', 
                 'Hdmod_idx',  'Hgam_idx',   'SN_idx']
+        aunits = ['Angstrom']*8 + ['10^-16 erg cm^-2 s^-1']
         elbl = ['e_'+txt for txt in albl]
         lbl = albl + elbl
-        units = ['Angstrom']*len(lbl)
+        units = aunits + aunits
         fluxlike = []
     elif product == 'SFH':
         if p3dstruct == 'califa':
@@ -372,7 +380,7 @@ def getlabels(product, p3dstruct='califa'):
                     '1.1220','12.5893', '1.2589','14.1254', '1.4125', '1.9953', '2.5119', 
                     '3.5481', '4.4668', '6.3096', '7.9433']
             mets = ['0.0037', '0.0076', '0.0190', '0.0315']
-        elif p3dstruct == 'manga':
+        elif p3dstruct in ['manga', 'ecalifa']:
             nz = 319    # 39*7 + 39 + 7
             has_errors = False
             ages = ['0.0010', '0.0023', '0.0038', '0.0057', '0.0080', '0.0115', '0.0150', 
@@ -390,7 +398,7 @@ def getlabels(product, p3dstruct='califa'):
                 albl.append('lumfrac_age_'+age+'_met_'+met)
                 if has_errors:
                     elbl.append('e_lumfrac_age_'+age+'_met_'+met)
-        ages_sort = sorted(ages,key=lambda x: float(x))
+        ages_sort = sorted(ages, key=lambda x: float(x))
         for age in ages_sort:
             albl.append('lumfrac_age_'+age)
             if has_errors:
@@ -403,10 +411,10 @@ def getlabels(product, p3dstruct='califa'):
         units = ['fraction']*len(lbl)
         fluxlike = []
     elif product == 'SSP':
-        if p3dstruct == 'califa' or p3dstruct == 'amusing':
+        if p3dstruct in ['califa', 'amusing']:
             nz = 20
             has_errors = False
-        elif p3dstruct == 'manga':
+        elif p3dstruct in ['manga', 'ecalifa']:
             nz = 21
             has_errors = True
         zsel = range(nz)
@@ -421,7 +429,7 @@ def getlabels(product, p3dstruct='califa'):
                  'mag', 'mag', 'km/s', 'km/s', 'km/s', 'km/s', 
                  'solMass/solLum', 'dex(solMass/pixel^2)', 'dex(solMass/pixel^2)']
         fluxlike = [0]
-        if p3dstruct == 'manga':
+        if has_errors:
             lbl += ['e_mass_ssp']
             units += ['dex(solMass/pixel^2)']
     return zsel, lbl, units, len(zsel), has_errors, fluxlike
