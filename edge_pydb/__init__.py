@@ -68,18 +68,21 @@ class EdgeTable(_Table):
         
     def join(self, table, join_type='inner', keys=None):
         # check for ix or iy in both tables 
-        if keys is None:
-            keys = ['Name']
-        join_keys = [i for i in keys]
-        if 'ix' in self.colnames and 'ix' in table.colnames:
-            join_keys.append('ix')
-            if 'iy' in self.colnames and 'iy' in table.colnames:
-                join_keys.append('iy')
+        if keys is not None:
+            for key in ['Name', 'ix', 'iy']:
+                if key in self.colnames and key in table.colnames and key not in keys:
+                    keys.append(key)
+#             keys = ['Name']
+#         join_keys = [i for i in keys]
+#         if 'ix' in self.colnames and 'ix' in table.colnames:
+#             join_keys.append('ix')
+#             if 'iy' in self.colnames and 'iy' in table.colnames:
+#                 join_keys.append('iy')
         if isinstance(table, self.__class__):
-            self.table = _join(self.table, table.table, join_type=join_type, keys=join_keys)
+            self.table = _join(self.table, table.table, join_type=join_type, keys=keys)
             self.joined.append((table.srcfile, join_type))
         elif isinstance(table, _Table):
-            self.table = _join(self.table, table, join_type=join_type, keys=join_keys)
+            self.table = _join(self.table, table, join_type=join_type, keys=keys)
             self.joined.append((table.srcfile, join_type))
         else:
             raise Exception('cannot merge the two tables, \

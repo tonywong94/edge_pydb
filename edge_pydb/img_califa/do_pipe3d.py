@@ -26,14 +26,14 @@ from pyFIT3D.modelling.stellar import SSPModels
 np.seterr(divide='ignore', invalid='ignore')
 
 def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None, 
-              p3dstruct='califa', packed=True, comomdir=None, 
+              p3dstruct='califa', packed=True, stride=[3,3,1], comomdir=None, 
               cotempl='GNAME.co_dil.snrpk.fits.gz', ssptable='gsd01_156.fits', 
               interp_order=1, ext='', nsm=2, ortpar='edge_leda.csv', 
               distpar='edge_califa.csv', ortlabel='LEDA', coln_ra='ledaRA', 
               coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl',
               coln_dmpc='caDistP3d', hexgrid=False, allpix=False, debug=False, 
               keepnan=True, blankval=0, prob=True, discard_cdmatrix=False, 
-              overwrite=True, matchres=False, select_reg=True,
+              overwrite=True, matchres=False, regridtoco=False, select_reg=True,
               prodtype=['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines'],
               leadstr=['', '', '', 'indices.CS.', 'flux_elines.'],
               tailstr=['.ELINES','.SFH','.SSP','',''], tailx='.cube.fits.gz'):
@@ -68,13 +68,18 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                   39 ages 7 mets no uncertainties, SSP has 'e_mass_ssp'
     packed : boolean
         True if Pipe3D outputs for a galaxy are in a single multi-extension FITS file.
+    stride : list of int
+        Step size to select pixels along each axis.  Axes are ordered using
+        the FITS convention, not numpy convention (i.e. velaxis last).
+        Default is [3,3,1] to keep one of every 3 pixels in both RA and DEC.
     comomdir : str
         Path to the directory where CO moments FITS files reside.  Default is None,
-        i.e. process CALIFA data only without regridding to match CO.
+        i.e. process CALIFA data only without matching to CO.
     cotempl : str
-        Name of CO file with the astrometry which will be adopted for the IFU sampling.
-        Note that the CO template files should use the CDELT1 and CDELT2 keywords
-        and not CD1_1 and CD2_2.
+        Name of CO file (substituting GNAME for the galaxy name) providing astrometry
+        and/or beam information to adopt for the IFU sampling.
+        Note that the CO template should use the CDELT1 and CDELT2 keywords and not
+        CD1_1 and CD2_2.
     ssptable : str
         Name of SSP models table for deriving mass-to-luminosity ratio
     interp_order : int
@@ -127,6 +132,10 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     matchres: boolean
         Whether to match the resolution of the flux-like columns to the CO resolution.
         Default: False
+    regridtoco: boolean
+        Whether to adopt the CO sampling grid for the output products.  This is always
+        done after any resolution matching.
+        Default: False
     select_reg: boolean
         Whether to limit FOV using the SELECT_REG extension (eCALIFA and MaNGA DR17).
         Default: True
@@ -144,8 +153,6 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     """
     if allpix:
         stride = [1,1,1]
-    else:
-        stride = [3,3,1]
 
     if gallist is None or len(gallist) == 0:
         raise RuntimeError('Error: gallist is empty!')
@@ -209,7 +216,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         else:
             p3d_file = os.path.join(fitsdir, 'flux_elines.'+gname+tailx)
         if not os.path.exists(p3d_file):
-            print('####### Cannot find',p3d_file)
+            print('####### Cannot find', p3d_file)
             continue          
         hdul = fits.open(p3d_file, ignore_missing_end=True)
         p3dhd = hdul[0].header
@@ -289,9 +296,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                               cobeam.major.to(u.arcsec)))
                         continue
                 else:
-                    sys.exit('Invalid value for p3dstruct')
-            # If not matching resolution, we are regridding to the CO
-            else:
+                    sys.exit('Invalid value for p3dstruct - check inputs')
+            # If regridding to CO, get WCS info from CO template
+            if regridtoco:
                 # Copy the CALIFA header and replace wcskeys with CO values
                 cawcshd = p3dhd.copy()
                 for key in ['NAXIS2', 'NAXIS1']:
@@ -310,8 +317,8 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     print('\nINPUT',WCS(p3dhd))
                     print('\nCO data',WCS(cohd))
                     print('\nOUTPUT',WCS(cawcshd))
-        elif matchres:
-            print('####### Keyword comomdir required when matching resolution')
+        elif matchres or regridtoco:
+            print('####### Keyword comomdir required for matchres or regridtoco')
 
         # BEGIN loop over products
         for i_prod, prod in enumerate(prodtype):
@@ -322,8 +329,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
 
             # Read the extension header and data
             if packed:
-                cahd = hdul[prod].header
+                cahd  = hdul[prod].header
                 cadat = hdul[prod].data
+                # Apply the blanking masks in the newer data
                 if p3dstruct in ['manga', 'ecalifa']:
                     msk = hdul['GAIA_MASK'].data
                     msk3d = np.broadcast_to(msk, cadat.shape)
@@ -335,15 +343,16 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             else:
                 cafile = os.path.join(fitsdir,leadstr[i_prod]+gname+tailstr[i_prod]+tailx)
                 cadat, cahd = fits.getdata(cafile, header=True, ignore_missing_end=True)
-            if comomdir is None or matchres:
+            if regridtoco:
+                w_cahd = cawcshd.copy()
+            else:
+#             if comomdir is None or matchres:
                 w_cahd = p3dhd.copy()
                 # Fixes issue where header 0 has no NAXIS1 or NAXIS2
                 for key in ['NAXIS2', 'NAXIS1']:
                     if key in w_cahd.keys():
                         del w_cahd[key]
                     w_cahd.insert('NAXIS', (key, cahd[key]), after=True)
-            else:
-                w_cahd = cawcshd.copy()
             # Extension header may have useful documentation
             desckeys = [key for key in list(cahd.keys()) if key.startswith('DESC')]
             for key in desckeys:
@@ -351,15 +360,6 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             if blankval is not None:
                 cadat[cadat==blankval] = np.nan
 
-            # Regrid to the CO template
-            if not matchres and comomdir is not None:
-                cadat = reproject_interp((cadat,p3dhd), WCS(w_cahd), order=interp_order,
-                    shape_out=(cahd['NAXIS3'],w_cahd['NAXIS2'],w_cahd['NAXIS1']),
-                    return_footprint=False)
-                if debug:
-                    print(repr(cawcshd))
-                    fits.writeto(gname+'.'+prod+'.rg.fits', cadat, cawcshd, overwrite=True)
-        
             # Set up output table
             nz = cadat.shape[0]
             if debug:
@@ -420,6 +420,15 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 if len(units) == default_len:
                     units += ['10^-16 erg cm^-2 s^-1', '10^-16 erg cm^-2 s^-1']
 
+            # Regrid to the CO template if desired
+            if regridtoco:
+                cadat = reproject_interp((cadat,p3dhd), WCS(w_cahd), order=interp_order,
+                    shape_out=(cadat.shape[0],w_cahd['NAXIS2'],w_cahd['NAXIS1']),
+                    return_footprint=False)
+#                 if debug:
+#                     print(repr(w_cahd))
+#                     fits.writeto(gname+'.'+prod+'.rg.fits', cadat, cawcshd, overwrite=True)
+        
             tab0 = fitsextract(cadat, header=w_cahd, keepnan=keepnan, stride=stride, 
                                bunit=units, col_lbl=col_lbl, zselect=zsel, 
                                ra_gc=orttbl.loc[gname][coln_ra],

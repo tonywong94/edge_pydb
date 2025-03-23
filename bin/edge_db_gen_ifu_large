@@ -27,10 +27,9 @@ dr3only = dr3[ dr3['in_dr3']==1 ]
 califa = sorted(list(dr3only['Name']))
 outfile = output_dir + 'dr3_allpix.pipe3d.hdf5'
 if os.path.isfile(outfile): os.remove(outfile)
-do_pipe3d(gallist=califa, outfile=outfile, fitsdir=pipe3d_dir+'fits_califa',
-          ssptable=pipe3d_dir+'gsd01_156.fits',
-          p3dstruct='califa', packed=True, ortpar='edge_leda.csv', 
-          distpar='edge_califa.csv', prob=False, allpix=True)
+do_pipe3d(gallist=califa, outfile=outfile, ssptable=pipe3d_dir+'gsd01_156.fits',
+          stride=[1,1,1], fitsdir=pipe3d_dir+'fits_califa', p3dstruct='califa', 
+          distpar='edge_califa.csv', packed=True, prob=False)
 
 # All of MaNGA
 outfile = output_dir + 'manga.pipe3d.hdf5'
@@ -38,12 +37,12 @@ if os.path.isfile(outfile): os.remove(outfile)
 manga = [os.path.basename(file).split('.')[0].split('-',1)[1] for file in sorted(
             glob.glob(pipe3d_dir+'fits_manga/*.Pipe3D.cube.fits.gz'))]
 do_pipe3d(gallist=manga, outfile=outfile,
-          fitsdir=pipe3d_dir+'fits_manga', p3dstruct='manga', packed=True,
           ssptable='/Users/tonywong/Work/projects/MaNGA/mastar_237.fits', nsm=3,
+          stride=[3,3,1], fitsdir=pipe3d_dir+'fits_manga', p3dstruct='manga',
           ortpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
           distpar='/Users/tonywong/Work/projects/MaNGA/MaNGA_props_pipe3d.csv', 
           coln_ra='objra', coln_dc='objdec', coln_pa='nsa_sersic_phi',
-          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', prob=False)
+          coln_inc='nsa_inclination', coln_dmpc='nsa_z_dMpc', packed=True, prob=False)
 
 # All of AMUSING
 outfile = output_dir + 'amusing.pipe3d.hdf5'
@@ -51,12 +50,12 @@ if os.path.isfile(outfile): os.remove(outfile)
 amusing = [os.path.basename(file).split('.')[0] for file in sorted(
             glob.glob(pipe3d_dir+'fits_amusing/*.SSP.cube.fits.gz'))]
 do_pipe3d(gallist=amusing, outfile=outfile,
-          fitsdir=pipe3d_dir+'fits_amusing', p3dstruct='amusing', packed=False, 
           ssptable=pipe3d_dir+'gsd01_156.fits', nsm=2,
+          stride=[3,3,1], fitsdir=pipe3d_dir+'fits_amusing', p3dstruct='amusing', 
           ortpar='/Users/tonywong/Scratch2/amusing/tables/amusing_leda.csv', 
           distpar='/Users/tonywong/Scratch2/amusing/tables/amusing_global.csv', 
-          coln_dmpc='DistP3d', prob=False, blankval=-1,
+          coln_dmpc='DistP3d', blankval=-1,
           prodtype=['SFH', 'SSP', 'indices', 'flux_elines'],
           leadstr=['', '', 'indices.CS.', 'flux_elines.'],
-          tailstr=['.SFH','.SSP','',''])
+          tailstr=['.SFH','.SSP','',''], packed=False, prob=False)
 

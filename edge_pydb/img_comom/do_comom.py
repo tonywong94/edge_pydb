@@ -17,7 +17,7 @@ from CO_conversion_factor.alphaCO import predict_alphaCO10_B13, predict_alphaCO_
 
 def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7', 
              lines=['12','13'], linelbl=['co','13co'], msktyp=['str', 'dil', 'smo'], 
-             alphaco=4.3, hexgrid=False, allpix=False, fitsdir='fitsdata', 
+             stride=[3,3,1], alphaco=4.3, hexgrid=False, allpix=False, fitsdir='fitsdata', 
              ortpar='edge_leda.csv', ortlabel='LEDA', coln_ra='ledaRA', 
              coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl', deproj='inc', 
              p3d_dir=None, interp_order=1, p3dtempl='flux_elines.GNAME.cube.fits.gz', 
@@ -51,6 +51,10 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             'str' : no masking, for mom-0 only
             'dil' : dilated mask, for all moments and peak SNR image
             'smo' : smoothed and dilated mask, for all moments
+    stride : list of int
+        Step size to select pixels along each axis.  Axes are ordered using
+        the FITS convention, not numpy convention (i.e. velaxis last).
+        Default is [3,3,1] to keep one of every 3 pixels in both RA and DEC.
     alphaco : float
         CO to H2 conversion factor, in Msol/pc2/(K km/s).  Default=4.3
     hexgrid : boolean
@@ -98,8 +102,6 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
     """
     if allpix:
         stride = [1,1,1]
-    else:
-        stride = [3,3,1]
 
     # Get the orientation parameters from LEDA
     try:
