@@ -1,4 +1,4 @@
-from ._astropy_init import __version__, test
+from ._astropy_init import __version__
 from . import beam_sample, conversion, fitsextract, plotting, util
 from astropy.table import Table as _Table
 from astropy.table import join as _join
