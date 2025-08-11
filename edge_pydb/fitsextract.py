@@ -258,13 +258,16 @@ def fitsextract(input, header=None, stride=[1,1,1], keepref=True, keepnan=True,
 
     # Remove NaN rows if desired
     if not keepnan:
-        if not pseudo:
-            newtab = tab[~np.isnan(tab[col_lbl])]
-            tab = newtab
-        else:
-            df = tab.to_pandas()
-            df.dropna(how='all', subset=col_lbl)
-            tab = Table.from_pandas(df)
+        nan_masks = [np.isnan(tab[col]) for col in tab.colnames]
+        all_nan_rows = np.all(np.column_stack(nan_masks), axis=1)
+        tab = tab[~all_nan_rows]
+#         if not pseudo:
+#             newtab = tab[~np.isnan(tab[col_lbl])]
+#             tab = newtab
+#         else:
+#             df = tab.to_pandas()
+#             df.dropna(how='all', subset=col_lbl)
+#             tab = Table.from_pandas(df)
     return tab
 
 # -----------------------------------------------------
@@ -277,10 +280,12 @@ def getlabels(product, p3dstruct='califa'):
             nz = 20
             has_errors = True
             fluxlike = list(range(11))[2:]
+            errlike = list(np.array(fluxlike)+9)
         elif p3dstruct in ['manga', 'ecalifa']:
             nz = 11
             has_errors = False
             fluxlike = list(range(nz))[2:]
+            errlike = []
         zsel = range(nz)
         bright = ['[OII]3727', '[OIII]5007', '[OIII]4959',
                   'Hbeta'    , 'Halpha'    , '[NII]6583', 
@@ -340,7 +345,8 @@ def getlabels(product, p3dstruct='califa'):
         units[6*nline:7*nline] = ['Angstrom']*nline
         units[7*nline:8*nline] = ['Angstrom']*nline
         fluxlike = flux.copy()
-    elif product == 'indices':
+        errlike = eflux.copy()
+    elif product.startswith('indices'):
         nz = 18
         has_errors = True
         if p3dstruct == 'ecalifa':
@@ -357,6 +363,7 @@ def getlabels(product, p3dstruct='califa'):
         lbl = albl + elbl
         units = aunits + aunits
         fluxlike = []
+        errlike = []
     elif product == 'SFH':
         if p3dstruct == 'califa':
             nz = 398    # 2*(39*4 + 39 + 4)
@@ -410,6 +417,7 @@ def getlabels(product, p3dstruct='califa'):
         lbl  = albl + elbl
         units = ['fraction']*len(lbl)
         fluxlike = []
+        errlike = []
     elif product == 'SSP':
         if p3dstruct in ['califa', 'amusing']:
             nz = 20
@@ -429,8 +437,9 @@ def getlabels(product, p3dstruct='califa'):
                  'mag', 'mag', 'km/s', 'km/s', 'km/s', 'km/s', 
                  'solMass/solLum', 'dex(solMass/pixel^2)', 'dex(solMass/pixel^2)']
         fluxlike = [0]
+        errlike = []
         if has_errors:
             lbl += ['e_mass_ssp']
             units += ['dex(solMass/pixel^2)']
-    return zsel, lbl, units, len(zsel), has_errors, fluxlike
+    return zsel, lbl, units, len(zsel), has_errors, fluxlike, errlike
 

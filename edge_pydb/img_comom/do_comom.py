@@ -135,14 +135,30 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             hdul = fits.open(file0, ignore_missing_end=True)
             newhd = hdul[0].header.copy()
             if p3d_dir is not None:
-                p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal))
-                if not os.path.exists(p3dfile):
-                    # Fudge for almaquest file naming convention
-                    gal2 = gal.replace('_','-')
-                    p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal2))
-                    if not os.path.exists(p3dfile):
-                        print('####### Cannot find',p3dfile)
-                        continue
+                opt1 = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal))
+                opt2 = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal+'_0'))
+                opt3 = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal.replace('_','-')))
+                if os.path.exists(opt1):
+                    p3dfile = opt1
+                elif os.path.exists(opt2):
+                    p3dfile = opt2
+                    print('Using',opt2)
+                elif os.path.exists(opt3):
+                    p3dfile = opt3
+                    print('Using',opt3)
+                else:
+                    print('####### Cannot find',opt1)
+                    continue
+#                     # These have special names
+#                     if gname in ['NGC5953', 'NGC4211NED02']:
+#                         if not os.path.exists(p3d_file):
+#                             p3d_file = os.path.join(fitsdir, gname+'_0.Pipe3D.cube.fits.gz')
+#                     # Fudge for almaquest file naming convention
+#                     gal2 = gal.replace('_','-')
+#                     p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal2))
+#                     if not os.path.exists(p3dfile):
+#                         print('####### Cannot find',p3dfile)
+#                         continue
                 p3dhd = fits.getheader(p3dfile)
                 hd2d = WCS(p3dhd).celestial.to_header()
                 for key in hd2d.keys():

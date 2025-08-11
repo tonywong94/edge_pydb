@@ -214,9 +214,13 @@ t['caeR90'].unit = 'arcsec'
 t['caeR90'].description = 'Error in R90 from col 43 in get_mag_cubes_v2.2.csv'
 
 # Columns from get_proc_elines_CALIFA.fixheader.csv
-for str_name in ['cazgas','cazstars','caAge','caeAge','caFHa','caFHacorr','caLHacorr',
-                 'caMstars','caeMstars','caSFR','caeSFR','caOH','caeOH','caAvgas',
-                 'caeAvgas','caAvstars','caeAvstars','caDistP3d','caDistMpc']:
+for str_name in ['cazgas','cazstars','caAge','caeAge','caAge_Re_fit','caeAge_Re_fit',
+                 'caAge_alpha_fit','caeAge_alpha_fit','caAge_Re_fit_mw','caeAge_Re_fit_mw',
+                 'caAge_alpha_fit_mw','caeAge_alpha_fit_mw','caFHa','caFHacorr','caLHacorr',
+                 'caMstars','caeMstars','caMstarscorr','caSFR','caeSFR','caOH','caeOH',
+                 'caOH_Re_fit','caeOH_Re_fit','caOH_alpha_fit','caeOH_alpha_fit','caOH_Re_fit_M08',
+                 'caeOH_Re_fit_M08','caOH_alpha_fit_M08','caeOH_alpha_fit_M08','caAvgas',
+                 'caeAvgas','caAvstars','caeAvstars','caDistP3d','caDistAngDiam','caDistMpc']:
     t.add_column(np.nan,name=str_name)
 cosmo = FlatLambdaCDM(H0=70, Om0=0.27)
 for i in range(len(t)):
@@ -226,28 +230,62 @@ for i in range(len(t)):
         t['cazstars'][i]   = get_proc_elines['z_stars'][ind]
         t['caAge'][i]      = get_proc_elines['log_age_mean_LW'][ind]
         t['caeAge'][i]     = get_proc_elines['s_log_age_mean_LW'][ind]
+        t['caAge_Re_fit'][i]        = get_proc_elines['Age_LW_Re_fit'][ind]
+        t['caeAge_Re_fit'][i]       = get_proc_elines['e_Age_LW_Re_fit'][ind]
+        t['caAge_alpha_fit'][i]     = get_proc_elines['alpha_Age_LW_Re_fit'][ind]
+        t['caeAge_alpha_fit'][i]    = get_proc_elines['e_alpha_Age_LW_Re_fit'][ind]
+        t['caAge_Re_fit_mw'][i]     = get_proc_elines['Age_MW_Re_fit'][ind]
+        t['caeAge_Re_fit_mw'][i]    = get_proc_elines['e_Age_MW_Re_fit'][ind]
+        t['caAge_alpha_fit_mw'][i]  = get_proc_elines['alpha_Age_MW_Re_fit'][ind]
+        t['caeAge_alpha_fit_mw'][i] = get_proc_elines['e_alpha_Age_MW_Re_fit'][ind]
         t['caFHa'][i]      = get_proc_elines['log_F_Ha'][ind]
         t['caFHacorr'][i]  = get_proc_elines['log_F_Ha_cor'][ind]
         t['caLHacorr'][i]  = get_proc_elines['log_L_Ha_cor'][ind]
         t['caMstars'][i]   = get_proc_elines['log_Mass'][ind]
         t['caeMstars'][i]  = get_proc_elines['error_Mass'][ind]
+        t['caMstarscorr'][i]        = get_proc_elines['log_Mass_corr'][ind]
         t['caSFR'][i]      = get_proc_elines['lSFR'][ind]
         t['caeSFR'][i]     = get_proc_elines['e_lSFR'][ind]
         t['caOH'][i]       = get_proc_elines['OH_O3N2'][ind]
         t['caeOH'][i]      = get_proc_elines['e_OH_O3N2'][ind]
+        t['caOH_Re_fit'][i]         = get_proc_elines['OH_Re_fit_O3N2'][ind]
+        t['caeOH_Re_fit'][i]        = get_proc_elines['e_OH_Re_fit_O3N2'][ind]
+        t['caOH_alpha_fit'][i]      = get_proc_elines['alpha_OH_Re_fit_O3N2'][ind]
+        t['caeOH_alpha_fit'][i]     = get_proc_elines['e_alpha_OH_Re_fit_O3N2'][ind]
+        t['caOH_Re_fit_M08'][i]     = get_proc_elines['OH_Re_fit_M08'][ind]
+        t['caeOH_Re_fit_M08'][i]    = get_proc_elines['e_OH_Re_fit_M08'][ind]
+        t['caOH_alpha_fit_M08'][i]  = get_proc_elines['alpha_OH_Re_fit_M08'][ind]
+        t['caeOH_alpha_fit_M08'][i] = get_proc_elines['e_alpha_OH_Re_fit_M08'][ind]
         t['caAvgas'][i]    = get_proc_elines['Av_gas_LW_Re'][ind]
         t['caeAvgas'][i]   = get_proc_elines['e_Av_gas_LW_Re'][ind]
         t['caAvstars'][i]  = get_proc_elines['Av_ssp_stats_mean'][ind]
         t['caeAvstars'][i] = get_proc_elines['Av_ssp_stats_stddev'][ind]
         t['caDistP3d'][i]  = get_proc_elines['DL'][ind]
+        t['caDistAngDiam'][i]       = get_proc_elines['DA'][ind]
     if t['cazgas'][i] != np.nan:
         t['caDistMpc'][i] = cosmo.luminosity_distance(t['cazgas'][i]).value
+
 t['cazgas'].description = 'Redshift for gas lines from <z_gas> in get_proc_elines_CALIFA.csv'
 t['cazstars'].description = 'Redshift for stars from <z_stars> in get_proc_elines_CALIFA.csv'
+
 t['caAge'].unit = 'dex(Gyr)'
 t['caAge'].description = 'Mean stellar age from <log_age_mean_LW> in get_proc_elines_CALIFA.csv'
 t['caeAge'].unit = 'dex(Gyr)'
 t['caeAge'].description = 'Error in mean stellar age from <s_log_age_mean_LW> in get_proc_elines_CALIFA.csv'
+
+t['caAge_Re_fit'].unit = 'dex(Gyr)'
+t['caAge_Re_fit'].description = 'LW stellar age at Re from <Age_LW_Re_fit> in get_proc_elines_CALIFA.csv'
+t['caeAge_Re_fit'].unit = 'dex(Gyr)'
+t['caAge_alpha_fit'].unit = 'dex(Gyr)'
+t['caAge_alpha_fit'].description = 'Slope LW stellar age at Re from <alpha_Age_LW_Re_fit> in get_proc_elines_CALIFA.csv'
+t['caeAge_alpha_fit'].unit = 'dex(Gyr)'
+t['caAge_Re_fit_mw'].unit = 'dex(Gyr)'
+t['caAge_Re_fit_mw'].description = 'MW stellar age at Re from <Age_LW_Re_fit> in get_proc_elines_CALIFA.csv'
+t['caeAge_Re_fit_mw'].unit = 'dex(Gyr)'
+t['caAge_alpha_fit_mw'].unit = 'dex(Gyr)'
+t['caAge_alpha_fit_mw'].description = 'Slope MW stellar age at Re from <alpha_Age_LW_Re_fit> in get_proc_elines_CALIFA.csv'
+t['caeAge_alpha_fit_mw'].unit = 'dex(Gyr)'
+
 t['caFHa'].unit = 'dex(1e-16 erg / (cm2 s))'
 t['caFHa'].description = 'Log of Halpha flux from <log_F_Ha> in get_proc_elines_CALIFA.csv'
 t['caFHacorr'].unit = 'dex(1e-16 erg / (cm2 s))'
@@ -258,6 +296,9 @@ t['caMstars'].unit = 'dex(solMass)'
 t['caMstars'].description = 'Log of stellar mass from <log_Mass> in get_proc_elines_CALIFA.csv'
 t['caeMstars'].unit = 'dex(solMass)'
 t['caeMstars'].description = 'Error in log of stellar mass from <error_Mass> in get_proc_elines_CALIFA.csv'
+t['caMstarscorr'].unit = 'dex(solMass)'
+t['caMstarscorr'].description = 'Log of corrected stellar mass from <log_Mass_corr> in get_proc_elines_CALIFA.csv'
+
 t['caSFR'].unit = 'dex(solMass / yr)'
 t['caSFR'].description = 'SFR from <lSFR> in get_proc_elines_CALIFA.csv'
 t['caeSFR'].unit = 'dex(solMass / yr)'
@@ -266,6 +307,23 @@ t['caOH'].unit = 'dex'
 t['caOH'].description = 'Oxygen abundance as 12+log(O/H) from <OH_O3N2> in get_proc_elines_CALIFA.csv'
 t['caeOH'].unit = 'dex'
 t['caeOH'].description = 'Error in oxygen abundance from <e_OH_O3N2> in get_proc_elines_CALIFA.csv'
+t['caOH_Re_fit'].unit = 'dex'
+t['caOH_Re_fit'].description = 'Oxygen abundance at Re from <OH_Re_fit_O3N2> in get_proc_elines_CALIFA.csv'
+t['caeOH_Re_fit'].unit = 'dex'
+t['caeOH_Re_fit'].description = 'Error in oxygen abundance at Re from <e_OH_Re_fit_O3N2> in get_proc_elines_CALIFA.csv'
+t['caOH_alpha_fit'].unit = 'dex'
+t['caOH_alpha_fit'].description = 'Slope of oxygen abundance at Re from <alpha_OH_Re_fit_O3N2> in get_proc_elines_CALIFA.csv'
+t['caeOH_alpha_fit'].unit = 'dex'
+t['caeOH_alpha_fit'].description = 'Error in slope of oxygen abundance at Re from <e_alpha_OH_Re_fit_O3N2> in get_proc_elines_CALIFA.csv'
+t['caOH_Re_fit_M08'].unit = 'dex'
+t['caOH_Re_fit_M08'].description = 'Oxygen abundance at Re using M08 from <OH_Re_fit_M08> in get_proc_elines_CALIFA.csv'
+t['caeOH_Re_fit_M08'].unit = 'dex'
+t['caeOH_Re_fit_M08'].description = 'Error in oxygen abundance at Re from <e_OH_Re_fit_M08> in get_proc_elines_CALIFA.csv'
+t['caOH_alpha_fit_M08'].unit = 'dex'
+t['caOH_alpha_fit_M08'].description = 'Slope of oxygen abundance at Re using M08 from <alpha_OH_Re_fit_M08> in get_proc_elines_CALIFA.csv'
+t['caeOH_alpha_fit_M08'].unit = 'dex'
+t['caeOH_alpha_fit_M08'].description = 'Error in slope of oxygen abundance at Re from <e_alpha_OH_Re_fit_M08> in get_proc_elines_CALIFA.csv'
+
 t['caAvgas'].unit = 'mag'
 t['caAvgas'].description = 'Nebular extinction as Av from <Av_gas_LW_Re> in get_proc_elines_CALIFA.csv'
 t['caeAvgas'].unit = 'mag'
@@ -277,6 +335,9 @@ t['caeAvstars'].description = 'Error in stellar extinction <Av_ssp_stats_stddev>
 t['caDistP3d'].unit = 'cm'
 t['caDistP3d'].convert_unit_to('Mpc')
 t['caDistP3d'].description = 'Luminosity distance in Mpc from <DL> in get_proc_elines_CALIFA.csv'
+t['caDistAngDiam'] *= 206.265
+t['caDistAngDiam'].unit = 'Mpc'
+t['caDistAngDiam'].description = 'Ang diam distance in Mpc cfrom <DA> in get_proc_elines_CALIFA.csv'
 t['caDistMpc'].unit = 'Mpc'
 t['caDistMpc'].description = 'Luminosity distance in Mpc computed from cazgas assuming Ho=70, Om=0.27, Ol=0.73'
 

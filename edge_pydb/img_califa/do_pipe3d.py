@@ -28,12 +28,14 @@ np.seterr(divide='ignore', invalid='ignore')
 def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None, 
               p3dstruct='califa', packed=True, stride=[3,3,1], comomdir=None, 
               cotempl='GNAME.co_dil.snrpk.fits.gz', ssptable='gsd01_156.fits', 
-              interp_order=1, ext='', nsm=2, ortpar='edge_leda.csv', 
+              interp_order=1, nsm=2, ortpar='edge_leda.csv', 
               distpar='edge_califa.csv', ortlabel='LEDA', coln_ra='ledaRA', 
               coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl',
-              coln_dmpc='caDistP3d', hexgrid=False, allpix=False, debug=False, 
+              coln_dmpc='caDistP3d', coln_re='caRe', coln_metref='caOH_Re_fit', 
+              coln_metgrad='caOH_alpha_fit', hexgrid=False, allpix=False, debug=False, 
               keepnan=True, blankval=0, prob=True, discard_cdmatrix=False, 
-              overwrite=True, matchres=False, regridtoco=False, select_reg=True,
+              overwrite=True, matchres=False, regridtoco=False, 
+              gaia_mask=True, select_reg=True, mangia=False, Zprime_uplim=2.,
               prodtype=['ELINES', 'SFH', 'SSP', 'indices', 'flux_elines'],
               leadstr=['', '', '', 'indices.CS.', 'flux_elines.'],
               tailstr=['.ELINES','.SFH','.SSP','',''], tailx='.cube.fits.gz'):
@@ -85,17 +87,18 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     interp_order : int
         Interpolation order for reproject.  Default is 1 (bilinear).  Use 0 for 
         nearest neighbor interpolation, where new values are drawn from existing ones.
-    ext : str
-        Suffix to add to column names, e.g. '_sm'
     nsm : int
         Stddev of Gaussian smoothing kernel in pixels to use for Balmer decrement
-        noise reduction.
+        noise reduction.  Default 2 pixels.  Only done if matchres=False.
     ortpar : filename
         Name of the EdgeTable which has orientation parameters for the sample, 
         including center position, inclination, and position angle.  This can also 
         be given as the path to a regular astropy-compatible Table.
+        Default is 'edge_leda.csv'.  If set to '' then each galaxy is assumed to be
+        exactly face-on with center position at the reference pixel.
     distpar : filename
-        Name of the EdgeTable which has distances for converting \Sigma_*.
+        Name of the EdgeTable which has distances for converting Sigma_* and
+        parameters for the modeled radial metallicity gradient.
     ortlabel : str
         String for labeling source of the orientation parameters.  Default is 'LEDA'.
     coln_ra : str
@@ -136,9 +139,15 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         Whether to adopt the CO sampling grid for the output products.  This is always
         done after any resolution matching.
         Default: False
+    gaia_mask: boolean
+        Whether to blank stars using the GAIA_MASK extension (eCALIFA and MaNGA DR17).
+        Default: True
     select_reg: boolean
         Whether to limit FOV using the SELECT_REG extension (eCALIFA and MaNGA DR17).
         Default: True
+    mangia: boolean
+        Special handling of MaNGIA data.
+        Default: False
     prodtype : list of str
         List of Pipe3D products in the order to be analyzed.
     leadstr : list of str
@@ -168,11 +177,12 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 'CD3_1', 'CD3_2', 'CD3_3']
 
     # Get the orientation parameters and distances from global tables
-    try:
-        orttbl = EdgeTable(ortpar)
-    except:
-        orttbl = Table.read(ortpar, format='ascii.ecsv')
-    orttbl.add_index('Name') 
+    if ortpar != '':
+        try:
+            orttbl = EdgeTable(ortpar)
+        except:
+            orttbl = Table.read(ortpar, format='ascii.ecsv')
+        orttbl.add_index('Name') 
     try:
         disttbl = EdgeTable(distpar)
     except:
@@ -190,28 +200,43 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
     for i_gal, gname in enumerate(gallist):
         print('\nCanonical galaxy name is {}'.format(gname))
 
-        if gname not in orttbl['Name']:
-            print('\nERROR: Did not find galaxy',gname,'in',ortpar)
-            continue
-        elif gname not in disttbl['Name']:
+        if gname not in disttbl['Name']:
             print('\nERROR: Did not find galaxy',gname,'in',distpar)
-            continue
+            # Fall back on LEDA distance if necessary
+            if 'leda' in ortpar:
+                adopt_dist = orttbl.loc[gname]['ledaDistMpc']
+                print('Using LEDA distance from',ortpar)
+            else:
+                continue
         else:
-            print("RA={:.3f} deg Dec={:.3f} deg PA={:.1f} deg Inc={:.1f} deg Dist={:.1f} Mpc".format(
-                  orttbl.loc[gname][coln_ra],
-                  orttbl.loc[gname][coln_dc],
-                  orttbl.loc[gname][coln_pa],
-                  orttbl.loc[gname][coln_inc],
-                  disttbl.loc[gname][coln_dmpc]))
+            adopt_dist = disttbl.loc[gname][coln_dmpc]
+        print("Dist={:.1f} Mpc".format(adopt_dist))
+        if ortpar != '' and gname in orttbl['Name']:
+            adopt_ra = orttbl.loc[gname][coln_ra]
+            adopt_dc = orttbl.loc[gname][coln_dc]
+            adopt_pa = orttbl.loc[gname][coln_pa]
+            adopt_inc = orttbl.loc[gname][coln_inc]
+            print("RA={:.3f} deg Dec={:.3f} deg PA={:.1f} deg Inc={:.1f} deg".format(
+                  adopt_ra, adopt_dc, adopt_pa, adopt_inc))
+        else:
+            print('\nERROR: Did not find galaxy',gname,'in',ortpar)
+            adopt_ra = None
+            adopt_dc = None
+            adopt_pa = 0.
+            adopt_inc = 0.
 
         # Read in Pipe3D output to get astrometry
         if packed:
             if p3dstruct=='manga':
                 p3d_file = os.path.join(fitsdir, 'manga-'+gname+'.Pipe3D.cube.fits.gz')
+                if mangia:
+                    p3d_file = os.path.join(fitsdir, 'ilust-'+gname+'-127-r.Pipe3D.cube.fits.gz')
+                    #supp_file = os.path.join(fitsdir, 'ilust-'+gname+'-127-r.indices.cube.fits.gz')
             else:
                 p3d_file = os.path.join(fitsdir, gname+'.Pipe3D.cube.fits.gz')
-                # These have special names
-                if gname in ['NGC5953', 'NGC4211NED02']:
+                # Alternate naming convention
+                if not os.path.exists(p3d_file):
+                    print('####### Cannot find', p3d_file)
                     p3d_file = os.path.join(fitsdir, gname+'_0.Pipe3D.cube.fits.gz')
         else:
             p3d_file = os.path.join(fitsdir, 'flux_elines.'+gname+tailx)
@@ -219,6 +244,12 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             print('####### Cannot find', p3d_file)
             continue          
         hdul = fits.open(p3d_file, ignore_missing_end=True)
+        # This is a workaround for the additional file for MaNGIA galaxies
+#         if mangia:
+#             hdu2 = fits.open(supp_file)
+#             hdu_add = fits.ImageHDU(data=hdu2[0].data, header=hdu2[0].header, 
+#                                     name='indices_nobin')
+#             hdul.append(hdu_add)
         p3dhd = hdul[0].header
         # Arcseconds per pixel in Pipe3D output
         pixsca = round(3600*WCS(p3dhd).pixel_scale_matrix[1][1],2) * u.arcsec
@@ -229,6 +260,22 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         for key in ['CDELT3', 'CD3_3']:
             if key in p3dhd.keys():
                 p3dhd[key] = 1.
+
+        # Get PSF properties
+        if 'FWHM' in p3dhd.keys():
+            fwhm = p3dhd['FWHM'] * u.arcsec
+        elif 'RFWHM' in p3dhd.keys():
+            fwhm = p3dhd['RFWHM'] * u.arcsec
+        elif 'PIPE FWHM_r' in p3dhd.keys():
+            fwhm = p3dhd['PIPE FWHM_r'] * u.arcsec
+        elif p3dstruct == 'califa':
+            fwhm = 2.50 * u.arcsec  # CALIFA sample mean, Paper IV (Sanchez+16)
+        elif p3dstruct == 'manga':
+            fwhm = 2.54 * u.arcsec  # MaNGA sample median, (Yan+16)
+        elif p3dstruct == 'ecalifa':
+            fwhm = 1.50 * u.arcsec  # Typical eCALIFA value (Sanchez+23)
+        fwhmpix = (fwhm/pixsca).value  # convert to pixels
+        print('{} PSF parameters: fwhm={}'.format(p3dstruct,fwhm))
 
         # Read in CO template and prepare target header
         if comomdir is not None:
@@ -246,24 +293,21 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
 #                 for key in cdkeys:
 #                     if key in p3dhd.keys():
 #                         del p3dhd[key]
-            # If matching resolution, get beam information
+            
+            # If matching resolution, get convolution kernel
             if matchres:
                 cobeam = Beam.from_fits_header(cohd)
                 copsf = cobeam.as_kernel(pixsca)
-#                 copsf = cobeam.as_kernel(pixsca)._model   # to return Gaussian2D
+                fwhmfin = (cobeam.major.to(u.arcsec)/pixsca).value
                 print('\nCO TEMPLATE',cobeam)
                 # WARNING: for Moffat profile, deconvolving a larger beam may not be caught
                 if p3dstruct == 'califa':
-                    if 'FWHM' in p3dhd.keys():
-                        fwhm = p3dhd['FWHM']/pixsca.value  # convert to pixels
-                    else:
-                        fwhm = 2.50/pixsca.value  # CALIFA sample mean, Paper IV (Sanchez+16)
                     if 'BETA' in p3dhd.keys():
                         beta = p3dhd['BETA']
                     else:
                         beta = 2.15  # CALIFA weighted median, Paper IV
-                    print('Moffat profile parameters: fwhm={}, beta={}'.format(fwhm,beta))
-                    alpha = fwhm/(2*np.sqrt(2**(1/beta)-1))  # Erwin 2015
+                    print('Moffat profile with beta={}'.format(beta))
+                    alpha = fwhmpix/(2*np.sqrt(2**(1/beta)-1))  # Erwin 2015
                     # --- Generate input Moffat profile (note different notation in astropy)
                     ifupsf = Moffat2DKernel(alpha, beta, x_size=copsf.shape[1], 
                                             y_size=copsf.shape[0])
@@ -276,19 +320,8 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                         print('### Cannot deconvolve: IFU has larger PSF than CO template')
                         continue
                 elif p3dstruct in ['manga', 'ecalifa']:
-                    if p3dstruct == 'manga':
-                        if 'RFWHM' in p3dhd.keys():
-                            fwhm = p3dhd['RFWHM'] * u.arcsec
-                        else:
-                            fwhm = 2.54 * u.arcsec # MaNGA sample median, (Yan+16)
-                    else:
-                        if 'PIPE FWHM_r' in p3dhd.keys():
-                            fwhm = p3dhd['PIPE FWHM_r'] * u.arcsec
-                        else:
-                            fwhm = 1.5 * u.arcsec # Typical eCALIFA value (Sanchez+23)
-                    print('{} Gaussian profile parameters: fwhm={}'.format(p3dstruct,fwhm))
-                    ifu_beam = Beam(fwhm)
-                    conv_beam = cobeam.deconvolve(ifu_beam, failure_returns_pointlike=True)
+                    ifubeam = Beam(fwhm)
+                    conv_beam = cobeam.deconvolve(ifubeam, failure_returns_pointlike=True)
                     if conv_beam.major > 0:
                         convkern = conv_beam.as_kernel(pixsca)
                     else:
@@ -323,7 +356,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         # BEGIN loop over products
         for i_prod, prod in enumerate(prodtype):
             print('\nWorking on extension {}'.format(prod))
-            zsel, labels, units, nsel, has_errors, fluxlike = getlabels(prod, 
+            zsel, labels, units, nsel, has_errors, fluxlike, errlike = getlabels(prod, 
                 p3dstruct=p3dstruct)
             default_len = len(zsel)
 
@@ -333,9 +366,10 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 cadat = hdul[prod].data
                 # Apply the blanking masks in the newer data
                 if p3dstruct in ['manga', 'ecalifa']:
-                    msk = hdul['GAIA_MASK'].data
-                    msk3d = np.broadcast_to(msk, cadat.shape)
-                    cadat[msk3d>0] = np.nan
+                    if gaia_mask:
+                        msk = hdul['GAIA_MASK'].data
+                        msk3d = np.broadcast_to(msk, cadat.shape)
+                        cadat[msk3d>0] = np.nan
                     if select_reg:
                         sel = hdul['SELECT_REG'].data
                         sel3d = np.broadcast_to(sel, cadat.shape)
@@ -346,7 +380,6 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
             if regridtoco:
                 w_cahd = cawcshd.copy()
             else:
-#             if comomdir is None or matchres:
                 w_cahd = p3dhd.copy()
                 # Fixes issue where header 0 has no NAXIS1 or NAXIS2
                 for key in ['NAXIS2', 'NAXIS1']:
@@ -366,9 +399,9 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 print('nz=',nz,'zsel=',zsel)
             if matchres and (prod == 'ELINES' or prod == 'flux_elines'):
                 for iline in range(len(labels)):
-                    if zsel[iline] in fluxlike:
+                    if zsel[iline] in set(fluxlike).union(set(errlike)):
                         labels[iline] += '_cobm'
-            col_lbl = [s+ext for s in labels]
+            col_lbl = [s for s in labels]
 
             # Convolve the fluxlike columns to the matched resolution
             if matchres:
@@ -376,11 +409,14 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     # Convolve the pseudo-continuum image
                     if prod == 'SSP' and iz==0:
                         Vcont_orig = cadat[iz,:,:].copy()
-                        col_lbl[iz] = labels[iz]+'_cobm'+ext
+                        col_lbl[iz] = labels[iz]+'_cobm'
                     cadat[iz,:,:] = convolve(cadat[iz,:,:], convkern, preserve_nan=True)
+                # As a crude approximation we scale the error by ratio of beam widths
+                for iz in errlike:
+                    cadat[iz,:,:] *= fwhmpix/fwhmfin
                 if prod == 'SSP':
                     dezon_cobm = cadat[2,:,:] * cadat[0,:,:]/Vcont_orig
-                    col_lbl += ['cobm_dezon'+ext]
+                    col_lbl += ['cobm_dezon']
                     cadat = np.concatenate((cadat, dezon_cobm[np.newaxis]))
                     print('Reshaped cadat:',cadat.shape)
                     if len(zsel) == default_len:
@@ -394,31 +430,44 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 if prod == 'ELINES':
                     hb_idx = 5
                     ha_idx = 6
+                    col_lbl += ['Hbeta_sm'+str(nsm), 'Halpha_sm'+str(nsm)]
                     if has_errors:
                         e_hb_idx = hb_idx + (nz-2)//2
                         e_ha_idx = ha_idx + (nz-2)//2
-                    col_lbl += ['Hbeta_sm'+str(nsm)+ext, 'Halpha_sm'+str(nsm)+ext]
+                        col_lbl += ['e_Hbeta_sm'+str(nsm), 'e_Halpha_sm'+str(nsm)]
                 else:
                     hb_idx = 28
                     ha_idx = 45
+                    col_lbl += ['flux_Hbeta_sm'+str(nsm), 'flux_Halpha_sm'+str(nsm)]
                     if has_errors:
                         e_hb_idx = hb_idx + nz//2
                         e_ha_idx = ha_idx + nz//2
-                    col_lbl += ['flux_Hbeta_sm'+str(nsm)+ext, 'flux_Halpha_sm'+str(nsm)+ext]
-                # Estimate of noise following convolution, see 2021RNAAS...5...39K
-#                 e_kernel = Gaussian2DKernel(nsm/np.sqrt(2))
-#                 base_res = fwhm / np.sqrt(8*np.log(2))
-#                 scalefac = 4 * np.pi * base_res**2 * nsm**2 / (base_res**2 + nsm**2)
-#                 e_hb_conv = scalefac * convolve(cadat[e_hb_idx,:,:], e_kernel, preserve_nan=True)
-#                 e_ha_conv = scalefac * convolve(cadat[e_ha_idx,:,:], e_kernel, preserve_nan=True)
+                        col_lbl += ['e_flux_Hbeta_sm'+str(nsm), 'e_flux_Halpha_sm'+str(nsm)]
                 hb_conv = convolve(cadat[hb_idx,:,:], kernel, preserve_nan=True)
                 ha_conv = convolve(cadat[ha_idx,:,:], kernel, preserve_nan=True)
-                cadat = np.concatenate((cadat, hb_conv[np.newaxis], ha_conv[np.newaxis]))
-                print('Reshaped cadat:',cadat.shape)
-                if len(zsel) == default_len:
+                # Estimate of noise following convolution, see 2021RNAAS...5...39K
+                if has_errors:
+                    e_kernel = Gaussian2DKernel(nsm).array**2
+                    base_res = fwhmpix / np.sqrt(8*np.log(2))
+                    scalefac = 4 * np.pi * base_res**2 * nsm**2 / (base_res**2 + nsm**2)
+                    var_hb_conv = scalefac * convolve(cadat[e_hb_idx,:,:]**2, e_kernel, 
+                            normalize_kernel=False, nan_treatment='fill', preserve_nan=True)
+                    var_ha_conv = scalefac * convolve(cadat[e_ha_idx,:,:]**2, e_kernel, 
+                            normalize_kernel=False, nan_treatment='fill', preserve_nan=True)
+                    e_hb_conv = np.sqrt(var_hb_conv)
+                    e_ha_conv = np.sqrt(var_ha_conv)
+                    cadat = np.concatenate((cadat, hb_conv[np.newaxis], ha_conv[np.newaxis],
+                                            e_hb_conv[np.newaxis], e_ha_conv[np.newaxis]))
+                    print('Reshaped cadat:',cadat.shape)
+                    if len(zsel) == default_len:
+                        zsel = list(zsel) + [nz, nz+1, nz+2, nz+3]
+                    if len(units) == default_len:
+                        units += ['10^-16 erg cm^-2 s^-1'] * 4
+                else:       
+                    cadat = np.concatenate((cadat, hb_conv[np.newaxis], ha_conv[np.newaxis]))
+                    print('Reshaped cadat:',cadat.shape)
                     zsel = list(zsel) + [nz, nz+1]
-                if len(units) == default_len:
-                    units += ['10^-16 erg cm^-2 s^-1', '10^-16 erg cm^-2 s^-1']
+                    units += ['10^-16 erg cm^-2 s^-1'] * 2
 
             # Regrid to the CO template if desired
             if regridtoco:
@@ -429,13 +478,15 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
 #                     print(repr(w_cahd))
 #                     fits.writeto(gname+'.'+prod+'.rg.fits', cadat, cawcshd, overwrite=True)
         
+#             if ortpar != '':
             tab0 = fitsextract(cadat, header=w_cahd, keepnan=keepnan, stride=stride, 
-                               bunit=units, col_lbl=col_lbl, zselect=zsel, 
-                               ra_gc=orttbl.loc[gname][coln_ra],
-                               dec_gc=orttbl.loc[gname][coln_dc], 
-                               pa=orttbl.loc[gname][coln_pa],
-                               inc=orttbl.loc[gname][coln_inc], 
-                               ortlabel=ortlabel, first=True, use_hexgrid=hexgrid)
+                           bunit=units, col_lbl=col_lbl, zselect=zsel, ra_gc=adopt_ra, 
+                           dec_gc=adopt_dc, pa=adopt_pa, inc=adopt_inc, 
+                           ortlabel=ortlabel, first=True, use_hexgrid=hexgrid)
+#             else:
+#                 tab0 = fitsextract(cadat, header=w_cahd, keepnan=keepnan, stride=stride, 
+#                    bunit=units, col_lbl=col_lbl, zselect=zsel, keepref=False,
+#                    ortlabel=ortlabel, first=True, use_hexgrid=hexgrid)
             if debug:
                 print(tab0.colnames)
             gname_coln = Column([np.string_(gname)]*len(tab0), name='Name', 
@@ -444,20 +495,29 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         
             # Add additional columns depending on prodtype
             if prod == 'ELINES' or prod == 'flux_elines':
+                if matchres:
+                    ext = '_cobm'
+                else:
+                    ext = ''
                 if prod == 'ELINES':
                     prfx = ''
                     # Provide labels for ELINES columns
                     if matchres:
                         for iline, linecol in enumerate(labels):
-                            if zsel[iline] in fluxlike:
-                                if tab0[linecol+ext].description == '':
-                                    tab0[linecol+ext].description = linecol
-                                tab0[linecol+ext].description += ' matched to CO res'
+                            if zsel[iline] in set(fluxlike).union(set(errlike)):
+                                if tab0[linecol].description == '':
+                                    tab0[linecol].description = linecol.replace('_cobm','')
+                                tab0[linecol].description += ' matched to CO res'
                     else:
-                        tab0['Hbeta_sm'+str(nsm)+ext].description=\
+                        tab0['Hbeta_sm'+str(nsm)].description=\
                                  'Hbeta after {} pix smooth'.format(str(nsm))
-                        tab0['Halpha_sm'+str(nsm)+ext].description=\
+                        tab0['Halpha_sm'+str(nsm)].description=\
                                  'Halpha after {} pix smooth'.format(str(nsm))
+                        if has_errors:
+                            tab0['e_Hbeta_sm'+str(nsm)].description=\
+                                 'error in Hbeta after {} pix smooth'.format(str(nsm))
+                            tab0['e_Halpha_sm'+str(nsm)].description=\
+                                 'error in Halpha after {} pix smooth'.format(str(nsm))
                 else:
                     prfx = 'flux_'
                     # Provide labels for flux_elines columns
@@ -480,27 +540,31 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                             suffix = 'velocity dispersion'
                         elif linetype == 'EW':
                             suffix = 'equivalent width'
-                        tab0[linecol+ext].description=prelbl+linename+' '+suffix
+                        tab0[linecol].description=prelbl+linename+' '+suffix
                     if not matchres:
-                        tab0['flux_Hbeta_sm'+str(nsm)+ext].description=\
+                        tab0['flux_Hbeta_sm'+str(nsm)].description=\
                              'Hbeta intensity after {} pix smooth'.format(str(nsm))
-                        tab0['flux_Halpha_sm'+str(nsm)+ext].description=\
+                        tab0['flux_Halpha_sm'+str(nsm)].description=\
                              'Halpha intensity after {} pix smooth'.format(str(nsm))
+                        if has_errors:
+                            tab0['e_flux_Hbeta_sm'+str(nsm)].description=\
+                                 'error in Hbeta intensity after {} pix smooth'.format(str(nsm))
+                            tab0['e_flux_Halpha_sm'+str(nsm)].description=\
+                                 'error in Halpha intensity after {} pix smooth'.format(str(nsm))
 
-                if matchres:
-                    svext = ext
-                    ext = '_cobm'
                 # sfr0 is SFR from Halpha without extinction correction
                 sfr0 = sfr_ha(tab0[prfx+'Halpha'+ext], imf='salpeter', 
                                  pixsca=pixsca, name=prfx+'sigsfr0'+ext)
                 tab0.add_column(sfr0)
 
                 # Balmer decrement corrected SFR
-                if has_errors and not matchres:   # errors not yet implemented
+                if has_errors:
+                    # Fractional error in sfr0 is same as that of Halpha
                     e_sfr0 = Column(sfr0 *
                         abs(tab0['e_'+prfx+'Halpha'+ext]/tab0[prfx+'Halpha'+ext]), 
                         name='e_'+prfx+'sigsfr0'+ext, dtype='f4', unit=sfr0.unit,
                         description='error of uncorrected SFR surface density')
+                    # Errors in extinction corrected values are propagated
                     sfr_cor, A_Ha, e_sfr_cor, e_A_Ha = sfr_ha(
                                 tab0[prfx+'Halpha'+ext], 
                                 flux_hb=tab0[prfx+'Hbeta'+ext], 
@@ -516,83 +580,84 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                     e_sfr_cor[A_Ha > ahahi] = np.nan
                     tab0.add_columns([e_sfr0, sfr_cor, e_sfr_cor, A_Ha, e_A_Ha])
                 else:
-                    sfr_cor, A_Ha, = sfr_ha(
+                    sfr_cor, A_Ha = sfr_ha(
                                 tab0[prfx+'Halpha'+ext], 
                                 flux_hb=tab0[prfx+'Hbeta'+ext], 
                                 imf='salpeter', pixsca=pixsca,
-                                name=prfx+'sigsfr_corr'+ext)
+                                name=prfx+'sigsfr_corr')
                     # For negative extinction we assume A=0
                     sfr_cor[A_Ha < ahalo]   = sfr0[A_Ha < ahalo]
                     # For high extinction we blank the value
                     sfr_cor[A_Ha > ahahi]   = np.nan
                     tab0.add_columns([sfr_cor, A_Ha])
 
-                # Halpha extinction and SFR after smoothing and clipping
+                # Halpha extinction and SFR after smoothing
                 if not matchres:
-                    A_Ha_smo = Column(get_AHa(tab0[prfx+'Halpha_sm'+str(nsm)+ext], 
-                                tab0[prfx+'Hbeta_sm'+str(nsm)+ext], np.log10), 
-                                name=prfx+'AHa_smooth'+str(nsm)+ext, dtype='f4', unit='mag',
-                                description='Ha extinction after {} pix smooth'.format(str(nsm)))
-                    sfr_smo = Column(sfr0 * 10**(0.4*A_Ha_smo),
-                                name=prfx+'sigsfr_adopt'+ext, dtype='f4', unit=sfr0.unit,
-                                description='smooth+clip BD corrected SFR surface density')
+                    sfr_smo, A_Ha_smo = sfr_ha(
+                                tab0[prfx+'Halpha_sm'+str(nsm)], 
+                                flux_hb=tab0[prfx+'Hbeta_sm'+str(nsm)], 
+                                imf='salpeter', pixsca=pixsca,
+                                name=prfx+'sigsfr_corr_sm'+str(nsm))
                     # For negative extinction we assume A=0
                     sfr_smo[A_Ha_smo < ahalo] = sfr0[A_Ha_smo < ahalo]
                     # For high extinction we blank the value
                     sfr_smo[A_Ha_smo > ahahi] = np.nan
                     tab0.add_columns([A_Ha_smo, sfr_smo])
+                    tab0[prfx+'AHa_corr_sm'+str(nsm)].description=\
+                         'Ha extinction from BD after smoothing'
+                    tab0[prfx+'sigsfr_corr_sm'+str(nsm)].description=\
+                         'BD corrected SFR surface density after smoothing'
 
                 # BPT requires flux_elines since EW(Ha) is part of classification
                 if prod == 'flux_elines':
-                    if prob and not matchres:  # errors not yet implemented
-                        BPT0, BPT0sf, p_BPT0 = bpt_type(tab0, ext=ext, name='BPT'+ext, 
-                                                    prob=True)
+                    if prob:
+                        BPT0, BPT0sf, p_BPT0 = bpt_type(tab0, ext=ext, name='BPT', prob=True)
                         tab0.add_columns([BPT0, p_BPT0, BPT0sf])
                     else:
-                        BPT0, BPT0sf = bpt_type(tab0, ext=ext, name='BPT'+ext, 
-                                                    prob=False)
+                        BPT0, BPT0sf = bpt_type(tab0, ext=ext, name='BPT', prob=False)
                         tab0.add_columns([BPT0, BPT0sf])
-                    #
-                    if matchres:   # errors not yet implemented
-                        zoh0 = ZOH_M13(tab0, ext=ext, name='ZOH'+ext, err=False)
-                        zoh2 = ZOH_M13(tab0, ext=ext, name='ZOH_N2'+ext, 
-                                            method='n2', err=False)
-                        tab0.add_columns([zoh0, zoh2])
-                    else:
-                        zoh0, zoherr0 = ZOH_M13(tab0, ext=ext, name='ZOH'+ext, err=True)
-                        zoh2, zoherr2 = ZOH_M13(tab0, ext=ext, name='ZOH_N2'+ext, 
-                                            method='n2', err=True)
-                        tab0.add_columns([zoh0, zoherr0, zoh2, zoherr2])
-                    zoh_pp04 = ZOH_M13(tab0, ext=ext, name='ZOH_PP04'+ext, 
+                    zoh0, zoherr0 = ZOH_M13(tab0, ext=ext, name='ZOH', err=True)
+                    zoh2, zoherr2 = ZOH_M13(tab0, ext=ext, name='ZOH_N2', 
+                                        method='n2', err=True)
+                    tab0.add_columns([zoh0, zoherr0, zoh2, zoherr2])
+                    zoh_pp04 = ZOH_M13(tab0, ext=ext, name='ZOH_PP04', 
                                             method='o3n2_pp04', err=False)
                     tab0.add_column(zoh_pp04)
-                    Zprime = 10**(zoh_pp04 - 8.69)
-                    # Scaling for alphaCO from Schinnerer & Leroy 2024
-                    # SFR term not yet included (so only valid for J=1-0)
-                    idx = prodtype.index('SSP')
-                    star0 = tablist[idx][tablist[idx]['Name']==gname]['sigstar'+ext]
-                    alpha, f_term, g_term, rco = predict_alphaCO_SL24(
-                           Zprime=Zprime.value, Sigma_star=star0, return_all_terms=True)
-                    alphsca_SL24 = Column(f_term * g_term, name='alphsca_SL24'+ext, 
-                                          unit=None, dtype='f4', 
-                                          description='alphaCO scaling factor from SL24')
-                    tab0.add_column(alphsca_SL24)
-                    # Bolatto+13, iterative mode, based on metallicity,
-                    # kpc-scale CO brightness, and stellar surface density (+9 for HI)
-                    # A minimum alpha_CO is imposed by the optically thin limit and 30 K
-                    try:
-                        cotab  = Table.read(outfile, path='comom_dil')
-                        comom0 = cotab[cotab['Name']==gname]['mom0_12']
-                        alpha2   = predict_alphaCO10_B13(Zprime=Zprime.value,
-                                        WCO10kpc=comom0, Sigmaelsekpc=star0+9)
-                        alphsca_B13 = Column(alpha2.value/4.3, name='alphsca_B13'+ext, 
-                                             unit=None, dtype='f4', 
-                                             description='alphaCO scaling factor from B13')
-                        tab0.add_column(alphsca_B13)
-                    except:
-                        print('Path comom_dil missing from outfile: alphsca_B13 calc skipped')
-                if matchres:
-                    ext = svext
+                    # Variable XCO from modelled metallicity gradient
+                    if coln_metgrad in disttbl.colnames:
+                        if gname in disttbl['Name']:
+                            rnorm = tab0['rad_arc'] / disttbl.loc[gname][coln_re]
+                            zoh_modfit = ((rnorm-1) * disttbl.loc[gname][coln_metgrad] + 
+                                          disttbl.loc[gname][coln_metref])
+                            # Zprime = 10**(zoh_pp04 - 8.69)
+                            Zprime = 10**(zoh_modfit - 8.69)
+                        else:
+                            Zprime = zoh0 * np.nan
+                        # Scaling for alphaCO from Schinnerer & Leroy 2024
+                        # SFR term not yet included (so only valid for J=1-0)
+                        idx = prodtype.index('SSP')
+                        star0 = tablist[idx][tablist[idx]['Name']==gname]['sigstar']
+                        alpha, f_term, g_term, rco = predict_alphaCO_SL24(
+                               Zprime=Zprime.value, Zprime_uplim=Zprime_uplim,
+                               Sigma_star=star0, return_all_terms=True)
+                        alphsca_SL24 = Column(f_term * g_term, name='alphsca_SL24', 
+                                              unit=None, dtype='f4', 
+                                              description='alphaCO scaling factor from SL24')
+                        tab0.add_column(alphsca_SL24)
+                        # Bolatto+13, iterative mode, based on metallicity,
+                        # kpc-scale CO brightness, and stellar surface density (+9 for HI)
+                        # A minimum alpha_CO is imposed by the optically thin limit and 30 K
+                        try:
+                            cotab  = Table.read(outfile, path='comom_dil')
+                            comom0 = cotab[cotab['Name']==gname]['mom0_12']
+                            alpha2   = predict_alphaCO10_B13(Zprime=Zprime.value,
+                                            WCO10kpc=comom0, Sigmaelsekpc=star0+9)
+                            alphsca_B13 = Column(alpha2.value/4.3, name='alphsca_B13', 
+                                                 unit=None, dtype='f4', 
+                                                 description='alphaCO scaling factor from B13')
+                            tab0.add_column(alphsca_B13)
+                        except:
+                            print('Path comom_dil missing from outfile: alphsca_B13 calc skipped')
 
             elif prod == 'SFH':
                 # For star formation history also calculate mass fractions
@@ -609,11 +674,11 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
                 df_age = df_age.reindex(sorted(df_age.columns, key=float), axis=1)
                 # Total the mass fractions < 33 Myr for later SFR calculation
                 sublist = (df_age.columns.values.astype(float) < 0.035)
-                df_age.columns = ['massfrac_age_'+x+ext for x in list(df_age.columns)]
+                df_age.columns = ['massfrac_age_'+x for x in list(df_age.columns)]
                 f_young = np.array(df_age[df_age.columns.values[sublist]].sum(axis=1, 
                                  min_count=1).astype(np.float32))
                 df_met = (df_norm.T).groupby(metcols).sum(min_count=1).T
-                df_met.columns = ['massfrac_met_'+x+ext for x in list(df_met.columns)]
+                df_met.columns = ['massfrac_met_'+x for x in list(df_met.columns)]
                 naggcols = len(df_age.columns) + len(df_met.columns)
                 print('Number of aggregated columns:', naggcols)
                 t_mass_age = Table.from_pandas(df_age.astype(np.float32))
@@ -639,37 +704,37 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
 
             elif prod == 'SSP':
                 # For stellar surface density we need distance
-                star0 = stmass_pc2(tab0['mass_ssp'+ext], dz=tab0['cont_dezon'+ext],
-                                dist=disttbl.loc[gname][coln_dmpc], pixsca=pixsca,
-                                name='sigstar'+ext)
-                avstar0 = stmass_pc2(tab0['mass_Avcor_ssp'+ext], dz=tab0['cont_dezon'+ext],
-                                dist=disttbl.loc[gname][coln_dmpc], pixsca=pixsca,
-                                name='sigstar_Avcor'+ext)
+                star0 = stmass_pc2(tab0['mass_ssp'], dz=tab0['cont_dezon'],
+                                dist=adopt_dist, pixsca=pixsca,
+                                name='sigstar')
+                avstar0 = stmass_pc2(tab0['mass_Avcor_ssp'], dz=tab0['cont_dezon'],
+                                dist=adopt_dist, pixsca=pixsca,
+                                name='sigstar_Avcor')
                 avstar0.description += ' dust corrected'
-                ferr0 = Column(abs(tab0['e_medflx_ssp'+ext]/tab0['medflx_ssp'+ext]), 
-                               name='fe_medflx'+ext, dtype='f4', unit='fraction',
+                ferr0 = Column(abs(tab0['e_medflx_ssp']/tab0['medflx_ssp']), 
+                               name='fe_medflx', dtype='f4', unit='fraction',
                                description='fractional error in continuum flux')
                 tab0.add_columns([star0, avstar0, ferr0])
                 if matchres:
-                    tab0['Vcont_ssp_cobm'+ext].description += ' matched to CO res'
-                    starsm = stmass_pc2(tab0['mass_ssp'+ext], dz=tab0['cobm_dezon'+ext],
-                                    dist=disttbl.loc[gname][coln_dmpc], pixsca=pixsca,
-                                    name='sigstar_cobm'+ext)
+                    tab0['Vcont_ssp_cobm'].description += ' matched to CO res'
+                    starsm = stmass_pc2(tab0['mass_ssp'], dz=tab0['cobm_dezon'],
+                                    dist=adopt_dist, pixsca=pixsca,
+                                    name='sigstar_cobm')
                     starsm.description += ' at CO res'
-                    avstarsm = stmass_pc2(tab0['mass_Avcor_ssp'+ext], 
-                                    dz=tab0['cobm_dezon'+ext],
-                                    dist=disttbl.loc[gname][coln_dmpc], pixsca=pixsca,
-                                    name='sigstar_Avcor_cobm'+ext)
+                    avstarsm = stmass_pc2(tab0['mass_Avcor_ssp'], 
+                                    dz=tab0['cobm_dezon'],
+                                    dist=adopt_dist, pixsca=pixsca,
+                                    name='sigstar_Avcor_cobm')
                     avstarsm.description += ' dust corrected at CO res'
                     tab0.add_columns([starsm, avstarsm])
                     tab0['cobm_dezon'].description='dezonification at CO res'
                 # Add the SSP-based SFR if SFH was run
                 try:
                     ssp_sfr = Column(f_young * star0 / (0.033*u.Gyr),
-                                name='sigsfr_ssp'+ext, dtype='f4',
+                                name='sigsfr_ssp', dtype='f4',
                                 description='Sigma_SFR from < 33 Myr SSP')
                     avssp_sfr = Column(f_young * avstar0 / (0.033*u.Gyr),
-                                name='sigsfr_Avcor_ssp'+ext, dtype='f4',
+                                name='sigsfr_Avcor_ssp', dtype='f4',
                                 description='Sigma_SFR Av-corrected from < 33 Myr SSP')
                     tab0.add_columns([ssp_sfr, avssp_sfr])
                 except NameError:
@@ -687,7 +752,7 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
         if debug:
             print(prod, tablist[i_prod].colnames)
             print('There are',len(tablist[i_prod]),'rows in merged table')
-        tablist[i_prod].write(outfile, path=prod+ext, overwrite=overwrite, 
+        tablist[i_prod].write(outfile, path=prod, overwrite=overwrite, 
                               append=True, serialize_meta=True, compression=True)
 
 # Below code was for when the products were the outer loop and galaxies the inner
@@ -699,10 +764,10 @@ def do_pipe3d(outfile='NGC4047.pipe3d.hdf5', gallist=['NGC4047'], fitsdir=None,
 #         print('There are',len(t_merge),'rows in merged table')
 # 
 #         if prod == prodtype[0]:
-#             t_merge.write(outfile, path=prod+ext, overwrite=overwrite, 
+#             t_merge.write(outfile, path=prod, overwrite=overwrite, 
 #                     append=append, serialize_meta=True, compression=True)
 #         else:
-#     t_merge.write(outfile, path=prod+ext, overwrite=overwrite, 
+#     t_merge.write(outfile, path=prod, overwrite=overwrite, 
 #             append=True, serialize_meta=True, compression=True)
 
     return

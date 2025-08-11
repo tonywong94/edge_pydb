@@ -508,11 +508,7 @@ def bpt_type(fluxtab, ext='', name='BPT', sf=True, prob=False, grid_size=5):
     bpt_col = Column(BPT, name=name, dtype='f4', format='.1f',
                 description='BPT type (-1=SF 0=inter 1=LINER 2=Sy)')
     if sf:
-        if ext != '_cobm':
-            ew_ha = fluxtab['EW_Halpha'+ext]
-        else:
-            ew_ha = fluxtab['EW_Halpha']
-        bpt_sf = (BPT == -1) & (abs(ew_ha)> 6.0)
+        bpt_sf = (BPT == -1) & (abs(fluxtab['EW_Halpha'])> 6.0)
         bpt_sfcol = Column(bpt_sf, name='SF_' + name, dtype='u1',
                     description='True if star forming (BPT=-1 and EW_Ha>6)')
 
@@ -595,10 +591,10 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
         raise Exception('Method {} is not recognized'.format(method))
     
     # Require SF in BPT if available.
-    if 'SF_BPT'+ext in fluxtab.colnames:
-        good = good & (fluxtab['SF_BPT'+ext] > 0)
+    if 'SF_BPT' in fluxtab.colnames:
+        good = good & (fluxtab['SF_BPT'] > 0)
     else:
-        print('ZOH_M13 warning: The SF_BPT{} column is missing'.format(ext))
+        print('ZOH_M13 warning: The SF_BPT column is missing')
 
     nelt = len(N2F)
 

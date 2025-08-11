@@ -27,8 +27,8 @@ gtab = join(p3dtab, drptab, join_type='left',
 keepcols = ['plateifu', 'mangaid', 'objra', 'objdec', 
             'drp3qual', 'seemed', 'gfwhm', 'rfwhm', 'ifwhm', 'zfwhm', 'QCFLAG',
             'nsa_redshift', 'nsa_iauname', 'nsa_sersic_ba', 'nsa_sersic_phi',
-            'nsa_inclination', 'nsa_z_dMpc', 'r_band_abs_mag', 'g-r', 'DL', 'DA', 
-            'Re_arc', 'Re_kpc', 'PA', 'ellip', 
+            'nsa_sersic_n', 'nsa_sersic_th50', 'nsa_inclination', 'nsa_z_dMpc', 
+            'r_band_abs_mag', 'g-r', 'DL', 'DA', 'Re_arc', 'Re_kpc', 'PA', 'ellip', 
             'log_Mass', 'e_log_Mass', 'log_SFR_Ha', 'e_log_SFR_Ha',
             'log_SFR_ssp', 'log_NII_Ha_cen', 'e_log_NII_Ha_cen',
             'log_OIII_Hb_cen', 'e_log_OIII_Hb_cen', 'log_SII_Ha_cen',
@@ -59,6 +59,8 @@ keepcols = ['plateifu', 'mangaid', 'objra', 'objdec',
             'OH_Mar13_O3N2_alpha_fit', 'e_OH_Mar13_O3N2_alpha_fit',
             'OH_Pet04_O3N2_Re_fit', 'e_OH_Pet04_O3N2_Re_fit',
             'OH_Pet04_O3N2_alpha_fit', 'e_OH_Pet04_O3N2_alpha_fit',
+            'OH_Cur20_O3N2_Re_fit', 'e_OH_Cur20_O3N2_Re_fit',
+            'OH_Cur20_O3N2_alpha_fit', 'e_OH_Cur20_O3N2_alpha_fit',
             'OH_Pil16_S_Re_fit', 'e_OH_Pil16_S_Re_fit',
             'OH_Pil16_S_alpha_fit', 'e_OH_Pil16_S_alpha_fit']
 
@@ -83,6 +85,8 @@ gtab['rfwhm'].unit = 'arcsec'
 gtab['ifwhm'].unit = 'arcsec'
 gtab['zfwhm'].unit = 'arcsec'
 gtab['nsa_inclination'].unit = 'deg'
+gtab['nsa_sersic_phi'].unit = 'deg'
+gtab['nsa_sersic_th50'].unit = 'arcsec'
 gtab['r_band_abs_mag'].unit = 'mag'
 gtab['g-r'].unit = 'mag'
 gtab['Re_arc'].unit = 'arcsec'

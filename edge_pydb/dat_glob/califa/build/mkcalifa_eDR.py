@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from astropy.io import fits
-from astropy.table import Table, join
+from astropy.table import Table, Column, join
 from astropy import units as u
 import numpy as np
 from datetime import datetime
@@ -57,16 +57,17 @@ names2 = ['OH_O3N2_cen', 'e_OH_O3N2_cen', 'OH_N2_cen', 'e_OH_N2_cen', 'Ha_Hb_cen
           'e_Av_gas_Re', 'Av_ssp_Re', 'e_Av_ssp_Re']
 
 names3 = ['flux_Halpha6562.85_Re_fit', 'e_flux_Halpha6562.85_Re_fit',
-          'flux_Halpha6562.85_alpha_fit',
-          'e_flux_Halpha6562.85_alpha_fit','OH_Mar13_N2_Re_fit',
-          'e_OH_Mar13_N2_Re_fit', 'OH_Mar13_N2_alpha_fit',
-          'e_OH_Mar13_N2_alpha_fit', 'OH_Mar13_O3N2_Re_fit',
-          'e_OH_Mar13_O3N2_Re_fit', 'OH_Mar13_O3N2_alpha_fit',
-          'e_OH_Mar13_O3N2_alpha_fit', 'OH_Pet04_O3N2_Re_fit',
-          'e_OH_Pet04_O3N2_Re_fit', 'OH_Pet04_O3N2_alpha_fit',
-          'e_OH_Pet04_O3N2_alpha_fit', 'OH_Pil16_S_Re_fit',
-          'e_OH_Pil16_S_Re_fit', 'OH_Pil16_S_alpha_fit',
-          'e_OH_Pil16_S_alpha_fit']
+          'flux_Halpha6562.85_alpha_fit', 'e_flux_Halpha6562.85_alpha_fit',
+          'OH_Mar13_N2_Re_fit', 'e_OH_Mar13_N2_Re_fit', 
+          'OH_Mar13_N2_alpha_fit', 'e_OH_Mar13_N2_alpha_fit', 
+          'OH_Mar13_O3N2_Re_fit', 'e_OH_Mar13_O3N2_Re_fit', 
+          'OH_Mar13_O3N2_alpha_fit', 'e_OH_Mar13_O3N2_alpha_fit', 
+          'OH_Cur20_O3N2_Re_fit', 'e_OH_Cur20_O3N2_Re_fit', 
+          'OH_Cur20_O3N2_alpha_fit', 'e_OH_Cur20_O3N2_alpha_fit', 
+          'OH_Pet04_O3N2_Re_fit', 'e_OH_Pet04_O3N2_Re_fit', 
+          'OH_Pet04_O3N2_alpha_fit', 'e_OH_Pet04_O3N2_alpha_fit', 
+          'OH_Pil16_S_Re_fit', 'e_OH_Pil16_S_Re_fit', 
+          'OH_Pil16_S_alpha_fit', 'e_OH_Pil16_S_alpha_fit']
 
 allnames = names1+names2+names3
 ptab.keep_columns(allnames)
@@ -77,6 +78,12 @@ ptab['DL'].unit = 'cm'
 ptab['DL'].convert_unit_to(u.Mpc)
 ptab['DA'] *= 206.265
 ptab['DA'].unit = 'Mpc'
+
+# Estimate inclination from ellipticity (actually eccentricity)
+axrat = np.sqrt(1-ptab['ellip']**2)
+incl = Column(np.degrees(np.arccos(axrat)), unit='deg', name='incl',
+              description='inclination from ellip')
+ptab.add_column(incl, index=5)
 
 ptab['PA'].unit = 'deg'
 ptab['Re_kpc'].unit = 'kpc'
