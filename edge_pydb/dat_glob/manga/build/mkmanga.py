@@ -12,6 +12,7 @@ from datetime import datetime
 # Download from https://data.sdss.org/sas/dr17/manga/spectro/pipe3d/v3_1_1/3.1.1/
 # For data model see https://data.sdss.org/datamodel/files/MANGA_PIPE3D/MANGADRP_VER/PIPE3D_VER/SDSS17Pipe3D.html
 p3dtab = Table.read('SDSS17Pipe3D_v3_1_1.fits', hdu=1)
+p3dtab.remove_columns(['objra','objdec','mangaid'])
 
 # Final summary FITS binary table for the MaNGA Data Reduction Pipeline
 # Download from https://www.sdss4.org/dr17/manga/manga-data/catalogs/
@@ -21,14 +22,15 @@ drptab = Table.read('drpall-v3_1_1.fits', hdu=1)
 drptab['nsa_z_dMpc'] = drptab['nsa_zdist'] * (const.c/(70*u.km/(u.s*u.Mpc))).to(u.Mpc)
 
 # Join the tables
-gtab = join(p3dtab, drptab, join_type='left', 
-            keys=['mangaid','plateifu','objra','objdec'])
+gtab = join(p3dtab, drptab, join_type='left', keys=['plateifu'])
+print(gtab.colnames)
 
 keepcols = ['plateifu', 'mangaid', 'objra', 'objdec', 
             'drp3qual', 'seemed', 'gfwhm', 'rfwhm', 'ifwhm', 'zfwhm', 'QCFLAG',
-            'nsa_redshift', 'nsa_iauname', 'nsa_sersic_ba', 'nsa_sersic_phi',
-            'nsa_sersic_n', 'nsa_sersic_th50', 'nsa_inclination', 'nsa_z_dMpc', 
-            'r_band_abs_mag', 'g-r', 'DL', 'DA', 'Re_arc', 'Re_kpc', 'PA', 'ellip', 
+            'nsa_z', 'nsa_iauname', 'nsa_sersic_ba', 'nsa_sersic_phi', 'nsa_sersic_n', 
+            'nsa_elpetro_ba', 'nsa_elpetro_phi', 'nsa_elpetro_th50_r', 
+            'nsa_inclination', 'nsa_z_dMpc', 'r_band_abs_mag', 
+            'g-r', 'DL', 'DA', 'Re_arc', 'Re_kpc', 'PA', 'ellip', 
             'log_Mass', 'e_log_Mass', 'log_SFR_Ha', 'e_log_SFR_Ha',
             'log_SFR_ssp', 'log_NII_Ha_cen', 'e_log_NII_Ha_cen',
             'log_OIII_Hb_cen', 'e_log_OIII_Hb_cen', 'log_SII_Ha_cen',
@@ -84,9 +86,10 @@ gtab['gfwhm'].unit = 'arcsec'
 gtab['rfwhm'].unit = 'arcsec'
 gtab['ifwhm'].unit = 'arcsec'
 gtab['zfwhm'].unit = 'arcsec'
-gtab['nsa_inclination'].unit = 'deg'
 gtab['nsa_sersic_phi'].unit = 'deg'
-gtab['nsa_sersic_th50'].unit = 'arcsec'
+gtab['nsa_elpetro_phi'].unit = 'deg'
+gtab['nsa_elpetro_th50_r'].unit = 'arcsec'
+gtab['nsa_inclination'].unit = 'deg'
 gtab['r_band_abs_mag'].unit = 'mag'
 gtab['g-r'].unit = 'mag'
 gtab['Re_arc'].unit = 'arcsec'
@@ -121,6 +124,7 @@ for name in (gtab.colnames):
         gtab[name].unit = 'Angstrom'
     elif name.startswith('vel_disp'):
         gtab[name].unit = 'km/s'
+        gtab[name][gtab[name]==0] = np.nan
     elif name.startswith(('Sigma_Mass','e_Sigma_Mass')):
         gtab[name].unit = 'dex(solMass/pc2)'
 
@@ -133,7 +137,7 @@ for coln in gtab.colnames[4:]:
 
 # Write the table
 gtab.meta['date'] = datetime.today().strftime('%Y-%m-%d')
-gtab.meta['comments'] = ('Galaxy properties determined from Pipe3D for MaNGA')
+gtab.meta['comments'] = ('Galaxy properties determined from DRP and Pipe3D for MaNGA DR17')
 print(gtab.meta)
 gtab.write('manga_global.csv', format='ascii.ecsv', delimiter=',', overwrite=True)
 

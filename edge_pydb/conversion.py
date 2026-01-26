@@ -2,6 +2,7 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table, Column
 from astropy import units as u
+from astropy import constants as const
 from astropy.coordinates import SkyCoord
 from scipy.optimize import fsolve
 from scipy import ndimage
@@ -180,7 +181,7 @@ def get_Alambda(fluxtab, colnames, A_Ha, A_Ha_valid=[0,6]):
 
 
 def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None, 
-            name='sigsfr', column=True, imf='kroupa', pixsca=1*u.arcsec):
+            name='sigsfr', column=True, imf='kroupa'):
     '''
     Convert Halpha intensity to SFR surface density, optionally
     with extinction estimates and corrections (if flux_hb is provided).
@@ -209,15 +210,8 @@ def sfr_ha(flux_ha, flux_hb=None, e_flux_ha=None, e_flux_hb=None,
     -------
     several columns depending on input (see code)
     '''
-    # Assume arcsec units for pixsca if not given
-    try:
-        unit = pixsca.unit
-    except:
-        pixsca = pixsca * u.arcsec
-
     # input line flux is actually flux per arcsec^2
-    #sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
-    sterad = (u.sr/pixsca**2).decompose().value
+    sterad = (u.sr/u.arcsec**2).decompose().scale # 206265^2
     
     # Calzetti+(2010ApJ...714.1256C), Kroupa IMF, 1 Gyr old pop
     lumcon = 5.45e-42 * (u.solMass/u.yr) / (u.erg/u.s)
@@ -634,4 +628,59 @@ def ZOH_M13(fluxtab, ext='', method='o3n2', name='ZOH', err=True):
                        unit='dex', description=desc), 
                 Column(unp.std_devs(ZOH_M13), name='e_'+name, dtype='f4',
                        unit='dex', description='error in '+desc))
+
+def P_hydro(sigmol, sigstar, c_gas=11, sigHI=7, R_half=None):
+    '''
+    Calculate the hydrostatic (dynamical equilibrium) pressure from 
+    Sigma_mol and Sigma_*, following Sun+20 (2020ApJ...892..148S)
+
+    Parameters
+    ----------
+    sigmol : astropy.table.Column
+        molecular gas mass surface density (deprojected)
+    sigstar : astropy.table.Column
+        stellar mass surface density (deprojected)
+    c_gas : float
+        Assumed gas velocity dispersion in km/s. Default is 11 (OML10).
+    sigHI : float
+        Assumed HI mass surface density in solMass/pc2
+    R_half : astropy.Quantity
+        input half-light radius for the galaxy (distance units)
+    
+    Returns
+    -------
+    P_DE: astropy.table.Column
+        estimate of the dynamical equilibrium pressure
+    t_ver: astropy.table.Column
+        estimate of the vertical dynamical timescale
+    c_star: astropy.table.Column
+        estimate of stellar velocity dispersion
+    '''
+    try:
+        unit = c_gas.unit
+    except:
+        c_gas = c_gas * u.km/u.s
+    try:
+        unit = sigHI.unit
+    except:
+        sigHI = sigHI * u.solMass/u.pc**2
+    try:
+        unit = R_half.unit
+    except:
+        R_half = R_half * u.kpc
+    h_star = (0.54 * R_half / 1.68).to(u.pc)
+    c_star = np.sqrt(2*np.pi*const.G*sigstar.quantity*h_star).to(u.km/u.s)
+    c_star_coln = Column(c_star, name='vdisp_hydro', dtype='f4', 
+                         description='stellar velocity dispersion from hydrostatic eq')
+    rho_star = sigstar.quantity / h_star
+    siggas = sigmol.quantity + sigHI
+    term1 = (((np.pi*const.G/2)*siggas**2)/const.k_B).cgs
+    term2 = (siggas/const.k_B * np.sqrt(2*const.G*rho_star) * c_gas).cgs
+    P_DE = term1 + term2
+    P_DE_coln = Column(P_DE, name='P_hydro', dtype='f4', 
+                       description='Dynamical equilibrium pressure following Sun+20')
+    t_ver = (2*c_gas/(np.pi*const.G*siggas+2*c_gas*np.sqrt(2*const.G*rho_star))).to(u.Gyr)
+    t_ver_coln = Column(t_ver, name='tdyn_vert', dtype='f4', 
+                       description='Dynamical time perpendicular to the disk')
+    return P_DE_coln, t_ver_coln, c_star_coln
 

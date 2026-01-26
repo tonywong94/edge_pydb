@@ -220,7 +220,7 @@ for str_name in ['cazgas','cazstars','caAge','caeAge','caAge_Re_fit','caeAge_Re_
                  'caMstars','caeMstars','caMstarscorr','caSFR','caeSFR','caOH','caeOH',
                  'caOH_Re_fit','caeOH_Re_fit','caOH_alpha_fit','caeOH_alpha_fit','caOH_Re_fit_M08',
                  'caeOH_Re_fit_M08','caOH_alpha_fit_M08','caeOH_alpha_fit_M08','caAvgas',
-                 'caeAvgas','caAvstars','caeAvstars','caDistP3d','caDistAngDiam','caDistMpc']:
+                 'caeAvgas','caAvstars','caeAvstars','caDistP3d','caDistAng','caDistMpc']:
     t.add_column(np.nan,name=str_name)
 cosmo = FlatLambdaCDM(H0=70, Om0=0.27)
 for i in range(len(t)):
@@ -261,7 +261,7 @@ for i in range(len(t)):
         t['caAvstars'][i]  = get_proc_elines['Av_ssp_stats_mean'][ind]
         t['caeAvstars'][i] = get_proc_elines['Av_ssp_stats_stddev'][ind]
         t['caDistP3d'][i]  = get_proc_elines['DL'][ind]
-        t['caDistAngDiam'][i]       = get_proc_elines['DA'][ind]
+        t['caDistAng'][i]  = get_proc_elines['DA'][ind]
     if t['cazgas'][i] != np.nan:
         t['caDistMpc'][i] = cosmo.luminosity_distance(t['cazgas'][i]).value
 
@@ -335,9 +335,9 @@ t['caeAvstars'].description = 'Error in stellar extinction <Av_ssp_stats_stddev>
 t['caDistP3d'].unit = 'cm'
 t['caDistP3d'].convert_unit_to('Mpc')
 t['caDistP3d'].description = 'Luminosity distance in Mpc from <DL> in get_proc_elines_CALIFA.csv'
-t['caDistAngDiam'] *= 206.265
-t['caDistAngDiam'].unit = 'Mpc'
-t['caDistAngDiam'].description = 'Ang diam distance in Mpc cfrom <DA> in get_proc_elines_CALIFA.csv'
+t['caDistAng'] *= 206.265
+t['caDistAng'].unit = 'Mpc'
+t['caDistAng'].description = 'Ang diam distance in Mpc cfrom <DA> in get_proc_elines_CALIFA.csv'
 t['caDistMpc'].unit = 'Mpc'
 t['caDistMpc'].description = 'Luminosity distance in Mpc computed from cazgas assuming Ho=70, Om=0.27, Ol=0.73'
 

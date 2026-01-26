@@ -412,7 +412,7 @@ def to_markdown(csv_out='index_csv.md', h5_out='index_hdf.txt', addurl=True):
 
 
 def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
-                allnorm=False, pct=99, paths=None, basedir='.', **kwargs):
+                allnorm=False, paths=None, basedir='.', **kwargs):
     '''
     Make multi-page gridplots for all galaxies in all available HDF5 files.
 
@@ -431,8 +431,6 @@ def plotgallery(hdf_files=None, cmap='jet', clobber=False, errors=True,
     allnorm : bool
         False (default) normalizes the colormap to each galaxy individually.
         True normalizes the colormap over all galaxies in the plotted column.
-    pct : float
-        Percentile for scale='perc'.  Default is 99%.
     paths : list of str
         Names of paths (subtables) to plot.  Default is to plot all.
     basedir : str
