@@ -492,3 +492,4 @@ def plot_uncertainty_ellipse(xval_n, xval_s, yval_n, yval_s, indices, x_arr, sav
     if save_to:
         plt.savefig(save_to)
     plt.show()
+
