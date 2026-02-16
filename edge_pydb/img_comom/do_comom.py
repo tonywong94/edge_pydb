@@ -21,7 +21,7 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
              ortpar='edge_leda.csv', ortlabel='LEDA', coln_ra='ledaRA', 
              coln_dc='ledaDE', coln_pa='ledaPA', coln_inc='ledaAxIncl', deproj='inc', 
              p3d_dir=None, interp_order=1, p3dtempl='flux_elines.GNAME.cube.fits.gz', 
-             zoh_col='ZOH_PP04_cobm', append=True, overwrite=True, manganame=False):
+             zoh_col='ZOH_PP04_cobm', Zsolar=8.69, append=True, overwrite=True):
     """
     Extract 2D molecular line data into an HDF5 database.  This script assumes
     standardized naming conventions, for example:
@@ -88,17 +88,16 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
     p3dtempl : str
         File name of regridding template, where GNAME is replaced by the galaxy name.
     zoh_col : str
-        Column name to use for metallicity from flux_elines table.
+        Column name to use for metallicity from flux_elines table.  This is used for
+        determining the metallicity-dependent conversion factor when append=True.
+    Zsolar : float
+        Assumed value of 12+log(O/H) for solar metallicity.  Default is 8.69 (Asplund09).
     append : boolean
         True (default) to append to an existing file.  Use False to create/overwrite.
         False also suppresses calculation of the metallicity-dependent conversion factor.
     overwrite : boolean
         True to overwrite existing tables.  Default is True (replace the table
         but do not delete other tables in the file).
-    manganame : boolean
-        For economy MaNGA galaxies are labeled as (e.g.) '8952-6104' in the Pipe3D
-        table whereas the ALMA file names use a longer string like 'manga_8952_6104'. 
-        If True, this translation is made to allow the names to be matched.
     """
     if allpix:
         stride = [1,1,1]
@@ -122,14 +121,10 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             dotypes = ['mom0',   'e_mom0', 'mom1', 'e_mom1', 'mom2', 'e_mom2']
             unit    = ['K km/s', 'K km/s', 'km/s', 'km/s',   'km/s', 'km/s']
         for gal in gallist:
-            # snrpk.fits is produced for dilated mask only
-#             if msk == 'smo':
-#                 file0 = os.path.join(fitsdir,
-#                         gal+'.'+linelbl[0]+'.'+seq+'_dil.snrpk.fits.gz')
-#             else:
             file0 = os.path.join(fitsdir,
                     gal+'.'+linelbl[0]+'.'+seq+'_'+msk+'.'+dotypes[0]+'.fits.gz')
             if not os.path.exists(file0):
+                print('####### File not found:', file0)
                 continue
             # Regrid to the Pipe3D template
             hdul = fits.open(file0, ignore_missing_end=True)
@@ -149,16 +144,6 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
                 else:
                     print('####### Cannot find',opt1)
                     continue
-#                     # These have special names
-#                     if gname in ['NGC5953', 'NGC4211NED02']:
-#                         if not os.path.exists(p3d_file):
-#                             p3d_file = os.path.join(fitsdir, gname+'_0.Pipe3D.cube.fits.gz')
-#                     # Fudge for almaquest file naming convention
-#                     gal2 = gal.replace('_','-')
-#                     p3dfile = os.path.join(p3d_dir,p3dtempl.replace('GNAME',gal2))
-#                     if not os.path.exists(p3dfile):
-#                         print('####### Cannot find',p3dfile)
-#                         continue
                 p3dhd = fits.getheader(p3dfile)
                 hd2d = WCS(p3dhd).celestial.to_header()
                 for key in hd2d.keys():
@@ -178,15 +163,11 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
             else:
                 newim = hdul[0].data
             hdul.close()
-            if manganame:
-                gname = gal.replace('manga_','').replace('_','-')
-            else:
-                gname = gal
             if deproj == 'inc':
-                adopt_incl = orttbl.loc[gname][coln_inc]
+                adopt_incl = orttbl.loc[gal][coln_inc]
                 adopt_cosi = np.cos(np.radians(adopt_incl))
             elif deproj == 'axrat':
-                adopt_cosi = orttbl.loc[gname][coln_inc]
+                adopt_cosi = orttbl.loc[gal][coln_inc]
                 adopt_incl = np.degrees(np.arccos(adopt_cosi))
             print('Adopted inclination, axis ratio is {} deg, {}'.format(adopt_incl, adopt_cosi))
             for i_line, line in enumerate(lines):
@@ -197,13 +178,13 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
                         galtab = fitsextract(newim, header=newhd, bunit=unit[0], 
                                 col_lbl=dotypes[0]+'_'+line,
                                 keepnan=True, stride=stride,
-                                ra_gc=orttbl.loc[gname][coln_ra],
-                                dec_gc=orttbl.loc[gname][coln_dc],
-                                pa=orttbl.loc[gname][coln_pa],
+                                ra_gc=orttbl.loc[gal][coln_ra],
+                                dec_gc=orttbl.loc[gal][coln_dc],
+                                pa=orttbl.loc[gal][coln_pa],
                                 inc=adopt_incl,
                                 ortlabel=ortlabel, first=True,
                                 use_hexgrid=hexgrid)
-                        gnamecol = Column([np.string_(gname)]*len(galtab), name='Name', description='Galaxy Name')
+                        gnamecol = Column([np.bytes_(gal)]*len(galtab), name='Name', description='Galaxy Name')
                         galtab.add_column(gnamecol, index=0)
                         print(galtab[20:50])
                     # --- Read the subsequent images
@@ -247,31 +228,31 @@ def do_comom(outfile='NGC4047.2d_smo7.hdf5', gallist=['NGC4047'], seq='smo7',
                     sigmol = msd_co(galtab['mom0_12'], name='sigmol', alphaco=alphaco)
                     e_sigmol = msd_co(galtab['e_mom0_12'], name='e_sigmol', alphaco=alphaco)
                     galtab.add_columns([sigmol, e_sigmol, cosi])
-                    if append and msk == 'dil':
-                        # Scaling for alphaCO from Bolatto, Wolfire, Leroy 2013
-                        try:
-                            ssptab   = Table.read(outfile, path='SSP')
-                            fluxtab  = Table.read(outfile, path='flux_elines')
-                            star0    = ssptab[ssptab['Name']==gname]['sigstar']
-                            zoh0     = fluxtab[fluxtab['Name']==gname][zoh_col]
-                            Zprime   = 10**(zoh0 - 8.69)
-                            # Bolatto+13, iterative mode, based on metallicity,
-                            # kpc-scale CO brightness, and stellar surface density (+9 for HI)
-                            # A minimum alpha_CO is imposed by the optically thin limit and 30 K
-                            alpha2   = predict_alphaCO10_B13(Zprime=Zprime,
-                                            WCO10kpc=galtab['mom0_12'], Sigmaelsekpc=star0+9)
-                            alphsca_B13 = Column(alpha2.value/4.3, name='alphsca_B13', unit=None,
-                                   dtype='f4', description='alphaCO scaling factor from B13')
-                            galtab.add_column(alphsca_B13)
-                            # Scaling for alphaCO from Schinnerer & Leroy 2024
-                            # SFR term not yet included (so only valid for J=1-0)
-                            alpha, f_term, g_term, rco = predict_alphaCO_SL24(
-                                   Zprime=Zprime, Sigma_star=star0, return_all_terms=True)
-                            alphsca_SL24 = Column(f_term * g_term, name='alphsca_SL24', unit=None,
-                                   dtype='f4', description='alphaCO scaling factor from SL24')
-                            galtab.add_column(alphsca_SL24)
-                        except:
-                            print('Paths missing from output file: SSP, flux_elines')
+#                     if append and msk == 'dil':
+#                         # Scaling for alphaCO from Bolatto, Wolfire, Leroy 2013
+#                         try:
+#                             ssptab   = Table.read(outfile, path='SSP')
+#                             fluxtab  = Table.read(outfile, path='flux_elines')
+#                             star0    = ssptab[ssptab['Name']==gal]['sigstar']
+#                             zoh0     = fluxtab[fluxtab['Name']==gal][zoh_col]
+#                             Zprime   = 10**(zoh0 - Zsolar)
+#                             # Bolatto+13, iterative mode, based on metallicity,
+#                             # kpc-scale CO brightness, and stellar surface density (+9 for HI)
+#                             # A minimum alpha_CO is imposed by the optically thin limit and 30 K
+#                             alpha2   = predict_alphaCO10_B13(Zprime=Zprime,
+#                                             WCO10kpc=galtab['mom0_12'], Sigmaelsekpc=star0+9)
+#                             alphsca_B13 = Column(alpha2.value/4.3, name='alphsca_B13', unit=None,
+#                                    dtype='f4', description='alphaCO scaling factor from B13')
+#                             galtab.add_column(alphsca_B13)
+#                             # Scaling for alphaCO from Schinnerer & Leroy 2024
+#                             # SFR term not yet included (so only valid for J=1-0)
+#                             alpha, f_term, g_term, rco = predict_alphaCO_SL24(
+#                                    Zprime=Zprime, Sigma_star=star0, return_all_terms=True)
+#                             alphsca_SL24 = Column(f_term * g_term, name='alphsca_SL24', unit=None,
+#                                    dtype='f4', description='alphaCO scaling factor from SL24')
+#                             galtab.add_column(alphsca_SL24)
+#                         except:
+#                             print('Paths missing from output file: SSP, flux_elines')
             tablelist.append(galtab)
 
         if len(tablelist) > 0:

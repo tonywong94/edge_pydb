@@ -317,7 +317,7 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         True to plot a colorbar beneath the first subplot
     **kwargs :
         Additional arguments passed to imarrayplot or dotpatch, including 
-        vmin, vmax, colormap normalization
+        vmin, vmax
     '''
 
     match stretch:
@@ -337,8 +337,14 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
         gallist = [gallist]
     if isinstance(columnlist, str):
         columnlist = [columnlist]
-    if 'norm' in kwargs:
-        usernorm = kwargs.pop('norm')
+    if 'vmin' in kwargs:
+        usermin = kwargs.pop('vmin')
+    else:
+        usermin = None
+    if 'vmax' in kwargs:
+        usermax = kwargs.pop('vmax')
+    else:
+        usermax = None
 
     # Plot mode: multiple galaxies or multiple columns
     if columnlist is not None and len(columnlist) == 1:
@@ -403,7 +409,11 @@ def gridplot(edgetab=None, gallist=None, columnlist=None,
                 galblank = None
             if not np.isnan(edgetab[galtab][column]).all():
                 if not allnorm:
-                    vmin, vmax = PercentileInterval(pct).get_limits(edgetab[galtab][column])
+                    if usermin is not None and usermax is not None:
+                        vmin = usermin
+                        vmax = usermax
+                    else:
+                        vmin, vmax = PercentileInterval(pct).get_limits(edgetab[galtab][column])
                     norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=stretch)
                 if plotstyle == 'dot':
                     img, xlims, ylims = dotpatch(edgetab[galtab]['ix'], 
