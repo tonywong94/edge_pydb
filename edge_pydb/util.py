@@ -51,7 +51,7 @@ def _walkthrough(dir=_ROOT, max_depth=2):
         if max_depth >= 0 and cur_depth > max_depth + base_depth:
             continue
         for _file in _files:
-            if _file.endswith('.csv') or _file.endswith('.hdf5'):
+            if _file.endswith(('.csv', '.ecsv', '.hdf5')):
                 if _file in retval:
                     print("{} redundant file detected\n--Current location: {}\n++New location: {}\n".format(
                         _file, retval[_file], _os.path.join(_root, _file)))
